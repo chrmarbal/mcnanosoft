@@ -1,0 +1,69 @@
+.text-animation {
+    width: 100%;
+    text-align: center;
+    position: relative;
+    overflow: visible;
+    background: transparent;
+    margin-top: -70px;
+}
+
+.text-animation-text {
+    display: inline-block;
+    font-size: clamp(2rem, 8vw, 6rem);
+    font-weight: 900;
+    line-height: 1.2;
+    font-family: 'League Spartan', sans-serif;
+    color: #ffffff;
+    letter-spacing: -1px;
+    text-shadow: 
+        0 0 2px rgba(255, 255, 255, 0.4),
+        0 0 8px rgba(56, 56, 255, 0.3),
+        0 0 12px rgba(56, 56, 255, 0.2),
+        0 0 20px rgba(56, 56, 255, 0.1);
+    background: none;
+}
+
+.char {
+    display: inline-block;
+    will-change: transform, opacity;
+    background: transparent;
+}
+
+@media (max-width: 1024px) {
+    .text-animation {
+        margin-top: -50px;
+    }
+
+    .text-animation-text {
+        font-size: clamp(1.8rem, 6vw, 4rem);
+        text-shadow: 
+            0 0 2px rgba(255, 255, 255, 0.4),
+            0 0 6px rgba(56, 56, 255, 0.3),
+            0 0 10px rgba(56, 56, 255, 0.2),
+            0 0 16px rgba(56, 56, 255, 0.1);
+    }
+}
+
+@media (max-width: 768px) {
+    .text-animation {
+        margin-top: -30px;
+    }
+}
+
+@media (max-width: 425px) {
+    .text-animation {
+        margin-top: -20px;
+    }
+}
+
+@media (max-width: 375px) {
+    .text-animation {
+        margin-top: -10px;
+    }
+}
+
+@media (max-width: 320px) {
+    .text-animation {
+        margin-top: 0px;
+    }
+} 

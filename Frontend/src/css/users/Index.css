@@ -1,0 +1,382 @@
+#allUsers {
+    background: linear-gradient(90deg, rgb(53, 51, 205) 0%, rgb(0, 0, 0) 95%);
+    color: white;
+    text-align: center;
+    padding-right: 10px;
+    display: flex;
+}
+
+#allUsers main{
+    width: 100%;
+    height: 100%;
+    display: flex;
+}
+
+.contentUsersContainer {
+    padding: 2rem;
+    width: 100%;
+}
+
+.contentUsersContainer h2 {
+    font-size: 2rem;
+    margin-bottom: 2rem;
+}
+
+#searchBoxContainer{
+    width: 350px;    
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    position: relative;
+    margin: 1rem auto 2rem auto;
+}
+
+#newProjectBtn{
+    width: 55px;
+    height: 45px;
+    border: none;
+    border-radius: 8px;
+    background-color: green;
+    color: #cfcfcf;
+    transition: all 0.3s ease;
+    padding: 0;
+}
+
+#newProjectBtn a{
+    text-decoration: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    color: #cfcfcf;
+    font-size: 22px;
+}
+
+#newProjectBtn:hover{
+    background-color: #cfcfcf;
+}
+
+#newProjectBtn:hover a{
+    color: green;
+}
+
+#searchBoxContainer > i{
+    align-self: center;
+    position: absolute;
+    left: 85px;
+    font-weight: bold;
+    color: #191860;
+}
+  
+#searchBox {
+    color: #585790;
+    opacity: 0.59;
+    padding: 7px 15px;
+    padding-left: 30px;
+    font-size: 15px;
+    flex: 1;
+    border-radius: 5px;
+    border: none;
+    outline: none;
+}
+
+#usersContainer {
+    padding: 1rem;
+}
+  
+.userContainer {
+    background-color: rgba(25, 24, 96, 0.3);
+    border-radius: 10px;
+    padding: 1rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    height: 100%;
+}
+  
+.userContainer:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+  
+.userContainer img {
+    width: 150px;
+    height: 150px;
+    object-fit: fill;
+    border-radius: 50%;
+    margin-bottom: 1rem;
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+}
+
+.userContainer > p{
+    text-align: left;
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+    color: #fff;
+}
+
+.userContainer > div{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.userContainer > div > p{
+    font-size: 1.3rem;
+    font-weight: bold;
+    color: #cfcfcf;
+    margin: 0;
+}
+
+.controls{
+    display: flex;
+    gap: 10px;
+}
+
+.controls button{
+    width: 45px;
+    height: 35px;
+    border: none;
+    border-radius: 8px;
+    font-size: 18px;
+    transition: all 0.3s ease;
+}
+
+#deleteProjectBtn{
+    color: #cfcfcf;
+    background-color: #e74c3c;
+}
+
+#deleteProjectBtn:hover{
+    color: #e74c3c;
+    background-color: #cfcfcf;
+}
+
+#reviveProjectBtn{
+    background-color: green;
+    color: #cfcfcf;
+}
+
+#reviveProjectBtn:hover{
+    background-color: #cfcfcf;
+    color: green;
+}
+
+.deletedItem {
+    background-color: rgba(255, 0, 0, 0.1);
+}
+
+.deletedItem p {
+    color: #ff0000;
+}
+
+@media (max-width: 1200px) {
+    .contentUsersContainer {
+        padding: 1.5rem;
+    }
+
+    .userContainer img {
+        height: 180px;
+    }
+
+    .userContainer > p {
+        font-size: 1.1rem;
+    }
+
+    .userContainer > div > p {
+        font-size: 1.2rem;
+    }
+}
+
+@media (max-width: 992px) {
+    .contentUsersContainer {
+        padding: 1rem;
+    }
+
+    #searchBoxContainer {
+        width: 280px;
+    }
+
+    #searchBoxContainer > i {
+        left: 55px;
+    }
+
+    .userContainer {
+        padding: 0.8rem;
+    }
+
+    .userContainer img {
+        height: 170px;
+    }
+
+    .userContainer > p {
+        font-size: 1rem;
+    }
+
+    .userContainer > div > p {
+        font-size: 1.1rem;
+    }
+
+    .controls button {
+        width: 42px;
+        height: 33px;
+        font-size: 17px;
+    }
+
+    #newProjectBtn {
+        width: 50px;
+        height: 40px;
+    }
+
+    #newProjectBtn a {
+        font-size: 20px;
+    }
+}
+
+@media (max-width: 768px) {
+    .contentUsersContainer h2 {
+        font-size: 1.75rem;
+        margin-bottom: 1.5rem;
+    }
+
+    #searchBoxContainer {
+        width: 350px;
+        gap: 10px;
+    }
+
+    #searchBoxContainer > i {
+        left: 65px;
+    }
+
+    .userContainer img {
+        width: 160px;
+        height: 160px;
+    }
+
+    .userContainer > p {
+        font-size: 0.95rem;
+    }
+
+    .userContainer > div > p {
+        font-size: 0.9rem;
+    }
+
+    .contentUsersContainer {
+        padding-top: 1rem;
+    }
+
+    #newProjectBtn {
+        width: 45px;
+        height: 38px;
+    }
+
+    .controls button {
+        width: 40px;
+        height: 32px;
+        font-size: 16px;
+    }
+}
+
+@media (max-width: 576px) {
+    .contentUsersContainer {
+        padding: 0.8rem;
+    }
+
+    .contentUsersContainer h2 {
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+    }
+
+    .userContainer {
+        padding: 0.6rem;
+    }
+
+    .userContainer img {
+        width: 150px;
+        height: 150px;
+    }
+
+    .controls {
+        gap: 8px;
+    }
+
+    .controls button {
+        width: 38px;
+        height: 32px;
+        font-size: 15px;
+    }
+
+    .userContainer > div > p {
+        font-size: 0.85rem;
+    }
+
+    #searchBoxContainer > i {
+        left: 65px;
+    }
+}
+
+@media (max-width: 425px) {
+    #searchBoxContainer > i {
+        left: 65px;
+    }
+
+    .userContainer img {
+        width: 140px;
+        height: 140px;
+    }
+
+    .controls button {
+        width: 40px;
+        height: 35px;
+        font-size: 16px;
+    }
+}
+
+@media (max-width: 375px) {
+    #searchBoxContainer > i {
+        left: 65px;
+    }
+
+    .userContainer img {
+        width: 130px;
+        height: 130px;
+    }
+
+    .controls button {
+        width: 42px;
+        height: 36px;
+        font-size: 17px;
+    }
+}
+
+@media (max-width: 320px) {
+    #searchBoxContainer {
+        width: 290px;
+    }
+
+    #searchBox{
+        width: 100px;
+    }
+
+    #searchBoxContainer > i {
+        left: 60px;
+    }
+
+    #newProjectBtn {
+        width: 42px;
+        height: 38px;
+    }
+
+    #newProjectBtn a {
+        font-size: 20px;
+    }
+
+    .controls button {
+        width: 45px;
+        height: 38px;
+        font-size: 18px;
+    }
+}

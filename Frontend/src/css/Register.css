@@ -1,0 +1,283 @@
+#register{
+    overflow-y: hidden;
+    min-height: 100vh;
+}
+
+#aside-register img{
+    width: 100%;
+    height: 100%;
+}
+
+#content-register{
+    min-height: 100vh;
+    background: linear-gradient(90deg, rgb(53, 51, 205) 0%, rgb(0, 0, 0) 80%);
+}
+
+#form-register{
+    text-align: center;
+    background-color: #f0f0f0;
+    border-radius: 20%;
+    width: 100%;
+    max-width: 550px;
+    padding: 1.5rem;
+}
+
+#form-register h1{
+    font-family: "Proxima Nova Condensed Bold";
+    color: #191860;
+    font-size: 1.8rem;
+    margin-bottom: 0.8rem;
+}
+
+#content-register form{
+    margin-top: 5px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+}
+
+.campos{
+    display: flex;
+    gap: 15px;
+}
+
+.campos .campo{
+    width: 230px;
+}
+
+.campo{
+    display: flex;
+    flex-direction: column;
+}
+
+.campo label{
+    margin-bottom: 3px;
+    font-size: 14px;
+    text-align: left;
+    font-family: "Proxima Nova Condensed Regular";
+    color: #191860;
+}
+
+.campo input{
+    border: 1px solid #191860;
+    border-radius: 10px;
+    padding: 8px 12px;
+    font-size: 14px;
+    width: 100%;
+    outline: none;
+    background-color: white;
+}
+
+.campo input:focus {
+    box-shadow: 0 0 5px rgba(25, 24, 96, 0.5);
+}
+
+.error{
+    text-align: left;
+    font-size: 10px;
+    min-height: 12px;
+    display: block;
+}
+
+#fotoPerfil{
+    width: 200px;
+    margin-top: -5px;
+}
+
+#fotoPerfil label{
+    text-align: center;
+}
+
+#fotoPerfil input{
+    display: none;
+}
+
+#fileInput{
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    padding: 8px 12px;
+    cursor: pointer;
+    border: 1px solid #191860;
+    border-radius: 10px;
+    color: #191860;
+    font-family: "Proxima Nova Condensed Regular";
+    font-size: 14px;
+    transition: all 0.3s ease;
+    justify-content: center;
+}
+
+#fileInput i{
+    font-size: 16px;
+}
+
+#submitRegister{
+    border: 1px solid black;
+    border-radius: 20px;
+    background-color: #151545;
+    color: white;
+    width: 140px;
+    height: 35px;
+    font-size: 14px;
+    font-family: "Open Sans Bold";
+    cursor: pointer;
+    margin-top: -5px;
+}
+
+#link-login{
+    text-decoration: none;
+    color: #191860;
+    font-family: "Proxima Nova Condensed Regular";
+    font-size: 14px;
+    margin-top: -5px;
+}
+
+/* Para pantallas menores a 768px */
+@media (max-width: 768px) {
+    #content-register {
+        background: transparent;
+    }
+    
+    #register {
+        background: linear-gradient(90deg, rgb(53, 51, 205) 0%, rgb(0, 0, 0) 80%);
+    }
+
+    #form-register {
+        border-radius: 0;
+        margin: 0;
+        max-width: 100%;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    .campos {
+        flex-direction: column;
+        gap: 12px;
+        width: 100%;
+        max-width: 300px;
+    }
+
+    .campos .campo {
+        width: 100%;
+    }
+
+    #fotoPerfil {
+        width: 100%;
+        max-width: 250px;
+    }
+
+    #fileInput {
+        width: 100%;
+    }
+}
+
+/* Para Movil L */
+@media (max-width: 425px) {
+    #form-register {
+        padding: 1.2rem;
+    }
+
+    .campo input {
+        font-size: 13px;
+    }
+
+    #fileInput {
+        font-size: 13px;
+    }
+}
+
+/* Para móviles medianos */
+@media (max-width: 375px) {
+    #form-register {
+        padding: 1rem;
+    }
+
+    .campo label {
+        font-size: 13px;
+    }
+
+    .campo input {
+        padding: 7px 10px;
+    }
+
+    #fileInput {
+        padding: 7px 10px;
+    }
+}
+
+/* Para móviles pequeños */
+@media (max-width: 320px) {
+    .campo input {
+        font-size: 12px;
+    }
+
+    #fileInput {
+        font-size: 12px;
+    }
+
+    #submitRegister {
+        width: 120px;
+        height: 32px;
+        font-size: 13px;
+    }
+}
+
+/* Para 2560px */
+@media (min-width: 2560px) {
+    #form-register {
+        max-width: 1200px;
+        padding: 3.5rem;
+    }
+
+    .campos {
+        gap: 40px;
+    }
+
+    .campos .campo {
+        width: 400px;
+    }
+
+    .campo label {
+        font-size: 22px;
+        margin-bottom: 0.8rem;
+    }
+
+    .campo input {
+        padding: 15px 20px;
+        font-size: 20px;
+    }
+
+    #fotoPerfil {
+        width: 400px;
+        margin-top: 0;
+    }
+
+    #fileInput {
+        padding: 15px 20px;
+        font-size: 20px;
+    }
+
+    #fileInput i {
+        font-size: 24px;
+    }
+
+    #submitRegister {
+        width: 220px;
+        height: 60px;
+        font-size: 20px;
+        margin-top: 1rem;
+    }
+
+    h1 {
+        font-size: 3rem;
+        margin-bottom: 2rem;
+    }
+
+    #link-login {
+        font-size: 20px;
+        margin-top: 0;
+    }
+}

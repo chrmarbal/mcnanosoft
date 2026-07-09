@@ -1,0 +1,397 @@
+#showProjectContainer{
+  width: 100%;
+  height: max-content;
+  background: linear-gradient(90deg, rgb(53, 51, 205) 0%, rgb(0, 0, 0) 80%);
+  padding: 30px;
+  color: #cfcfcf;
+  overflow: auto;
+}
+
+#showProjectContainer .controls{
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+#showProjectContainer .controls a{
+  text-decoration: none;
+  color: #cfcfcf;
+  margin-bottom: 0px;
+}
+
+#showProjectContainer h1, #showProjectContainer h2, #showProjectContainer h5{
+  font-family: "League Spartan Bold";
+}
+
+#showProjectContainer h1{
+  margin-top: 20px;
+}
+
+#showProjectContainer .projectPaperContainer{
+  color: #cfcfcf;
+  border-radius: 20px;
+  margin-top: 20px;
+  padding: 20px;
+  background-color: #191560;
+  width: 45%;
+  display: flex;
+  gap: 100px;
+}
+
+#showProjectContent{
+  text-align: center;
+}
+
+#showProjectContent h2{
+  text-align: center;
+  margin-top: 10px;
+}
+
+#showProjectDetails{
+  align-self: center;
+}
+
+#showProjectDetails > section{
+  display: flex;
+  align-items: center;
+}
+
+#showProjectDetails > section > span{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#showProjectDetails .technologyIcon{
+  width: 50px;
+}
+
+#ratingsContainer{
+  margin-top: 40px;
+}
+
+#projectDetailWrapper {
+  display: grid;
+  grid-template-columns: minmax(300px, 1fr) minmax(400px, 1.5fr);
+  gap: 40px;
+  margin-top: 30px;
+  margin-bottom: 30px;
+}
+
+.projectSection, .ratingsSection {
+  background-color: #1e1a5a;
+  padding: 25px;
+  border-radius: 20px;
+  box-shadow: 0 0 15px rgba(0,0,0,0.3);
+  height: fit-content;
+}
+
+.ratingsSection {
+  width: 715px;
+  padding: 25px;
+  margin-top: 20px;
+}
+
+.projectInfoCard {
+  text-align: center;
+}
+
+.projectInfoCard img {
+  width: 180px;
+  height: 180px;
+  border-radius: 50%;
+  object-fit: fill;
+  border: 3px solid #3f3dff;
+  box-shadow: 0 0 20px #3f3dff50;
+}
+
+.projectInfoCard h2 {
+  margin-top: 15px;
+  font-size: 2em;
+}
+
+.projectInfoCard p {
+  margin-top: 10px;
+  font-size: 1.1em;
+  line-height: 1.6;
+  text-align: justify;
+}
+
+.techSection {
+  margin-top: 20px;
+}
+
+.techBadge {
+  margin-top: 5px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background-color: #2c28a0;
+  padding: 8px 15px;
+  border-radius: 10px;
+  width: fit-content;
+}
+
+.techBadge img {
+  width: 30px;
+  height: 30px;
+  object-fit: fill;
+}
+
+.ownedProjectWrapper .ownedProject{
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.ownedProject i{
+  color: green;
+}
+
+.projectButtons .ownedProjectWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.ownedProjectWrapper > button a{
+  color: white;
+  text-decoration: none;
+}
+
+.ratingsSection h2 {
+  margin-bottom: 20px;
+  font-size: 1.8em;
+  border-bottom: 2px solid #cfcfcf44;
+  padding-bottom: 10px;
+}
+
+.ratingCard {
+  background-color: #2a267e;
+  padding: 15px 20px;
+  margin-bottom: 15px;
+  border-radius: 12px;
+  box-shadow: 0 0 10px rgba(255,255,255,0.1);
+  transition: transform 0.2s ease;
+}
+
+.ratingCard:hover {
+  transform: translateY(-5px);
+}
+
+.ratingCard > p{
+  margin-top: 10px;
+}
+
+.ratingUser {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.ratingUser img {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  border: 2px solid #fff;
+}
+
+#projectHeroSection {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  border-radius: 20px;
+  aspect-ratio: 16/9;
+}
+
+#projectHeroSection img {
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+  border-radius: 20px;
+  box-shadow: 0 0 20px rgba(0,0,0,0.3);
+}
+
+.addRatingSection {
+  background-color: #1e1a5a;
+  padding: 20px;
+  border-radius: 15px;
+  width: 715px;
+  box-shadow: 0 0 15px rgba(0,0,0,0.3);
+}
+
+.addRatingSection h3 {
+  font-family: "League Spartan Bold";
+  margin-bottom: 10px;
+}
+
+.addRatingSection textarea {
+  width: 100%;
+  height: 80px;
+  margin-top: 10px;
+  border-radius: 10px;
+  border: none;
+  padding: 10px;
+  font-family: inherit;
+  resize: none;
+}
+
+.addRatingSection button {
+  margin-top: 10px;
+  background-color: #3f3dff;
+  color: white;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.addRatingSection button:hover {
+  background-color: #2c28a0;
+}
+
+.projectDetails {
+  margin-top: 15px;
+  font-size: 14px;
+  color: #ccc;
+}
+
+.projectButtons {
+  display: flex;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.githubButton, .addToCartButton {
+  padding: 10px 16px;
+  background-color: #3f3dff;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  text-decoration: none;
+  font-weight: bold;
+  transition: background-color 0.2s;
+}
+
+.githubButton{
+  padding: 5px;
+}
+
+.githubButton img{
+  width: 40px;
+  height: 40px;
+}
+
+.githubButton:hover,
+.addToCartButton:hover {
+  background-color: #5f5dff;
+}
+
+.adminControls {
+  margin-top: 10px;
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+.adminControls button {
+  padding: 8px 12px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background 0.3s ease;
+}
+
+.adminControls button:first-child {
+  background-color: #38b000; /* Verde aceptar */
+  color: white;
+}
+
+.adminControls button:last-child {
+  background-color: #d90429; /* Rojo rechazar */
+  color: white;
+}
+
+.adminControls button:hover {
+  filter: brightness(1.1);
+}
+
+/* Media Queries para Responsive */
+@media (min-width: 2560px) {
+  #projectHeroSection {
+    max-height: 600px;
+  }
+}
+
+@media (max-width: 1024px) {
+  #projectDetailWrapper {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .projectSection {
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  #projectHeroSection {
+    max-width: 800px;
+    margin: 0 auto;
+    aspect-ratio: 16/9;
+  }
+}
+
+@media (max-width: 768px) {
+  #showProjectContainer {
+    padding: 15px;
+  }
+
+  .projectInfoCard > img {
+    width: 150px;
+    height: 150px;
+  }
+
+  .projectInfoCard h2 {
+    font-size: 1.5em;
+  }
+
+  .ratingsSection,
+  .addRatingSection {
+    width: 100%;
+    max-width: 715px;
+    margin: 20px auto;
+  }
+
+  .ratingCard {
+    padding: 10px 15px;
+  }
+
+  .addRatingSection textarea {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .projectInfoCard > img {
+    width: 120px;
+    height: 120px;
+  }
+
+  .projectButtons {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .ratingUser img {
+    width: 35px;
+    height: 35px;
+  }
+}

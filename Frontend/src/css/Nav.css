@@ -1,0 +1,473 @@
+#header{
+    margin: 0;
+    width: 100%;
+    background-color: #09091E;
+    border-bottom: 1px solid #cfcfcf;
+    height: 70px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+}
+
+header{
+    display: flex;
+    align-items: center;
+    height: 100%;
+    min-width: 60px;
+}
+
+header a{
+    height: 100%;
+    display: flex;
+    align-items: center;
+}
+
+header img{
+    width: 60px;
+    height: auto;
+}
+
+.nav-menu-toggle {
+    display: none;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+    transition: color 0.3s ease;
+    margin-left: 15px;
+}
+
+.nav-menu-toggle:hover {
+    color: #cfcfcf;
+}
+
+nav {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    opacity: 1;
+    visibility: visible;
+}
+
+nav ul{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 180px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    max-width: 1200px;
+}
+
+nav ul li a{
+    text-decoration: none;
+    color: white;
+    font-family: "Proxima Nova Condensed Regular";
+    transition: color 0.3s ease;
+    font-size: 16px;
+    white-space: nowrap;
+    padding: 5px 10px;
+}
+
+nav ul li a:hover {
+    color: #cfcfcf;
+}
+
+#user, #guest {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    min-width: fit-content;
+}
+
+#user img{
+    width: 45px;
+    height: 45px;
+    border-radius: 60%;
+    transition: box-shadow 0.4s ease, transform 0.4s ease;
+}
+
+#user img:hover{
+    box-shadow: 0 0 15px 5px rgba(255, 255, 255, 0.8);
+}
+
+#guest{
+    font-family: "Neue Machina";
+}
+
+#guest button a{
+    text-decoration: none;
+}
+
+#registerNav{
+    border: none;
+    background-color: transparent;
+    padding: 5px 10px;
+}
+
+#registerNav a{
+    color: gray;
+    white-space: nowrap;
+}
+
+#loginNav{
+    background-color: transparent;
+    padding: 5px 15px;
+    border: 1px solid white;
+    border-radius: 10px;
+    white-space: nowrap;
+}
+
+#loginNav a{
+    color: white;    
+}
+
+#cartNav{
+    background: none;
+    border: none;
+    color: white;
+    font-size: 20px;
+    padding: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.sideCart {
+    position: fixed;
+    top: 0;
+    right: -100%;
+    width: 300px;
+    height: 100vh;
+    color: #cfcfcf;
+    background-color: #191860;
+    box-shadow: -2px 0 10px rgba(0,0,0,0.2);
+    transition: right 0.5s ease-in-out;
+    padding: 20px;
+    z-index: 999;
+}
+
+.sideCart.open {
+    right: 0;
+}
+
+#closeCart {
+    background: none;
+    border: none;
+    font-size: 30px;
+    float: right;
+    cursor: pointer;
+    color: red;
+    transition: transform 0.2s ease;
+}
+
+#closeCart:hover {
+    transform: scale(1.2);
+}
+
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0,0,0,0.3);
+    transition: opacity 0.4s ease, visibility 0.4s ease;
+    z-index: 998;
+}
+
+.cartItem {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 0;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.cartItem img{
+    width: 60px;
+    height: 60px;
+    border-radius: 6px;
+    margin-right: 12px;
+}
+
+.cartItemInfo {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.itemName {
+    font-weight: 600;
+    margin: 0;
+}
+
+.itemPrice {
+    font-size: 0.9rem;
+    color: #cfcfcf;
+    margin: 4px 0 0 0;
+}
+
+.removeBtn {
+    background: none;
+    border: none;
+    font-size: 1.2rem;
+    cursor: pointer;
+    color: red;
+    margin-left: 12px;
+    transition: transform 0.2s ease;
+}
+
+.removeBtn:hover {
+    transform: scale(1.2);
+}
+
+.cartSummary {
+    border-top: 1px solid #ddd;
+    padding-top: 15px;
+    margin-top: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.cartTotal {
+    display: flex;
+    justify-content: space-between;
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+.checkoutBtn {
+    background-color: #cfcfcf;
+    color: #191860;
+    padding: 12px;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.checkoutBtn:hover {
+    background-color: #191860;
+    border: 1px solid #cfcfcf;
+    color: #cfcfcf;
+}
+
+@media (max-width: 1400px) {
+    nav ul {
+        gap: 150px;
+    }
+}
+
+@media (max-width: 1200px) {
+    nav ul {
+        gap: 120px;
+    }
+
+    nav ul li a {
+        font-size: 15px;
+    }
+
+    #user, #guest {
+        gap: 15px;
+    }
+
+    #loginNav {
+        padding: 5px 10px;
+    }
+}
+
+@media (max-width: 992px) {
+    nav ul {
+        gap: 90px;
+    }
+
+    nav ul li a {
+        font-size: 14px;
+    }
+
+    #user img {
+        width: 40px;
+        height: 40px;
+    }
+
+    #registerNav, #loginNav {
+        font-size: 13px;
+    }
+
+    #cartNav {
+        font-size: 18px;
+    }
+}
+
+@media (max-width: 767px) {
+    #header {
+        padding: 0 15px;
+    }
+
+    .nav-menu-toggle {
+        display: block;
+    }
+
+    nav {
+        position: fixed;
+        top: 70px;
+        left: 0;
+        width: 100%;
+        height: auto;
+        background-color: #09091E;
+        border-bottom: 1px solid #cfcfcf;
+        margin: 0;
+        opacity: 0;
+        visibility: hidden;
+        z-index: 999;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        transition: opacity 0.3s ease, visibility 0.3s ease;
+    }
+
+    nav.active {
+        opacity: 1;
+        visibility: visible;
+        animation: slideDown 0.3s ease forwards;
+    }
+
+    nav:not(.active) {
+        animation: slideUp 0.3s ease forwards;
+    }
+
+    nav ul {
+        flex-direction: column;
+        gap: 0;
+        width: 100%;
+        padding: 0;
+    }
+
+    nav ul li {
+        width: 100%;
+    }
+
+    nav ul li a {
+        font-size: 16px;
+        padding: 20px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        transition: background-color 0.3s ease;
+        height: 100%;
+    }
+
+    nav ul li:not(:last-child) {
+        border-bottom: 1px solid rgba(207, 207, 207, 0.1);
+    }
+
+    nav ul li a:hover {
+        background-color: rgba(207, 207, 207, 0.1);
+    }
+
+    #loginNav, #registerNav {
+        padding: 8px 12px;
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 480px) {
+    header img {
+        width: 45px;
+    }
+
+    #user img {
+        width: 35px;
+        height: 35px;
+    }
+
+    #loginNav, #registerNav {
+        padding: 6px 10px;
+        font-size: 12px;
+    }
+
+    #cartNav {
+        font-size: 16px;
+    }
+
+    .nav-menu-toggle {
+        font-size: 20px;
+        margin-left: 10px;
+    }
+
+    #user, #guest {
+        gap: 30px;
+    }
+
+    #guest{
+        width: 400px;
+    }
+}
+
+@media (max-width: 425px) {
+    #loginNav, #registerNav {
+        padding: 3px 6px;
+        font-size: 10px;
+    }
+
+    #loginNav {
+        border-width: 0.5px;
+    }
+
+    #guest{
+        width: 100%;
+    }
+}
+
+@media (max-width: 360px) {
+    #loginNav, #registerNav {
+        padding: 4px 8px;
+        font-size: 11px;
+    }
+}
+
+@media (max-width: 320px) {
+    #loginNav, #registerNav {
+        padding: 2px 4px;
+        font-size: 8px;
+    }
+
+    #loginNav {
+        border-width: 0.5px;
+    }
+
+    #guest{
+        gap: 20px;
+    }
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+}

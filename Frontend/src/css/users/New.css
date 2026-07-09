@@ -1,0 +1,113 @@
+#newUserContainer{
+    padding-top: 15px;
+    background: linear-gradient(90deg, rgb(53, 51, 205) 0%, rgb(0, 0, 0) 95%);
+    padding-left: 40px;
+    padding-right: 40px;
+    min-height: 100vh;
+    color: #cfcfcf;
+}
+
+#newUserContainer h1{
+    font-family: "League Spartan Bold";
+    font-weight: bold;
+    font-size: 50px;
+}
+
+#newUserContainer .newUserText{
+    border: 1px solid #cfcfcf;
+    background-color: #191860;
+    border-radius: 10px;
+    width: 250px;
+    color: #cfcfcf;
+}
+
+#newUserContainer .newUserText input {
+    color: #cfcfcf;
+    border: none;
+}
+
+#newUserContainer .newUserText label{
+    color: #cfcfcf;
+}
+
+#newUserContainer .newUserText select{
+    color: #cfcfcf;
+}
+
+#newUserContainer .newUserText option{
+    color: #cfcfcf;
+    background-color: #191860;
+}
+
+#newUserContainer .newUserText svg{
+    color: #cfcfcf;
+}
+
+#newUserContainer .newUserText div{
+    border: none;
+}
+
+#newUserContainer .newUserText fieldset{
+    border: none;
+}
+
+#newUserContainer > form > button{
+    background-color: #191860;
+    color: #cfcfcf;
+    margin-bottom: 30px;
+    margin-left: 50px;
+    width: 150px;
+    height: 40px;
+    border: none;
+    font-weight: bold;
+    border-radius: 20px;
+    font-size: 16px;
+}
+
+#newUserContainer > form > label{
+    margin-bottom: 5px;
+}
+
+.fileInputNewUser{
+    width: 250px;
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    padding: 10px 20px;
+    cursor: pointer;
+    border: 1px solid #cfcfcf;
+    border-radius: 10px;
+    color: #cfcfcf;
+    font-size: 15px;
+    transition: all 0.3s ease;
+    text-align: center;
+}
+
+#profilePicture{
+    display: none;
+}
+
+.error{
+    text-align: left;
+    font-size: 10px;
+}
+
+@media (max-width: 768px) {
+    #newUserContainer {
+        padding: 20px;
+    }
+
+    #newUserContainer h1 {
+        font-size: 36px;
+    }
+}
+
+@media (max-width: 480px) {
+    #newUserContainer {
+        padding: 15px;
+    }
+
+    #newUserContainer h1 {
+        font-size: 24px;
+    }
+}

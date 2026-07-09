@@ -1,0 +1,59 @@
+/* <================ FUENTES IMPORTADAS ================> */
+@font-face {
+    font-family: "Proxima Nova Condensed Regular";
+    src: url("/fonts/Proxima\ Nova\ Condensed\ Regular.otf") format('truetype');
+}
+
+@font-face {
+    font-family: "Proxima Nova Condensed Bold";
+    src: url("/fonts/Proxima\ Nova\ Condensed\ Bold.otf") format('truetype');
+}
+
+@font-face {
+    font-family: "Open Sans Bold";
+    src: url("/fonts/Open\ Sans\ Bold.ttf") format("truetype");
+}
+
+@font-face {
+    font-family: "Roboto Medium";
+    src: url("/fonts/Roboto-Medium.ttf") format("truetype");
+}
+
+@font-face {
+    font-family: "Neue Machina";
+    src: url("/fonts/NeueMachina-Regular.otf") format("truetype");
+}
+
+@font-face {
+    font-family: "League Spartan Bold";
+    src: url("/fonts/League\ Spartan\ Bold.ttf") format("truetype");
+}
+
+@keyframes animacionEntrada {
+    0% {
+      opacity: 0;
+      transform: translateX(-50px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateX(0);
+    }
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    /* animation: animacionEntrada 1s ease-out forwards; */
+}
+
+html{
+    width: 100vw;
+    height: 100vh;
+    overflow-x: hidden;
+}
+
+body, #root{
+    width: 100%;
+    height: 100%;
+}

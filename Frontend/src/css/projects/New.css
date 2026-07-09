@@ -1,0 +1,126 @@
+#newProjectContainer{
+    padding-top: 15px;
+    background: linear-gradient(90deg, rgb(53, 51, 205) 0%, rgb(0, 0, 0) 95%);
+    padding-left: 40px;
+    padding-right: 40px;
+    min-height: 100vh;
+    color: #cfcfcf;
+}
+
+#newProjectContainer h1{
+    font-family: "League Spartan Bold";
+    font-weight: bold;
+    font-size: 50px;
+}
+
+#newProjectContainer .newProjectText{
+    border: 1px solid #cfcfcf;
+    background-color: #191860;
+    border-radius: 10px;
+    width: 250px;
+    color: #cfcfcf;
+}
+
+#newProjectContainer .newProjectText input {
+    color: #cfcfcf;
+    border: none;
+}
+
+#newProjectContainer .newProjectText label{
+    color: #cfcfcf;
+}
+
+#newProjectContainer .newProjectText select{
+    color: #cfcfcf;
+}
+
+#newProjectContainer .newProjectText option{
+    color: #cfcfcf;
+    background-color: #191860;
+}
+
+#newProjectContainer .newProjectText svg{
+    color: #cfcfcf;
+}
+
+#newProjectContainer .newProjectText div{
+    border: none;
+}
+
+#newProjectContainer .newProjectText fieldset{
+    border: none;
+}
+
+#newProjectContainer > form > button{
+    background-color: #191860;
+    color: #cfcfcf;
+    margin-bottom: 30px;
+    margin-left: 50px;
+    width: 150px;
+    height: 40px;
+    border: none;
+    font-weight: bold;
+    border-radius: 20px;
+    font-size: 16px;
+}
+
+#newProjectContainer > form > label{
+    margin-bottom: 5px;
+}
+
+.fileInputNewProject{
+    width: 250px;
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    padding: 10px 20px;
+    cursor: pointer;
+    border: 1px solid #cfcfcf;
+    border-radius: 10px;
+    color: #cfcfcf;
+    font-size: 15px;
+    transition: all 0.3s ease;
+}
+
+#projectIcon{
+    display: none;
+}
+
+#projectSource{
+    display: none;
+}
+
+#thumbnail{
+    display: none;
+}
+
+.controls a{
+    text-decoration: none;
+    color: #cfcfcf;
+    margin-bottom: 10px;
+    transition: color 0.3s ease;
+}
+
+.controls a:hover {
+    color: #ffffff;
+}
+
+@media (max-width: 768px) {
+    #newProjectContainer {
+        padding: 20px;
+    }
+
+    #newProjectContainer h1 {
+        font-size: 36px;
+    }
+}
+
+@media (max-width: 480px) {
+    #newProjectContainer {
+        padding: 15px;
+    }
+
+    #newProjectContainer h1 {
+        font-size: 24px;
+    }
+}

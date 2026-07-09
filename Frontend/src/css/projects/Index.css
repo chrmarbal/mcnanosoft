@@ -1,0 +1,480 @@
+#allProjects {
+    background: linear-gradient(90deg, rgb(53, 51, 205) 0%, rgb(0, 0, 0) 95%);
+    min-height: 100vh;
+    color: white;
+    text-align: center;
+    padding-right: 10px;
+    display: flex;
+}
+
+#allProjects main{
+    width: 100%;
+    height: 100%;
+    display: flex;
+}
+
+.contentProjectsContainer {
+    padding: 2rem;
+    width: 100%;
+}
+
+.contentProjectsContainer h2 {
+    font-size: 2rem;
+    margin-bottom: 2rem;
+}
+
+.contentProjectsContainer #searchBoxContainer{
+    width: 300px;    
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    position: relative;
+    margin: 1rem auto 2rem auto;
+}
+
+.contentProjectsContainer #searchBoxContainer.adminSearchBox{
+    width: 350px;
+    gap: 20px;
+}
+
+#newProjectBtn{
+    width: 45px;
+    height: 35px;
+    border: none;
+    border-radius: 8px;
+    background-color: green;
+    color: #cfcfcf;
+    transition: all 0.3s ease;
+    padding: 0;
+}
+
+#newProjectBtn a{
+    text-decoration: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    color: #cfcfcf;
+    font-size: 18px;
+}
+
+#newProjectBtn:hover{
+    background-color: #cfcfcf;
+}
+
+#newProjectBtn:hover a{
+    color: green;
+}
+
+#allProjects #searchBoxContainer > i{
+    align-self: center;
+    position: absolute;
+    left: 10px;
+    font-weight: bold;
+    color: #191860;
+}
+
+#allProjects #searchBoxContainer.adminSearchBox > i{
+    left: 85px;
+}
+  
+#searchBox {
+    color: #585790;
+    opacity: 0.59;
+    padding: 7px 20px;
+    padding-left: 35px;
+    font-size: 15px;
+    flex: 1;
+    border-radius: 5px;
+    border: none;
+    outline: none;
+}
+
+#projectsContainer {
+    padding: 1rem;
+}
+  
+.projectContainer {
+    background-color: rgba(25, 24, 96, 0.3);
+    border-radius: 10px;
+    padding: 1rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    height: 100%;
+}
+  
+.projectContainer:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+  
+.projectContainer img {
+    width: 100%;
+    height: 250px;
+    object-fit: fill;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+}
+
+.projectContainer > p{
+    text-align: left;
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+    color: #fff;
+}
+
+.projectContainer > div{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.projectContainer > div > p{
+    font-size: 1.3rem;
+    font-weight: bold;
+    color: #cfcfcf;
+    margin: 0;
+}
+
+.controls{
+    display: flex;
+    gap: 10px;
+}
+
+.controls button{
+    width: 45px;
+    height: 35px;
+    border: none;
+    border-radius: 8px;
+    font-size: 18px;
+    transition: all 0.3s ease;
+}
+
+#editProjectBtn{
+    background-color: orange;
+}
+
+#editProjectBtn a{
+    color: #cfcfcf;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+}
+
+#editProjectBtn:hover{
+    background-color: #cfcfcf;
+}
+
+#editProjectBtn:hover a{
+    color: orange;
+}
+
+#deleteProjectBtn{
+    background-color: red;
+    color: #cfcfcf;
+}
+
+#deleteProjectBtn:hover{
+    background-color: #cfcfcf;
+    color: red;
+}
+
+#addToCartBtn{
+    background-color: #191860;
+    color: #cfcfcf;
+}
+
+#addToCartBtn:hover{
+    background-color: #cfcfcf;
+    color: #191860;
+}
+
+#reviveProjectBtn{
+    background-color: green;
+    color: #cfcfcf;
+}
+
+#reviveProjectBtn:hover{
+    background-color: #cfcfcf;
+    color: green;
+}
+
+.deletedItem {
+    opacity: 0.7;
+    background-color: rgba(255, 0, 0, 0.1);
+}
+
+.filters-toggle {
+    background: #191860;
+    color: #cfcfcf;
+    border: none;
+    border-radius: 5px;
+    padding: 8px 12px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 35px;
+    min-width: 35px;
+    margin-left: 5px;
+}
+
+.filters-toggle:hover {
+    background: #252178;
+}
+
+@media (max-width: 1200px) {
+    .contentProjectsContainer {
+        padding: 1.5rem;
+    }
+
+    .projectContainer img {
+        height: 220px;
+    }
+
+    .projectContainer > p {
+        font-size: 1.1rem;
+    }
+
+    .projectContainer > div > p {
+        font-size: 1.2rem;
+    }
+}
+
+@media (max-width: 992px) {
+    .contentProjectsContainer {
+        padding: 1rem;
+    }
+
+    #searchBoxContainer,
+    #searchBoxContainer.adminSearchBox {
+        width: 280px;
+    }
+
+    .projectContainer {
+        padding: 0.8rem;
+    }
+
+    .projectContainer img {
+        height: 200px;
+    }
+
+    .projectContainer > p {
+        font-size: 1rem;
+    }
+
+    .projectContainer > div > p {
+        font-size: 1.1rem;
+    }
+
+    .controls button {
+        width: 42px;
+        height: 33px;
+        font-size: 17px;
+    }
+
+    #searchBoxContainer > i {
+        left: 40px;
+    }
+
+    #searchBoxContainer.adminSearchBox > i {
+        left: 65px;
+    }
+
+    #newProjectBtn {
+        width: 40px;
+        height: 32px;
+    }
+
+    #newProjectBtn a {
+        font-size: 16px;
+    }
+}
+
+@media (max-width: 768px) {
+    .contentProjectsContainer h2 {
+        font-size: 1.75rem;
+        margin-bottom: 1.5rem;
+    }
+
+    #searchBoxContainer,
+    #searchBoxContainer.adminSearchBox {
+        width: 350px;
+        gap: 10px;
+    }
+
+    .projectContainer img {
+        height: 180px;
+    }
+
+    .projectContainer > p {
+        font-size: 0.95rem;
+    }
+
+    .projectContainer > div > p {
+        font-size: 0.9rem;
+    }
+
+    .filters-toggle {
+        display: flex;
+    }
+
+    #searchBoxContainer > i {
+        left: 35px;
+    }
+
+    .contentProjectsContainer {
+        padding-top: 1rem;
+    }
+
+    #newProjectBtn {
+        width: 35px;
+        height: 30px;
+    }
+
+    #newProjectBtn a {
+        width: 100%;
+        height: 100%;
+        font-size: 20px;
+    }
+
+    .controls button {
+        width: 40px;
+        height: 32px;
+        font-size: 16px;
+    }
+}
+
+@media (max-width: 576px) {
+    .contentProjectsContainer {
+        padding: 0.8rem;
+    }
+
+    .contentProjectsContainer h2 {
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+    }
+
+    .projectContainer {
+        padding: 0.6rem;
+    }
+
+    .projectContainer img {
+        height: 170px;
+        margin-bottom: 0.6rem;
+    }
+
+    .controls {
+        gap: 8px;
+    }
+
+    .controls button {
+        width: 38px;
+        height: 32px;
+        font-size: 15px;
+    }
+
+    .projectContainer > div > p {
+        font-size: 0.85rem;
+    }
+}
+
+@media (max-width: 425px) {
+    #searchBoxContainer > i {
+        left: 35px;
+    }
+
+    .controls button {
+        width: 40px;
+        height: 35px;
+        font-size: 16px;
+    }
+}
+
+@media (max-width: 375px) {
+    #searchBoxContainer,
+    #searchBoxContainer.adminSearchBox {
+        width: 260px;
+        gap: 5px;
+    }
+
+    #searchBox {
+        padding-left: 30px;
+        font-size: 14px;
+    }
+
+    #searchBoxContainer > i {
+        left: 25px;
+    }
+
+    #searchBoxContainer.adminSearchBox > i {
+        left: 55px;
+    }
+
+    .adminSearchBox #newProjectBtn {
+        width: 35px;
+        height: 32px;
+    }
+
+    .adminSearchBox #newProjectBtn a {
+        font-size: 16px;
+    }
+
+    .controls button {
+        width: 42px;
+        height: 36px;
+        font-size: 17px;
+    }
+
+    .filters-toggle {
+        padding: 6px 10px;
+        min-width: 32px;
+        height: 32px;
+    }
+}
+
+@media (max-width: 320px) {
+    #searchBoxContainer,
+    #searchBoxContainer.adminSearchBox {
+        width: 240px;
+        gap: 5px;
+    }
+
+    #searchBox {
+        padding-left: 28px;
+        font-size: 13px;
+    }
+
+    .adminSearchBox #newProjectBtn {
+        width: 32px;
+        height: 30px;
+    }
+
+    .adminSearchBox #newProjectBtn a {
+        font-size: 15px;
+    }
+
+    #searchBoxContainer > i {
+        left: 20px;
+    }
+
+    #searchBoxContainer.adminSearchBox > i {
+        left: 50px;
+    }
+
+    .filters-toggle {
+        padding: 5px 8px;
+        min-width: 30px;
+        height: 30px;
+    }
+
+    .controls button {
+        width: 45px;
+        height: 38px;
+        font-size: 18px;
+    }
+}

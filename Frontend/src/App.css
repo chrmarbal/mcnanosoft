@@ -1,0 +1,110 @@
+/* MODAL */
+.modalContainer {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6); /* Fondo negro semitransparente */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+}
+  
+.modalContent {
+    background-color: #191860;
+    color: #fff;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+    width: 90%;
+    max-width: 400px;
+    text-align: center;
+}
+  
+.modalContent button {
+    margin: 10px;
+    padding: 10px 20px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.2s ease;
+}
+
+#addToCartButton{
+    background-color: #3f3dff;
+}
+
+#addToCartButton:hover{
+    background-color: #5f5dff;
+}
+  
+.modalContent button:first-of-type {
+    background-color: #e74c3c;
+    color: #fff;
+}
+  
+.modalContent button:first-of-type:hover {
+    background-color: #c0392b;
+}
+  
+.modalContent button:last-of-type {
+    background-color: #2c3e50;
+    color: #fff;
+}
+  
+.modalContent button:last-of-type:hover {
+    background-color: #1a252f;
+}
+
+.deletedItem{
+    color: #e74c3c;
+}
+
+.modalContent-Login{
+    background-color: #191860;
+    color: #fff;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+    width: 90%;
+    max-width: 400px;
+    text-align: center;
+}
+
+.modalContent-Login button {
+    margin: 10px;
+    padding: 10px 20px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.2s ease;
+}
+
+.modalContent-Login button:first-of-type{
+    background-color: #2c3e50;
+}
+
+.modalContent-Login button:first-of-type a{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    text-decoration: none;
+    color: #fff;
+}
+
+.modalContent-Login button:first-of-type:hover {
+    background-color: #1a252f;
+}
+
+.modalContent-Login button:last-of-type {
+    background-color: #2c3e50;
+    color: #fff;
+}
+  
+.modalContent-Login button:last-of-type:hover {
+    background-color: #1a252f;
+}

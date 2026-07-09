@@ -1,0 +1,245 @@
+.filters {
+    width: 280px;
+    min-width: 280px;
+    background-color: #191860;
+    height: 100vh;
+    padding: 20px;
+    color: #cfcfcf;
+    overflow-y: auto;
+    box-sizing: border-box;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+
+.filters-toggle {
+    background: #191860;
+    color: #cfcfcf;
+    border: none;
+    border-radius: 5px;
+    padding: 8px 12px;
+    cursor: pointer;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    height: 35px;
+    min-width: 35px;
+    margin-left: 5px;
+}
+
+.filters-toggle:hover {
+    background: #252178;
+}
+
+.filters form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+  
+.filters label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    cursor: pointer;
+}
+  
+.filters input[type="number"],
+.filters select {
+    width: 100%;
+    padding: 8px;
+    border-radius: 6px;
+    border: none;
+    background-color: #0d0c3f;
+    color: #cfcfcf;
+    outline: none;
+}
+  
+.filters input[type="number"]:focus,
+.filters select:focus {
+    border: 1px solid #00bcd4;
+}
+
+.filters fieldset {
+    border: none;
+    padding: 0;
+}
+
+.filters fieldset legend {
+    text-align: left;
+}
+  
+.filters legend {
+    font-weight: bold;
+    margin-bottom: 8px;
+    color: #cfcfcf;
+}
+  
+.filters input[type="checkbox"] {
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border: 2px solid #0d0c3f;
+    background-color: #cfcfcf;
+    border-radius: 4px;
+    margin-right: 8px;
+    position: relative;
+    cursor: pointer;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+  
+.filters input[type="checkbox"]:hover {
+    border-color: #0d0c3f;
+}
+  
+.filters input[type="checkbox"]:checked {
+    background-color: #cfcfcf;
+    border-color: #0d0c3f;
+}
+  
+.filters input[type="checkbox"]:checked::after {
+    content: "X";
+    font-weight: bold;
+    padding-top: 40%;
+    font-size: 13px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -60%);
+}
+
+.filters h6{
+    text-align: left;
+}
+  
+.sliderTrack {
+    width: 100%;
+    height: 40px;
+}
+  
+.sliderTrack input[type="range"] {
+    width: 100%;
+    accent-color: #0d0c3f;
+    height: 100%;
+}
+  
+.sliderTrack input[type="range"]::-webkit-slider-thumb {
+    pointer-events: auto;
+    height: 16px;
+    width: 16px;
+    border-radius: 50%;
+    background: #0d0c3f;
+    border: 2px solid white;
+    cursor: pointer;
+    margin-top: -6px;
+}
+  
+.sliderTrack input[type="range"]::-moz-range-thumb {
+    pointer-events: auto;
+    height: 16px;
+    width: 16px;
+    border-radius: 50%;
+    background: #0d0c3f;
+    border: 2px solid white;
+    cursor: pointer;
+}
+  
+.sliderTrack input[type="range"]::-webkit-slider-runnable-track {
+    height: 4px;
+    border-radius: 3px;
+}
+  
+.sliderTrack input[type="range"]::-moz-range-track {
+    height: 4px;
+    border-radius: 3px;
+}
+
+.filters select {
+    width: 100%;
+    padding: 0.5rem;
+    border-radius: 5px;
+    color: white;
+    border: none;
+}
+
+.filters select option {
+    color: white;
+}
+
+@media (max-width: 991px) {
+    .filters-toggle {
+        display: flex;
+    }
+
+    .filters {
+        position: fixed;
+        left: 0;
+        top: 0;
+        transform: translateX(-100%);
+        box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
+        transition: transform 0.3s ease;
+        width: 75%;
+        max-width: 300px;
+    }
+
+    .filters.active {
+        transform: translateX(0);
+    }
+
+    .filters-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 999;
+    }
+
+    .filters-overlay.active {
+        display: block;
+    }
+
+    .close-filters {
+        display: block;
+        position: absolute;
+        right: 10px;
+        top: 10px;
+        background: none;
+        border: none;
+        color: #cfcfcf;
+        font-size: 20px;
+        cursor: pointer;
+    }
+}
+
+@media (min-width: 992px) {
+    .filters-toggle,
+    .filters-overlay,
+    .close-filters {
+        display: none;
+    }
+}
+
+@media (max-width: 576px) {
+    .filters {
+        width: 75%;
+        min-width: 250px;
+        padding: 15px;
+    }
+
+    .filters h6 {
+        font-size: 14px;
+    }
+
+    .filters label {
+        font-size: 12px;
+    }
+
+    .filters input[type="checkbox"] {
+        width: 16px;
+        height: 16px;
+    }
+}

@@ -1,0 +1,307 @@
+#userData{
+    background: linear-gradient(90deg, rgb(53, 51, 205) 0%, rgb(0, 0, 0) 96%);
+    min-height: 100vh;
+    color: white;
+    padding-bottom: 50px;
+    width: 100%;
+    overflow-x: hidden;
+}
+
+#userData img{
+    width: 300px;
+    border-radius: 100%;
+    box-shadow: 0 0 100px 5px #101010
+}
+
+#content-userData{
+    padding-left: 40px;
+    padding-top: 100px;
+    display: flex;
+    height: 500px;
+    width: 100%;
+    box-sizing: border-box;
+}
+#content-userData div:first-child{
+    text-align: center;
+}
+
+#content-userData div:first-child p{
+    margin-bottom: 3px;
+    margin-top: 10px;
+}
+
+#content-userData div:first-child button{
+    border: none;
+    background-color: transparent;
+    color: #cfcfcf;
+    margin-top: 0px;
+}
+
+#content-userData div:first-child button i{
+    margin-right: 6px;
+}
+
+#content-userData > div:last-child{
+    margin-top: 20px;
+    margin-left: 200px;
+    padding-top: 20px;
+    padding-left: 30px;
+    background-color: #151545;
+    border: 1px solid #151545;
+    border-radius: 30px;
+    box-sizing: border-box;
+}
+
+#content-userData .userData{
+    width: 600px;
+    height: 60%;
+}
+
+#userData #content-userData .editUserData{
+    margin-top: -20px;
+    width: 525px;
+    height: 545px;
+    position: relative;
+    box-sizing: border-box;
+}
+
+#content-userData .editUserData h3{
+    margin-left: -30px;
+    text-align: center;
+    font-weight: bold;
+}
+
+#content-userData .editUserData form{
+    display: flex;
+    flex-direction: column;
+}
+
+#content-userData .editUserData form label{
+    color: #cfcfcf;
+}
+
+#content-userData .editUserData .campos{
+    width: 475px;
+    margin-bottom: 10px;
+}
+
+#userData-nombre, #userData-apellidos, #userData-username,  #userData-email, #userData-npass, #userData-rnpass{
+    width: 200px;
+}
+
+#currentPasswordContainer{
+    margin: 0px;
+}
+
+#userData-cpass{
+    width: 457px;
+}
+
+#userData-profilePicture{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#userData-profilePicture input{
+    display: none;
+}
+
+#content-userData .editUserData form label[for="userData-profilePictureInput"]{
+    display: flex;
+    border: 1px solid #cfcfcf;
+    width: 200px;
+    justify-content: center;
+    align-items: center;
+    border-radius: 10px;
+    height: 46px;
+    gap: 10px;
+    cursor: pointer;
+}
+
+#user-controls{
+    margin-left: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 40px;
+    width: 300px;
+}
+
+#user-controls button{
+    width: 130px;
+    height: 40px;
+    border-radius: 20px;
+    border: 1px solid #151545;
+    background-color: #151545;
+    color: white;
+}
+
+#content-userData .editUserData form button{
+    margin-top: 15px;
+    width: 130px;
+    height: 30px;
+    align-self: center;
+    border-radius: 20px;
+    border: none;
+    color: #151545;
+    font-weight: bold;
+}
+
+#userData-cancelBtn{
+    position: absolute;
+    left: 20px;
+    top: 94%;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+@media screen and (max-width: 1023px) {
+    #content-userData {
+        flex-direction: column;
+        align-items: center;
+        padding-left: 20px;
+        padding-right: 20px;
+        padding-top: 50px;
+        height: auto;
+        min-height: calc(100vh - 150px);
+        box-sizing: border-box;
+        width: 100%;
+    }
+
+    #content-userData > div:last-child {
+        margin-left: 0;
+        margin-top: 30px;
+        width: 90%;
+        max-width: 525px;
+        padding: 20px;
+        box-sizing: border-box;
+    }
+
+    #content-userData .userData {
+        width: 100%;
+        height: auto;
+        min-height: 200px;
+        padding: 15px;
+    }
+
+    #userData #content-userData .editUserData {
+        width: 90%;
+        max-width: 525px;
+        height: auto;
+        min-height: 545px;
+        padding: 20px;
+        margin-top: 30px;
+    }
+
+    #userData-cpass {
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+    }
+
+    #content-userData .editUserData form {
+        padding: 0 15px;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .campos {
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    #userData-nombre, #userData-apellidos, #userData-username, #userData-email, #userData-npass, #userData-rnpass {
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+    }
+
+    #user-controls {
+        margin: 30px auto;
+        padding-bottom: 30px;
+        width: 90%;
+        max-width: 300px;
+        flex-wrap: wrap;
+        gap: 20px;
+    }
+
+    #user-controls button {
+        width: 120px;
+    }
+
+    #userData-cancelBtn {
+        position: relative;
+        left: auto;
+        top: auto;
+        margin-top: 20px;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    #userData {
+        padding-bottom: 30px;
+    }
+
+    #userData img {
+        width: 200px;
+    }
+
+    #user-controls {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    #user-controls button {
+        width: 80%;
+    }
+
+    #content-userData .editUserData form label[for="userData-profilePictureInput"] {
+        width: 100%;
+        max-width: 200px;
+    }
+}
+
+@media screen and (max-width: 425px) {
+    #content-userData .editUserData form {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    #content-userData .editUserData .campos {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+    }
+
+    #content-userData .editUserData form label {
+        text-align: center;
+    }
+
+    #userData-nombre, #userData-apellidos, #userData-username, #userData-email, #userData-npass, #userData-rnpass, #userData-cpass {
+        width: 100%;
+        max-width: 180px;
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    #content-userData .editUserData form label[for="userData-profilePictureInput"] {
+        max-width: 180px;
+    }
+}
+
+@media screen and (min-width: 768px) {
+    #content-userData .editUserData form {
+        align-items: center;
+    }
+}
+
+@media screen and (max-width: 320px) {
+    #userData-cancelBtn {
+        margin-top: 40px;
+    }
+}

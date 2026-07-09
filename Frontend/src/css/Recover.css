@@ -1,0 +1,197 @@
+#recover{
+    overflow-y: hidden;
+    min-height: 100vh;
+}
+
+#aside-recover img{
+    width: 100%;
+    height: 100%;
+}
+
+#content-recover{
+    min-height: 100vh;
+    background: linear-gradient(90deg, rgb(53, 51, 205) 0%, rgb(0, 0, 0) 80%);
+}
+
+#form-recover{
+    text-align: center;
+    background-color: #f0f0f0;
+    border-radius: 20%;
+    width: 100%;
+    max-width: 450px;
+    padding: 1.5rem;
+}
+
+#form-recover h1{
+    font-family: "Proxima Nova Condensed Bold";
+    color: #191860;
+    font-size: 1.8rem;
+    margin-bottom: 0.8rem;
+}
+
+#content-recover form{
+    margin-top: 5px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+}
+
+.campo{
+    display: flex;
+    flex-direction: column;
+    width: 350px;
+}
+
+.campo label{
+    margin-bottom: 3px;
+    font-size: 14px;
+    text-align: left;
+    font-family: "Proxima Nova Condensed Regular";
+    color: #191860;
+}
+
+.error{
+    text-align: left;
+    font-size: 10px;
+    min-height: 12px;
+    display: block;
+}
+
+.showPasswordsContainer{
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+    color: #191860;
+    font-family: "Proxima Nova Condensed Regular";
+    align-items: center;
+    width: 350px;
+    font-size: 14px;
+    justify-content: center;
+}
+
+#submitRecover{
+    border: 1px solid black;
+    border-radius: 20px;
+    background-color: #151545;
+    color: white;
+    width: 140px;
+    height: 35px;
+    font-size: 14px;
+    font-family: "Open Sans Bold";
+    cursor: pointer;
+}
+
+.campo input:focus{
+    outline: none;
+}
+
+#link-register{
+    text-decoration: none;
+    color: #191860;
+    font-family: "Proxima Nova Condensed Regular";
+}
+
+/* Para pantallas menores a 768px */
+@media (max-width: 768px) {
+    #content-recover {
+        background: transparent;
+    }
+    
+    #recover {
+        background: linear-gradient(90deg, rgb(53, 51, 205) 0%, rgb(0, 0, 0) 80%);
+    }
+
+    #form-recover {
+        border-radius: 0;
+        margin: 0;
+        max-width: 100%;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    .campo {
+        width: 100%;
+        max-width: 400px;
+    }
+
+    .showPasswordsContainer {
+        width: 100%;
+        max-width: 400px;
+    }
+}
+
+/* Para Movil L */
+@media (max-width: 425px) {
+    #form-recover {
+        padding: 1.2rem;
+    }
+
+    .campo label {
+        font-size: 13px;
+    }
+
+    .showPasswordsContainer {
+        font-size: 13px;
+    }
+}
+
+/* Para móviles medianos */
+@media (max-width: 375px) {
+    #form-recover {
+        padding: 1rem;
+    }
+}
+
+/* Para móviles pequeños */
+@media (max-width: 320px) {
+    .campo label {
+        font-size: 12px;
+    }
+
+    .showPasswordsContainer {
+        font-size: 12px;
+    }
+
+    #submitRecover {
+        width: 120px;
+        height: 32px;
+        font-size: 13px;
+    }
+}
+
+/* Para 2560px */
+@media (min-width: 2560px) {
+    #form-recover {
+        max-width: 900px;
+        padding: 3.5rem;
+    }
+
+    .campo {
+        width: 700px;
+    }
+
+    .campo label {
+        font-size: 22px;
+        margin-bottom: 0.8rem;
+    }
+
+    .showPasswordsContainer {
+        width: 700px;
+        font-size: 20px;
+    }
+
+    #submitRecover {
+        width: 220px;
+        height: 60px;
+        font-size: 20px;
+        margin-top: 1rem;
+    }
+
+    h1 {
+        font-size: 3rem;
+        margin-bottom: 2rem;
+    }
+}

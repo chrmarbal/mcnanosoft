@@ -1,0 +1,115 @@
+#showUserContainer{
+    width: 100%;
+    min-height: 100vh;
+    background: linear-gradient(90deg, rgb(53, 51, 205) 0%, rgb(0, 0, 0) 80%);
+    padding: 30px;
+    overflow-x: hidden;
+    color: #cfcfcf;
+}
+
+#showUserContainer .controls{
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+#showUserContainer .controls a{
+    text-decoration: none;
+    color: #cfcfcf;
+    transition: color 0.3s ease;
+}
+
+#showUserContainer .controls a:hover {
+    color: #ffffff;
+}
+
+#showUserContainer h1, #showUserContainer h2, #showUserContainer h5{
+    font-family: "League Spartan Bold";
+}
+
+#showUserContainer h1{
+    margin-top: 20px;
+}
+
+#showUserContainer img{
+    width: 200px;
+    border-radius: 100px;
+    transition: transform 0.3s ease;
+}
+
+#showUserContainer .userPaperContainer{
+    color: #cfcfcf;
+    border-radius: 20px;
+    margin-top: 20px;
+    padding: 20px;
+    background-color: #191560;
+    width: 80%;
+    max-width: 1000px;
+    display: flex;
+    gap: 100px;
+}
+
+#showUserContent{
+    text-align: center;
+}
+
+#showUserContent h2{
+    text-align: center;
+    margin-top: 10px;
+}
+
+#showUserDetails{
+    align-self: center;
+}
+
+#showUserLibrary{
+    margin-top: 40px;
+}
+
+#showUserLibrary a {
+    color: #cfcfcf;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+#showUserLibrary a:hover {
+    color: #ffffff;
+}
+
+@media (max-width: 768px) {
+    #showUserContainer {
+        padding: 20px;
+    }
+
+    #showUserContainer .userPaperContainer {
+        width: 95%;
+        flex-direction: column;
+        gap: 30px;
+    }
+
+    #showUserContainer img {
+        width: 150px;
+    }
+
+    #showUserDetails {
+        text-align: center;
+    }
+}
+
+@media (max-width: 480px) {
+    #showUserContainer {
+        padding: 15px;
+    }
+
+    #showUserContainer h1 {
+        font-size: 24px;
+    }
+
+    #showUserContainer img {
+        width: 120px;
+    }
+
+    #showUserDetails p {
+        font-size: 14px;
+    }
+}

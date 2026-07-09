@@ -1,0 +1,317 @@
+/* Contenedor principal que separa la sidebar del contenido principal */
+#libraryContainer {
+    display: flex;
+    width: 100%;
+    min-height: 100vh;
+}
+
+/* Barra lateral estilo */
+.library-sidebar {
+    background-color: #191860;
+    color: #fff;
+    padding: 20px;
+    width: 300px;
+    min-width: 300px;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+}
+
+.library-sidebar h1 {
+    font-family: "League Spartan Bold";
+    font-size: 40px;
+    margin-bottom: 1rem;
+}
+
+.library-sidebar ul {
+    list-style: none;
+    padding: 0;
+}
+
+.library-sidebar li {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin: 10px 0;
+    cursor: pointer;
+    padding: 10px;
+    border-radius: 8px;
+    transition: background-color 0.3s ease;
+}
+
+.library-sidebar li:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.library-sidebar li img {
+    border-radius: 100px;
+    width: 40px;
+    height: 40px;
+    object-fit: fill;
+}
+
+/* --- ESTADO “ELIMINADO” EN SIDEBAR --- */
+.library-sidebar li.deleted {
+    opacity: 0.5;
+}
+.library-sidebar li.deleted:hover {
+    background-color: transparent;
+}
+/* Etiqueta “No disponible” al final de cada li */
+.library-sidebar li .unavailable-label {
+    margin-left: auto;
+    font-size: 0.8rem;
+    color: #ff6b6b;
+}
+
+/* Contenido principal */
+.library-main {
+    background: linear-gradient(90deg, rgb(53, 51, 205) 0%, rgb(0, 0, 0) 95%);
+    color: #fff;
+    padding: 20px;
+    flex: 1;
+}
+
+.library-header {
+    display: none;
+    align-items: center;
+    margin-bottom: 20px;
+    gap: 15px;
+}
+
+.library-header h2 {
+    margin: 0;
+    font-family: "League Spartan Bold";
+}
+
+.menu-toggle {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    transition: background-color 0.3s ease;
+}
+
+.menu-toggle:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.project-card {
+    background-color: #1a1a40;
+    border-radius: 15px;
+    padding: 20px;
+    margin-bottom: 30px;
+    box-shadow: 0 0 20px #00000060;
+    transition: transform 0.2s ease-in-out;
+    display: flex;
+    flex-direction: column;
+}
+
+.project-card:hover {
+    transform: translateY(-5px);
+}
+
+.project-header {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.project-logo {
+    width: 80px;
+    height: 80px;
+    object-fit: fill;
+    border-radius: 50%;
+    border: 3px solid #3f3dff;
+    box-shadow: 0 0 10px #3f3dff80;
+}
+
+.project-description {
+    margin-top: 15px;
+    font-size: 16px;
+    color: #ddd;
+}
+
+.project-media {
+    margin: 20px 0;
+    text-align: center;
+}
+
+.project-cover {
+    max-width: 100%;
+    max-height: 300px;
+    border-radius: 10px;
+    object-fit: fill;
+    border: 2px solid #444;
+}
+
+.download-button {
+    margin-top: 10px;
+    align-self: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: "League Spartan Bold";
+    background-color: #cfcfcf;
+    color: #191860;
+    border-radius: 20px;
+    border: none;
+    width: 200px;
+    height: 40px;
+    gap: 10px;
+}
+
+.githubButton img {
+    border-radius: 50%;
+}
+
+/* --- PLACEHOLDERS EN EL MAIN --- */
+/* Cuando el proyecto no existe o está borrado */
+.project-not-available {
+    background-color: #1e1a5a;
+    padding: 30px;
+    border-radius: 12px;
+    text-align: center;
+    color: #cfcfcf;
+    max-width: 600px;
+    margin: 40px auto;
+}
+.project-not-available h3 {
+    font-size: 1.5rem;
+    margin-bottom: 15px;
+}
+
+/* Placeholder inicial antes de seleccionar nada */
+.select-placeholder {
+    text-align: center;
+    color: #aaa;
+    margin-top: 60px;
+}
+
+/* Media Queries para Responsive */
+@media (max-width: 992px) {
+    #libraryContainer {
+        position: relative;
+    }
+
+    .library-header {
+        display: flex;
+    }
+
+    .library-sidebar {
+        position: fixed;
+        left: -300px;
+        transition: left 0.3s ease;
+        z-index: 999;
+    }
+
+    .library-sidebar.active {
+        left: 0;
+    }
+
+    .library-main {
+        width: 100%;
+        padding: 15px;
+    }
+
+    .project-header {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .project-logo {
+        width: 100px;
+        height: 100px;
+    }
+
+    /* Overlay para cuando el menú está abierto */
+    .sidebar-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 998;
+    }
+
+    .sidebar-overlay.active {
+        display: block;
+    }
+}
+
+@media (max-width: 768px) {
+    .library-sidebar {
+        width: 280px;
+        min-width: 280px;
+        padding: 15px;
+    }
+
+    .library-sidebar h1 {
+        font-size: 32px;
+    }
+
+    .project-card {
+        padding: 15px;
+    }
+
+    .project-description {
+        font-size: 14px;
+    }
+
+    .project-cover {
+        max-height: 250px;
+    }
+
+    .download-button {
+        width: 180px;
+        height: 35px;
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 576px) {
+    .library-sidebar {
+        width: 250px;
+        min-width: 250px;
+        padding: 12px;
+    }
+
+    .library-sidebar h1 {
+        font-size: 28px;
+    }
+
+    .library-sidebar li {
+        gap: 10px;
+        padding: 8px;
+    }
+
+    .library-sidebar li img {
+        width: 35px;
+        height: 35px;
+    }
+
+    .project-logo {
+        width: 80px;
+        height: 80px;
+    }
+
+    .project-cover {
+        max-height: 200px;
+    }
+
+    .download-button {
+        width: 160px;
+        height: 32px;
+        font-size: 13px;
+    }
+}

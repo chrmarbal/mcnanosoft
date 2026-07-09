@@ -1,0 +1,41 @@
+.paymentResult {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background-color: #212121; /* Fondo oscuro */
+    color: #cfcfcf; /* Texto claro */
+    text-align: center;
+}
+  
+.paymentResult .fa-solid {
+    font-size: 80px;
+    margin-bottom: 20px;
+}
+
+.paymentResult .fa-circle-check{
+    color: green;
+}
+
+.paymentResult .fa-circle-xmark{
+    color: red;
+}
+  
+.paymentResult > div {
+    max-width: 600px;
+}
+  
+.paymentResult h1 {
+    font-size: 30px;
+    margin-bottom: 40px;
+}
+  
+.paymentResult p {
+    font-size: 15px;
+}
+
+.paymentResult a{
+    /* text-decoration: none; */
+    color: #cfcfcf;
+}

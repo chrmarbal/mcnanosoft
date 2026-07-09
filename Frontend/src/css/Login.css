@@ -1,0 +1,279 @@
+#login{
+    overflow-y: hidden;
+    min-height: 100vh;
+}
+
+#content-login{
+    min-height: 100vh;
+    background: linear-gradient(90deg, rgb(53, 51, 205) 0%, rgb(0, 0, 0) 80%);
+}
+
+.content-wrapper {
+    padding: 2rem;
+}
+
+#form-login{
+    text-align: center;
+    background-color: #f0f0f0;
+    border-radius: 20%;
+    width: 100%;
+    max-width: 500px;
+    padding: 2rem;
+}
+
+#form-login h1{
+    font-family: "Proxima Nova Condensed Bold";
+    color: #191860;
+}
+
+.auth {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 40px;
+    margin: 2rem 0;
+}
+
+.auth button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    border-radius: 20px;
+    background-color: black;
+    color: white;
+    padding: 12px 20px;
+    font-size: 12px;
+    cursor: pointer;
+    width: 200px;
+    height: 45px;
+    transition: box-shadow 0.4s ease, transform 0.4s ease;
+    font-family: "Roboto Medium";
+}
+
+.auth button:hover{
+    box-shadow: 0 0 15px 5px rgba(0, 0, 0, 0.8);
+}
+
+.auth button img {
+    margin-left: -10px;
+    margin-right: 10px;
+    width: 30px;
+    height: auto;
+}
+
+#content-login form{
+    margin-top: 50px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+#content-login form > a{
+    font-family: "Proxima Nova Condensed Regular";
+    text-decoration: none;
+    color: #191860;
+}
+
+.campo{
+    max-width: 350px;
+    margin: 0 auto;
+}
+
+.campo label{
+    font-size: 16px;
+    text-align: left;
+    font-family: "Proxima Nova Condensed Regular";
+    color: #191860;
+    display: block;
+    margin-bottom: 5px;
+}
+
+.campo input{
+    border: 1px solid #191860;
+    border-radius: 10px;
+    padding: 10px 15px;
+    font-size: 16px;
+    width: 100%;
+    outline: none;
+    background-color: white;
+}
+
+.campo input:focus {
+    box-shadow: 0 0 5px rgba(25, 24, 96, 0.5);
+}
+
+.links{
+    font-family: "Proxima Nova Condensed Regular";
+    display: flex;
+    justify-content: space-between;
+}
+
+.links a{
+    text-decoration: none;
+    color: #191860;
+}
+
+#submitLogin{
+    border: 1px solid black;
+    border-radius: 20px;
+    background-color: #151545;
+    color: white;
+    width: 150px;
+    height: 40px;
+    font-size: 16px;
+    font-family: "Open Sans Bold";
+    cursor: pointer;
+}
+
+/* Para pantallas menores a 768px */
+@media (max-width: 768px) {
+    #content-login {
+        background: transparent;
+    }
+    
+    #login {
+        background: linear-gradient(90deg, rgb(53, 51, 205) 0%, rgb(0, 0, 0) 80%);
+    }
+
+    #form-login {
+        border-radius: 0;
+        margin: 0;
+        max-width: 100%;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    .auth {
+        flex-direction: column;
+        gap: 20px;
+    }
+}
+
+/* Para Movil L */
+@media (max-width: 425px) {
+    .auth {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .auth button {
+        width: 300px;
+        height: 55px;
+        font-size: 14px;
+    }
+
+    .auth button img {
+        width: 35px;
+    }
+}
+
+/* Para móviles medianos */
+@media (max-width: 375px) {
+    #form-login {
+        padding: 1.5rem;
+        border-radius: 0;
+    }
+
+    .auth button {
+        width: 250px;
+        height: 50px;
+    }
+
+    .campo {
+        max-width: 280px;
+    }
+}
+
+/* Para móviles pequeños */
+@media (max-width: 320px) {
+    #form-login {
+        padding: 1rem;
+        border-radius: 0;
+    }
+
+    .auth button {
+        width: 220px;
+        height: 45px;
+        font-size: 11px;
+    }
+
+    .auth button img {
+        width: 25px;
+    }
+
+    .campo {
+        max-width: 250px;
+    }
+
+    .campo input {
+        padding: 8px 12px;
+        font-size: 14px;
+    }
+
+    .links {
+        flex-direction: column;
+        gap: 8px;
+        align-items: center;
+    }
+}
+
+/* Para 2560px */
+@media (min-width: 2560px) {
+    #form-login {
+        max-width: 1000px;
+        height: 100%;
+        max-height: 750px;
+        padding: 3.5rem;
+    }
+
+    .auth {
+        margin: 2rem 0;
+        gap: 40px;
+    }
+
+    .auth button {
+        width: 400px;
+        height: 70px;
+        font-size: 20px;
+    }
+
+    .auth button img {
+        width: 45px;
+    }
+
+    .campo {
+        max-width: 700px;
+        margin-bottom: 1.5rem;
+    }
+
+    .campo input {
+        padding: 15px 20px;
+        font-size: 20px;
+    }
+
+    .campo label {
+        font-size: 22px;
+        margin-bottom: 0.8rem;
+    }
+
+    .links {
+        margin-top: 1rem;
+        font-size: 18px;
+    }
+
+    #submitLogin {
+        width: 220px;
+        height: 60px;
+        font-size: 20px;
+        margin-top: 2rem;
+    }
+
+    h1 {
+        font-size: 3rem;
+        margin-bottom: 2rem;
+    }
+}
