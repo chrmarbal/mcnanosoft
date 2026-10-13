@@ -46,7 +46,8 @@ const projectsSchema = new mongoose.Schema({
     },
     purchases: {
         type: Number,
-        required: true
+        required: true,
+        default: 0
     },
     deleted: {
         type: Boolean,
@@ -76,8 +77,11 @@ projects.createProject = async (projectData, result) => {
     .then(async(datos) => {
         const adminData = await usersModel.findOne({profile: "Administrador"})
         if(adminData){
+            adminData.library = adminData.library || []
+        }
+        if(adminData && !adminData.library.some(item => String(item.idProject || item) === String(datos._id))){
             adminData.library.push({idProject: datos._id})
-            await usersModel.findByIdAndUpdate(adminData._id, adminData)
+            await adminData.save()
         }
         result(null, datos)
     })

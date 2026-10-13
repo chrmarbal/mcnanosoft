@@ -1,17 +1,15 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { userContext } from '../../context/UserContext'
 import { Link, useNavigate, useParams } from 'react-router-dom'
-import { useSendRequest } from '../../components/SendRequest'
+import { useSendRequest } from '../../components/api/SendRequest'
 import Paper from '@mui/material/Paper'
-import Nav from "../../components/Nav"
-import Footer from "../../components/Footer"
 import "../../css/users/Show.css"
 import { toastContext } from '../../context/ToastContext'
 
 function Show() {
 
     const [user, setUser] = useState({})
-    const [ownedProjects, setOwnedProjects] = useState([])
+  const [ownedProjects, setOwnedProjects] = useState([])
     const [userToDelete, setUserToDelete] = useState({})
     const [showConfirm, setShowConfirm] = useState(false)
 
@@ -28,25 +26,13 @@ function Show() {
             for (let user of response.data) {
                 if(user.username == userName){
                     setUser(user)
-
-                    if(user.library && user.library.length > 0 && ownedProjects.length == 0){
-                        const resp = await sendRequest("get", "", "/projects")
-                        if(resp.status == 200){
-                            const projects = resp.data
-                            let ownedProjectsArray = []
-                            for (let po of user.library) {
-                                for (let project of projects) {
-                                    if(project._id == po.idProject){
-                                        ownedProjectsArray.push({
-                                            name: project.name,
-                                            id: project._id
-                                        })
-                                    }
-                                }
-                            }
-                            setOwnedProjects(ownedProjectsArray)
-                        }
+                  if(user.library?.length){
+                    const projectsResponse = await sendRequest("get", "", "/projects")
+                    if(projectsResponse?.status === 200){
+                      const ownedIds = new Set(user.library.map(entry => String(entry.idProject || entry)))
+                      setOwnedProjects(projectsResponse.data.filter(project => ownedIds.has(String(project._id))))
                     }
+                  }
                     break
                 }
             }
@@ -97,7 +83,6 @@ function Show() {
 
   return (
     <>
-        <Nav/>
         <div id="showUserContainer">
             <h1>Detalles Usuario</h1>
             <div className="controls">
@@ -123,18 +108,16 @@ function Show() {
                         <p>Estado: <b>{user.active ? "Activo" : "Cuenta Desactivada"}</b></p>
                     </div>
                 </Paper>
-                <div id="showUserLibrary">
-                    {user.library && user.library.length > 0 ? <>
-                        <h5>Proyectos Adquiridos</h5>
-                        {ownedProjects.map((op) => (
-                            <p key={op.id}>
-                                <Link to={`/projects/${op.name}`}>
-                                    {op.name}
-                                </Link>
-                            </p>
-                        ))}            
-                    </>: ""}
-                </div>
+                  <div id="showUserLibrary">
+                    {ownedProjects.length > 0 && <>
+                      <h5>Proyectos adquiridos</h5>
+                      {ownedProjects.map(project => (
+                        <p key={project._id}>
+                          <Link to={`/projects/${project.name}`}>{project.name}</Link>
+                        </p>
+                      ))}
+                    </>}
+                  </div>
             </> : ""}
 
             {showConfirm && (
@@ -147,7 +130,6 @@ function Show() {
                 </div>
             )}
         </div>
-        <Footer/>
     </>
   )
 }

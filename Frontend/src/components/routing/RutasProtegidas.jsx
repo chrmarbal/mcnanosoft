@@ -1,5 +1,5 @@
 import React, { useContext } from 'react'
-import { userContext } from "../context/UserContext"
+import { userContext } from "../../context/UserContext"
 import { Navigate, Outlet } from 'react-router-dom'
 
 export const RutasProtegidas = () => {

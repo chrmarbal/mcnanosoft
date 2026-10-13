@@ -9,7 +9,6 @@ import '@fortawesome/fontawesome-free/css/all.min.css'
 import { UserProvider } from './context/UserContext.jsx'
 import "bootstrap/dist/css/bootstrap.min.css"
 import "bootstrap/dist/js/bootstrap.bundle.js"
-import { Cart } from './context/CartContext.jsx'
 
 // RUTA PARA ACCEDER AL BACKEND
 let host = import.meta.env.VITE_BASE_URL_BACKEND
@@ -26,9 +25,7 @@ createRoot(document.getElementById('root')).render(
   <StrictMode>
     <ParallaxProvider>
       <UserProvider>
-        <Cart>
-          <App />
-        </Cart>
+        <App />
       </UserProvider>
     </ParallaxProvider>
   </StrictMode>,

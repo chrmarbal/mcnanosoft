@@ -1,10 +1,8 @@
 import React, { useEffect, useState, useRef } from 'react'
-import Nav from '../components/Nav'
-import Footer from '../components/Footer'
-import TextAnimation from '../components/TextAnimation'
+import TextAnimation from '../components/shared/TextAnimation'
 import { gsap } from 'gsap'
 import "../css/Index.css"
-import { useSendRequest } from '../components/SendRequest'
+import { useSendRequest } from '../components/api/SendRequest'
 import { Link } from 'react-router-dom'
 
 function Index() {
@@ -71,7 +69,6 @@ function Index() {
 
   return (
     <>
-      <Nav/>
       <div id="mainPage">
           <div ref={heroImageRef} className="hero-image">
             <img src="/imgs/Logo MCNANO SOFT.png" alt="Logo MCNANO SOFT" draggable={false}/>
@@ -107,7 +104,6 @@ function Index() {
             </div>
           </div>
       </div>
-      <Footer/>
     </>
   )
 }

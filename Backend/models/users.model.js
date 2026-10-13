@@ -26,11 +26,11 @@ const usersSchema = new mongoose.Schema({
     },
     library: [
         {
-          idProject: {
-            type: Schema.Types.ObjectId,
-            ref: "projects",
-            required: true
-          }
+            idProject: {
+                type: Schema.Types.ObjectId,
+                ref: "projects",
+                required: true
+            }
         }
     ],
     profilePicture: {

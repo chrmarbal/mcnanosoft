@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { useSendRequest } from '../components/SendRequest'
+import { useSendRequest } from '../components/api/SendRequest'
 import { IconButton, InputAdornment, TextField } from '@mui/material'
 import { userContext } from '../context/UserContext'
 import "../css/Recover.css"

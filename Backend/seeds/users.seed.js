@@ -14,11 +14,7 @@ const defaultUsers = async () => {
     })
 
     const projects = await projectsModel.find({})
-
-    const adminLibrary = []
-    for (let project of projects) {
-        adminLibrary.push({idProject: project._id})
-    }
+    const adminLibrary = projects.map(project => ({ idProject: project._id }))
 
     const users = [
         {
@@ -39,7 +35,7 @@ const defaultUsers = async () => {
             firstName: "Paco",
             lastName: "Porras",
             email: "pacoPorras@gmail.com",
-            library: [{idProject: projects[0]._id}],
+            library: projects[0] ? [{ idProject: projects[0]._id }] : [],
             profile: "Usuario",
             active: true,
             created_at: new Date()
@@ -50,7 +46,7 @@ const defaultUsers = async () => {
             firstName: "Morenito",
             lastName: "Morenote",
             email: "morenito69@gmail.com",
-            library: [{idProject: projects[1]._id}],
+            library: projects[1] ? [{ idProject: projects[1]._id }] : [],
             profile: "Usuario",
             active: true,
             created_at: new Date()

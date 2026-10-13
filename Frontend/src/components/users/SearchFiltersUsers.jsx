@@ -1,5 +1,5 @@
 import React from 'react'
-import "../css/Filters.css"
+import "../../css/Filters.css"
 
 function SearchFiltersUser({ filters, setFilters, isOpen, setIsOpen }) {
     return (

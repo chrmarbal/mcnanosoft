@@ -134,10 +134,32 @@ nav ul li a:hover {
     border: none;
     color: white;
     font-size: 20px;
-    padding: 5px;
+    padding: 8px;
     display: flex;
     align-items: center;
     justify-content: center;
+    flex: 0 0 auto;
+}
+
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    flex: 0 0 auto;
+}
+
+.cart-count {
+    display: grid;
+    min-width: 18px;
+    height: 18px;
+    place-items: center;
+    padding: 0 4px;
+    margin-left: 4px;
+    border-radius: 50%;
+    background: #e74c3c;
+    color: #fff;
+    font-size: 11px;
+    line-height: 1;
 }
 
 .sideCart {
@@ -285,6 +307,10 @@ nav ul li a:hover {
     #loginNav {
         padding: 5px 10px;
     }
+
+    .header-actions {
+        gap: 18px;
+    }
 }
 
 @media (max-width: 992px) {
@@ -313,6 +339,10 @@ nav ul li a:hover {
 @media (max-width: 767px) {
     #header {
         padding: 0 15px;
+    }
+
+    .header-actions {
+        gap: 12px;
     }
 
     .nav-menu-toggle {
@@ -381,6 +411,10 @@ nav ul li a:hover {
 }
 
 @media (max-width: 480px) {
+    .header-actions {
+        gap: 8px;
+    }
+
     header img {
         width: 45px;
     }
@@ -405,11 +439,11 @@ nav ul li a:hover {
     }
 
     #user, #guest {
-        gap: 30px;
+        gap: 8px;
     }
 
-    #guest{
-        width: 400px;
+    #guest {
+        width: auto;
     }
 }
 
@@ -423,8 +457,9 @@ nav ul li a:hover {
         border-width: 0.5px;
     }
 
-    #guest{
-        width: 100%;
+    #guest {
+        width: auto;
+        gap: 6px;
     }
 }
 

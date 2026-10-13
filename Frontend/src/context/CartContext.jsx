@@ -10,28 +10,33 @@ export const Cart = ({ children }) => {
     products: [],
     totalPrice: 0
   })
+  const [isCartLoading, setIsCartLoading] = useState(true)
 
-  // 1) Carga inicial del carrito
   const getItems = async () => {
+    setIsCartLoading(true)
     try {
-      const { data, status } = await axios.get('/cart')
+      const { data, status } = await axios.get('/cart', { timeout: 15000 })
       if (status === 200) {
         setCartProducts(data)
       }
     } catch (err) {
       console.error('Error cargando carrito:', err)
+    } finally {
+      setIsCartLoading(false)
     }
   }
 
-  // 2) Función para vaciar el carrito
   const clearCart = async () => {
+    setIsCartLoading(true)
     try {
-      const { data, status } = await axios.get('/cart/clearCart')
+      const { data, status } = await axios.get('/cart/clearCart', { timeout: 15000 })
       if (status === 200) {
         setCartProducts(data)
       }
     } catch (err) {
       console.error('Error vaciando carrito:', err)
+    } finally {
+      setIsCartLoading(false)
     }
   }
 
@@ -41,7 +46,7 @@ export const Cart = ({ children }) => {
   }, [])
 
   return (
-    <cartContext.Provider value={{ cartProducts, setCartProducts, getItems, clearCart }}>
+    <cartContext.Provider value={{ cartProducts, setCartProducts, getItems, clearCart, isCartLoading, setIsCartLoading }}>
       {children}
     </cartContext.Provider>
   )

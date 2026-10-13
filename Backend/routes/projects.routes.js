@@ -11,7 +11,7 @@ const upload = multer({storage: storage})
 // FIND ALL
 router.get("/", projectsController.findAllProjects)
 
-// GET LIBRARY
+// GET LIBRARY PROJECTS
 router.get("/library", jwtMW.authenticate, projectsController.getLibrary)
 
 // CREATE PROJECT

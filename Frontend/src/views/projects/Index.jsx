@@ -1,11 +1,11 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { useSendRequest } from '../../components/SendRequest'
-import Nav from "../../components/Nav"
-import Footer from "../../components/Footer"
+import axios from 'axios'
+import { useSendRequest } from '../../components/api/SendRequest'
 import "../../css/projects/Index.css"
-import { cartContext } from '../../context/CartContext'
 import { toastContext } from '../../context/ToastContext'
-import SearchFilters from '../../components/SearchFiltersProjects'
+import SearchFilters from '../../components/projects/SearchFiltersProjects'
+import ResultsSkeleton from '../../components/loaders/ResultsSkeleton'
+import { cartContext } from '../../context/CartContext'
 import { userContext } from '../../context/UserContext'
 import { Link } from 'react-router-dom'
 
@@ -14,11 +14,11 @@ function Index() {
   const [projects, setProjects] = useState([])
   const [busqueda, setBusqueda] = useState("")
   const [results, setResults] = useState([])
+  const [isFiltering, setIsFiltering] = useState(false)
+  const [ownedProjects, setOwnedProjects] = useState([])
   const [showConfirm, setShowConfirm] = useState(false)
   const [projectToDelete, setProjectToDelete] = useState({})
   const [isFiltersOpen, setIsFiltersOpen] = useState(false)
-
-  const [ownedProjects, setOwnedProjects] = useState([])
 
   const {userData} = useContext(userContext)
 
@@ -30,14 +30,11 @@ function Index() {
     sortBy: "recent"
   })
 
-  const {cartProducts, setCartProducts} = useContext(cartContext)
-
   const { mostrarToast } = useContext(toastContext)
+  const { setCartProducts, setIsCartLoading } = useContext(cartContext)
 
   const handleBusqueda = (e) => {
-    const value = e.target.value
-    setBusqueda(value)            
-    setResults(projects.filter(pj => pj.name.toLowerCase().includes(value.toLowerCase())))
+    setBusqueda(e.target.value)
   }
 
   const sendRequest = useSendRequest()
@@ -51,9 +48,15 @@ function Index() {
   }
 
   const addToCart = async (project) => {
-    const response = await sendRequest("get", "", "/cart/add/" + project._id)
-    if(response.status == 200){
-      setCartProducts(response.data)
+    setIsCartLoading(true)
+    try {
+      const response = await sendRequest("get", "", "/cart/add/" + project._id)
+      if(response?.status === 200){
+        setCartProducts(response.data)
+        mostrarToast("Proyecto añadido al carrito", "success")
+      }
+    } finally {
+      setIsCartLoading(false)
     }
   }
 
@@ -98,68 +101,44 @@ function Index() {
   }, [])
 
   useEffect(() => {
-    console.log(filters)
-    const filteredProjects = projects
-      .filter(pj => {
-        // Código abierto
-        if (filters.openSource && !pj.openSource) return false
-  
-        // Tecnologías
-        if (
-          filters.technologies.length > 0 &&
-          !filters.technologies.includes(pj.technology)
-        ) return false
-  
-        // Precios
-        const price = parseFloat(pj.price == "FREE" ? 0 : pj.price)
-        if (price < filters.minPrice || price > filters.maxPrice) return false
-  
-        // Eliminados (Solo Administrador)
-        if(userData && userData.data && userData.data.profile == "Administrador" && filters.deleted && !pj.deleted) return false
+    setIsFiltering(true)
+    const timeout = setTimeout(() => {
+      const search = busqueda.trim().toLowerCase()
+      const filteredProjects = projects
+        .filter(project => {
+          if (!project.name.toLowerCase().includes(search)) return false
+          if (filters.openSource && !project.openSource) return false
+          if (filters.technologies.length > 0 && !filters.technologies.includes(project.technology)) return false
+          const price = project.price === "FREE" ? 0 : Number.parseFloat(project.price.replace(/[^\d.,]/g, "").replace(",", "."))
+          if (price < filters.minPrice || price > filters.maxPrice) return false
+          if (userData && userData.data && userData.data.profile == "Administrador" && filters.deleted && !project.deleted) return false
+          return true
+        })
+        .sort((a, b) => {
+          const priceA = a.price === "FREE" ? 0 : Number.parseFloat(a.price.replace(/[^\d.,]/g, "").replace(",", "."))
+          const priceB = b.price === "FREE" ? 0 : Number.parseFloat(b.price.replace(/[^\d.,]/g, "").replace(",", "."))
+          switch(filters.sortBy){
+            case "cheap": return priceA - priceB
+            case "expensive": return priceB - priceA
+            case "popular": return (b.purchases || 0) - (a.purchases || 0)
+            default: return new Date(b.created_at) - new Date(a.created_at)
+          }
+        })
 
-        return true
-      })
-      .sort((a, b) => {
-        const priceA = parseFloat(a.price == "FREE" ? 0 : a.price)
-        const priceB = parseFloat(b.price == "FREE" ? 0 : b.price)
+      setResults(filteredProjects)
+      setIsFiltering(false)
+    }, 220)
 
-        switch (filters.sortBy) {
-          case "cheap":
-            return priceA - priceB
-          case "expensive":
-            return priceB - priceA
-          case "popular":
-            return b.purchases - a.purchases
-          case "recent":
-          default:
-            return new Date(b.created_at) - new Date(a.created_at)
-        }
-      })
-  
-    setResults(filteredProjects)
-  }, [filters, projects])
+    return () => clearTimeout(timeout)
+  }, [busqueda, filters, projects, userData])
 
   useEffect(() => {
-    // Si no tenemos proyectos o userData, limpiamos y salimos
-    if (!projects.length || !userData?.data?.library?.length) {
-      setOwnedProjects([])
-      return
-    }
-
-    // Creamos un Set con los idProject en la librería del usuario
-    const ownedSet = new Set(
-      userData.data.library.map(item => String(item.idProject))
-    )
-
-    // Recorremos _todos_ los proyectos y extraemos los que están en ownedSet
-    const ownedIds = projects.filter(p => ownedSet.has(String(p._id))).map(p => p._id)
-
-    setOwnedProjects(ownedIds)
-  }, [userData?.data?.library, projects])
+    const library = userData?.data?.library || []
+    setOwnedProjects(library.map(item => String(item.idProject || item)))
+  }, [userData?.data?.library])
       
   return (
     <>
-      <Nav/>
       <div id="allProjects" className="min-vh-100">
         <main className="d-flex">
           <SearchFilters filters={filters} setFilters={setFilters} isOpen={isFiltersOpen} setIsOpen={setIsFiltersOpen} />
@@ -180,15 +159,15 @@ function Index() {
               </button>
             </div>}
             
-            <div id="projectsContainer" className="row g-4 mx-0">
-              {results.length > 0 ? results.map((pr, index) => (
+            <div id="projectsContainer" className="row g-4 mx-0" aria-busy={isFiltering} role={isFiltering ? "status" : undefined} aria-label={isFiltering ? "Actualizando proyectos" : undefined}>
+              {isFiltering ? <ResultsSkeleton type="projects" /> : results.length > 0 ? results.map((pr, index) => (
                 pr.deleted && userData && userData.data && userData.data.profile == "Administrador" ? (
                   <div key={index} className="col-12 col-sm-6 col-md-4">
                     <div className="projectContainer deletedItem h-100">
                       <Link to={"/projects/" + pr.name}><img src={"https://localhost:3016/" + pr.projectIcon} alt={"Icon " + pr.name} draggable="false" /></Link>
                       <p>{pr.name}</p>
+                      <p>{pr.price}</p>
                       <div>
-                        <p>{pr.price}</p>
                         <div className="controls">
                           <button id="reviveProjectBtn" onClick={() => reviveProject(pr)}><i className="fa-solid fa-briefcase-medical"></i></button>
                         </div>
@@ -201,8 +180,8 @@ function Index() {
                       <div className="projectContainer h-100">
                         <Link to={"/projects/" + pr.name}><img src={"https://localhost:3016/" + pr.projectIcon} alt={"Icon " + pr.name} draggable="false" /></Link>
                         <p>{pr.name}</p>
+                        <p>{pr.price}</p>
                         <div>
-                          <p>{pr.price}</p>
                           {userData && userData.data && userData.data.profile == "Administrador" ? (
                             <div className="controls">
                               <button id="editProjectBtn">
@@ -214,12 +193,14 @@ function Index() {
                                 <i className="fa-solid fa-trash"></i>
                               </button>
                             </div>
-                          ) : (
+                          ) : !ownedProjects.includes(String(pr._id)) ? (
                             <div className="controls">
-                              {!ownedProjects.includes(pr._id) ? <button id="addToCartBtn" onClick={() => addToCart(pr)}>
+                              <button id="addToCartBtn" onClick={() => addToCart(pr)} aria-label={`Añadir ${pr.name} al carrito`}>
                                 <i className="fa-solid fa-cart-shopping"></i>
-                              </button> : ""}
+                              </button>
                             </div>
+                          ) : (
+                            <span className="owned-project-label">En tu biblioteca</span>
                           )}
                         </div>
                       </div>
@@ -243,7 +224,6 @@ function Index() {
           )}
         </main>
       </div>
-      <Footer/>
     </>
   )
 }

@@ -1,14 +1,12 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { TextField, Autocomplete, Box, Avatar, Typography } from '@mui/material'
 import axios from 'axios'
-import Nav from '../../components/Nav'
-import Footer from '../../components/Footer'
 import "../../css/projects/New.css"
 import { toastContext } from '../../context/ToastContext'
 import { Link, useNavigate, useParams } from 'react-router-dom'
-import StarBorder from '../../components/StarBorder'
+import StarBorder from '../../components/shared/StarBorder'
 import { userContext } from '../../context/UserContext'
-import { useSendRequest } from '../../components/SendRequest'
+import { useSendRequest } from '../../components/api/SendRequest'
 
 function Edit() {
 
@@ -23,7 +21,7 @@ function Edit() {
 
   const [name, setName] = useState("")
   const [description, setDescription] = useState("")
-  const [price, setPrice] = useState("")
+  const [price, setPrice] = useState(0)
   const [icon, setIcon] = useState("")
   const [thumbnail, setThumbnail] = useState("")
   const [source, setSource] = useState("")
@@ -42,11 +40,7 @@ function Edit() {
   }
 
   const handlePrice = (e) => {
-    if(e.target.value > 0){
-        setPrice(e.target.value)
-    } else{
-        setPrice("FREE")
-    }
+    setPrice(Math.max(0, Number(e.target.value)))
   }
 
   const handleIcon = (e) => {
@@ -71,13 +65,16 @@ function Edit() {
     const project = {
       name: name,
       description: description,
-      price: price + "€",
-      openSource: price == "FREE"
+      price: price,
+      openSource: price === 0
     }
 
     if(size != ""){
       project.size = size
     }
+
+    const formData = new FormData()
+    formData.append("project", JSON.stringify(project))
 
     if(icon != ""){
       formData.append("icon", icon)
@@ -90,9 +87,6 @@ function Edit() {
     if(source != ""){
       formData.append("source", source)
     }
-
-    const formData = new FormData()
-    formData.append("project", JSON.stringify(project))
 
     const response = await axios.patch("/projects/edit/" + projectData._id, formData, {headers: {"Content-Type": "multipart/form-data"}})
     console.log(response)
@@ -109,7 +103,7 @@ function Edit() {
 
       setName(project.name)
       setDescription(project.description)
-      setPrice(parseFloat(project.price.replace("€", "")))
+      setPrice(project.price === "FREE" ? 0 : Number.parseFloat(project.price.replace(/[^\d.,]/g, "").replace(",", ".")) || 0)
 
       setIconName(project.projectIcon.replace("imgs/projects/", "")) 
       console.log(project.thumbnail)
@@ -131,7 +125,6 @@ function Edit() {
 
   return (
     <>
-      <Nav/>
       <div id="newProjectContainer">
         <h1>Editar Proyecto</h1>
 
@@ -152,9 +145,9 @@ function Edit() {
 
           <br /><br />
 
-          <label htmlFor="projectPrice">Precio</label>
+          <label htmlFor="projectPrice">Precio (0 para gratis)</label>
           <br />
-          <TextField className="newProjectText" type="number" inputProps={{ step: "0.01", min: "0" }} defaultValue={price} size="small" onChange={handlePrice} variant="outlined"></TextField>
+          <TextField className="newProjectText" type="number" inputProps={{ step: "0.01", min: "0" }} size="small" onChange={handlePrice} value={price} variant="outlined"></TextField>
 
           <br /><br />
 
@@ -195,7 +188,6 @@ function Edit() {
           <StarBorder color="#cfcfcf">Enviar</StarBorder>
         </form> : "" }
       </div>
-      <Footer/>
     </>
   )
 }

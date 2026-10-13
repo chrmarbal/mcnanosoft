@@ -31,6 +31,7 @@ exports.passportSuccess = async (req, res, next) => {
         lastName: userDataGoogle.family_name ? userDataGoogle.family_name : userDataGoogle.given_name,
         email: userDataGoogle.email,
         profilePicture: userDataGoogle.picture,
+        library: [],
         profile: "Usuario",
         oAuth: "Google",
         active: true,

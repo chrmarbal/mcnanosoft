@@ -73,48 +73,42 @@ exports.findRatingByIdProject = wrapAsync(async (req, res, next) => {
 exports.createRating = wrapAsync(async (req, res, next) => {
     const { idUser, idProject, rating, opinion } = req.body
 
-    let validado = false
-    const datosUser = await usersModel.findById(idUser)
-    for (let project of datosUser.library) {
-        if(idProject == project.idProject){
-            validado = true
-            break
+    const user = await usersModel.findById(idUser)
+    const ownsProject = user?.library?.some(item =>
+        String(item.idProject || item) === String(idProject)
+    )
+
+    if(!ownsProject){
+        next(new AppError("No puedes poner una opinión de un proyecto que no has adquirido", 400))
+        return
+    }
+
+    const ratings = await ratingsModel.find({aproved: "Aprobado"})
+
+    let addRating = true
+    for (let rating of ratings) {
+        if(rating.idUser == idUser && rating.idProject == idProject){
+            addRating = false
         }
     }
 
-    
-
-    if(validado){
-
-        const ratings = await ratingsModel.find({aproved: "Aprobado"})
-
-        let addRating = true
-        for (let rating of ratings) {
-            if(rating.idUser == idUser && rating.idProject == idProject){
-                addRating = false
-            }
+    if(addRating){
+        const newRating = {
+            idUser: idUser,
+            idProject: idProject,
+            rating: rating,
+            opinion: opinion
         }
 
-        if(addRating){
-            const newRating = {
-                idUser: idUser,
-                idProject: idProject,
-                rating: rating,
-                opinion: opinion
+        await ratingsModel.createRating(newRating, (err, datosCreatedRating) => {   
+            if(err){
+                next(new AppError(err, 400))
+            } else{
+                res.status(200).json(datosCreatedRating)
             }
-
-            await ratingsModel.createRating(newRating, (err, datosCreatedRating) => {   
-                if(err){
-                    next(new AppError(err, 400))
-                } else{
-                    res.status(200).json(datosCreatedRating)
-                }
-            })
-        } else{
-            next(new AppError("No puedes hacer más de una valoración sobre un mismo proyecto", 400))
-        }
+        })
     } else{
-        next(new AppError("No puedes poner una opinión de un proyecto que no has adquirido", 400))
+        next(new AppError("No puedes hacer más de una valoración sobre un mismo proyecto", 400))
     }
 })
 

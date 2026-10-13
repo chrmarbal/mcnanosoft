@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef } from 'react';
 import { gsap } from 'gsap';
-import '../css/TextAnimation.css';
+import '../../css/TextAnimation.css';
 
 const TextAnimation = ({
   children,

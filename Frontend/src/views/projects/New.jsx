@@ -1,12 +1,10 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { TextField, Autocomplete, Box, Avatar, Typography, InputAdornment } from '@mui/material'
 import axios from 'axios'
-import Nav from '../../components/Nav'
-import Footer from '../../components/Footer'
 import "../../css/projects/New.css"
 import { toastContext } from '../../context/ToastContext'
 import { Link, useNavigate } from 'react-router-dom'
-import StarBorder from '../../components/StarBorder'
+import StarBorder from '../../components/shared/StarBorder'
 import { userContext } from '../../context/UserContext'
 
 function New() {
@@ -17,7 +15,7 @@ function New() {
 
     const [name, setName] = useState("")
     const [description, setDescription] = useState("")
-    const [price, setPrice] = useState("")
+    const [price, setPrice] = useState(0)
     const [icon, setIcon] = useState("")
     const [technology, setTechnology] = useState(null)
     const [thumbnail, setThumbnail] = useState("")
@@ -47,11 +45,7 @@ function New() {
     }
 
     const handlePrice = (e) => {
-        if(e.target.value > 0){
-            setPrice(e.target.value)
-        } else{
-            setPrice("FREE")
-        }
+        setPrice(Math.max(0, Number(e.target.value)))
     }
 
     const handleIcon = (e) => {
@@ -100,7 +94,7 @@ function New() {
             price: price,
             size: size,
             technology: technology.label,
-            openSource: price == "FREE"
+            openSource: price === 0
         }
 
         const formData = new FormData()
@@ -127,7 +121,6 @@ function New() {
 
   return (
     <>
-        <Nav/>
         <div id="newProjectContainer">
             <h1>Nuevo Proyecto</h1>
 
@@ -148,9 +141,9 @@ function New() {
 
                 <br /><br />
 
-                <label htmlFor="projectPrice">Precio</label>
+                <label htmlFor="projectPrice">Precio (0 para gratis)</label>
                 <br />
-                <TextField className="newProjectText" type="number" inputProps={{ step: "0.01", min: "0" }} size="small" onChange={handlePrice} variant="outlined"></TextField>
+                <TextField className="newProjectText" type="number" inputProps={{ step: "0.01", min: "0" }} size="small" value={price} onChange={handlePrice} variant="outlined"></TextField>
 
                 <br /><br />
 
@@ -230,7 +223,6 @@ function New() {
                 <StarBorder color="#cfcfcf">Enviar</StarBorder>
             </form>
         </div>
-        <Footer/>
     </>
   )
 }

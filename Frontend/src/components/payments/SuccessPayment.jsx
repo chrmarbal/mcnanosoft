@@ -1,10 +1,10 @@
 // SuccessPayment.jsx
 import React, { useContext, useEffect, useRef } from 'react'
-import "../css/PaymentResult.css"
+import "../../css/PaymentResult.css"
 import { Link } from 'react-router-dom'
-import { cartContext } from '../context/CartContext'
-import { userContext } from '../context/UserContext'
-import { useSendRequest } from './SendRequest'
+import { cartContext } from '../../context/CartContext'
+import { userContext } from '../../context/UserContext'
+import { useSendRequest } from '../api/SendRequest'
 
 function SuccessPayment() {
   const estadoCambiado = useRef(false)
@@ -26,7 +26,7 @@ function SuccessPayment() {
       const response = await sendRequest("patch", { state: "Pagado" }, "/purchases/edit/" + purchaseId)
       if (response.status === 200) {
         // Actualizamos userData con el usuario que devuelve el endpoint
-        setUserData(ud => ({ ...ud, data: response.data.user }))
+        setUserData(ud => ({ ...ud, data: response.data.userData }))
         clearCart()
         // Borramos la cookie
         document.cookie = "purchaseId=; max-age=0; path=/"

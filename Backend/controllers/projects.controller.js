@@ -37,7 +37,7 @@ exports.findAllProjects = wrapAsync(async (req, res, next) => {
     })
 })
 
-// GET LIBRARY
+// FIND PROJECTS FOR LIBRARY
 exports.getLibrary = wrapAsync(async (req, res, next) => {
     const projects = await projectsModel.find({})
     if(projects){
@@ -49,7 +49,7 @@ exports.getLibrary = wrapAsync(async (req, res, next) => {
 
 // CREATE PROJECT
 exports.createProject = wrapAsync(async (req, res, next) => {
-    const { name, description, price, size, technology, openSource} = JSON.parse(req.body.project)
+    const { name, description, price, size, technology } = JSON.parse(req.body.project)
     const icon = req.files["icon"]?.[0]
     const projectIcon = "imgs/projects/" + icon.originalname
     const thumbnail = req.files["thumbnail"]?.[0]
@@ -70,12 +70,10 @@ exports.createProject = wrapAsync(async (req, res, next) => {
 
     let projectUrl = await uploadToGoogleDrive(projectSource, name)
 
-    let projectPrice
-    if(price == 0){
-        projectPrice = "FREE"
-    } else{
-        projectPrice = price + "€"
-    }
+    const numericPrice = Number(price)
+    const projectPrice = String(price).toUpperCase() === "FREE" || numericPrice === 0
+        ? "FREE"
+        : `${numericPrice.toFixed(2)}€`
 
     const newProject = {
         name: name,
@@ -86,7 +84,7 @@ exports.createProject = wrapAsync(async (req, res, next) => {
         projectUrl: projectUrl,
         technology: technology,
         thumbnail: thumbnailUrl,
-        openSource: openSource,
+        openSource: projectPrice === "FREE",
         purchases: 0,
         deleted: false
     }
@@ -120,13 +118,18 @@ exports.findProjectByID = wrapAsync(async (req, res, next) => {
 // UPDATE BY ID
 exports.updateProjectByID = wrapAsync(async (req, res, next) => {
     const { id } = req.params
-    const { name, description, price, size = null, openSource, deleted = false} = JSON.parse(req.body.project)
+    const { name, description, price, size = null, deleted = false} = JSON.parse(req.body.project)
+
+    const numericPrice = Number(price)
+    const projectPrice = String(price).toUpperCase() === "FREE" || numericPrice === 0
+        ? "FREE"
+        : `${numericPrice.toFixed(2)}€`
 
     const updatedProject = {
         name: name,
         description: description,
-        price: price,
-        openSource: openSource,
+        price: projectPrice,
+        openSource: projectPrice === "FREE",
         deleted: deleted
     }
 

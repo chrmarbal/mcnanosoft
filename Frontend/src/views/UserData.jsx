@@ -1,11 +1,9 @@
 import { useContext, useState } from 'react'
 import { userContext } from '../context/UserContext'
-import { useSendRequest } from '../components/SendRequest'
+import { useSendRequest } from '../components/api/SendRequest'
 import Paper from '@mui/material/Paper'
-import Nav from '../components/Nav'
-import Footer from '../components/Footer'
 import "../css/UserData.css"
-import EditUserData from '../components/EditUserData'
+import EditUserData from '../components/users/EditUserData'
 import { useNavigate } from 'react-router-dom'
 
 function UserData() {
@@ -42,7 +40,6 @@ function UserData() {
 
   return (
     <>
-        <Nav/>
         {userData && userData.data ? <div id="userData">
             <div id="content-userData">
                 <div>
@@ -73,7 +70,6 @@ function UserData() {
                 </div>
             </div>
         )}
-        <Footer/>
     </>
   )
 }

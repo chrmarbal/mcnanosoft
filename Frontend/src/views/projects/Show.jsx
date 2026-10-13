@@ -1,10 +1,8 @@
 import React, { useContext, useEffect, useState } from 'react'
+import axios from 'axios'
 import { userContext } from '../../context/UserContext'
 import { Link, useNavigate, useParams } from 'react-router-dom'
-import { useSendRequest } from '../../components/SendRequest'
-import Paper from '@mui/material/Paper'
-import Nav from "../../components/Nav"
-import Footer from "../../components/Footer"
+import { useSendRequest } from '../../components/api/SendRequest'
 import "../../css/projects/Show.css"
 import { toastContext } from '../../context/ToastContext'
 import { Rating } from '@mui/material'
@@ -20,14 +18,13 @@ function Show() {
   const [showAlertLogin, setShowAlertLogin] = useState(false)
   const [showAlertOwnProject, setShowAlertOwnProject] = useState(false)
   const [newRating, setNewRating] = useState({})
-
-
   const [ownedProject, setOwnedProject] = useState(false)
+
   const [addRating, setAddRating] = useState(true)
 
   const { mostrarToast } = useContext(toastContext)
-  const {cartProducts, setCartProducts} = useContext(cartContext)
   const { userData } = useContext(userContext)
+  const { setCartProducts, setIsCartLoading } = useContext(cartContext)
 
 
   const projectName = useParams().name
@@ -50,7 +47,7 @@ function Show() {
               idProject: pr._id
             }))
           }
-          const resp = await sendRequest("get", "", "/ratings/project/" + pr._id)
+          const resp = await sendRequest("get", "", "/ratings/project/" + pr._id, "", false, false)
           if(resp.status == 200){
             setRatings(resp.data.ratingData)
             setUsers(resp.data.usersData)
@@ -79,13 +76,7 @@ function Show() {
     }
   }
 
-  const handleAlertOwnProject = () => {
-    if(!showAlertOwnProject){
-      setShowAlertOwnProject(true)
-    } else{
-      setShowAlertOwnProject(false)
-    }
-  }
+  const handleAlertOwnProject = () => setShowAlertOwnProject(open => !open)
 
   const handleRating = async (e) => {
     setNewRating(nr => ({
@@ -102,9 +93,19 @@ function Show() {
   }
 
   const addToCart = async () => {
-    const response = await sendRequest("get", "", "/cart/add/" + project._id)
-    if(response.status == 200){
-      setCartProducts(response.data)
+    if(!userData){
+      go("/login")
+      return
+    }
+    setIsCartLoading(true)
+    try {
+      const response = await sendRequest("get", "", "/cart/add/" + project._id)
+      if(response?.status === 200){
+        setCartProducts(response.data)
+        mostrarToast("Proyecto añadido al carrito", "success")
+      }
+    } finally {
+      setIsCartLoading(false)
     }
   }
 
@@ -113,16 +114,7 @@ function Show() {
     if(!userData){
       setShowAlertLogin(true)
     } else{
-      let addRating = false
-      for (let pr of userData.data.library) {
-        if(pr.idProject == project._id){
-          addRating = true
-          break
-        }
-      }
-
-      if(addRating){
-        console.log(newRating)
+      if(ownedProject){
         const response = await sendRequest("post", newRating, "/ratings", "", true)
         if(response.status == 200){
           mostrarToast("Opinión Puesta Correctamente. El Administrador tendrá que aprobarla para que sea pública")
@@ -177,6 +169,8 @@ function Show() {
   }
 
   useEffect(() => {
+    const library = userData?.data?.library || []
+    setOwnedProject(library.some(item => String(item.idProject || item) === String(project._id)))
     if(userData && userData.data){
       for (let rating of ratings) {
         if(rating.idUser == userData.data._id){
@@ -185,26 +179,7 @@ function Show() {
         }
       }
     }
-  }, [ratings])
-
-  useEffect(() => {
-    console.log(ownedProject)
-  }, [ownedProject])
-
-  useEffect(() => {
-    // Si no tenemos usuario o proyecto aún, salimos
-    if (!userData?.data?.library || !project?._id) {
-      setOwnedProject(false)
-      return
-    }
-
-    // Convertimos ambos a string para evitar comparaciones fallidas
-    const owned = userData.data.library.some(item =>
-      String(item.idProject) === String(project._id)
-    )
-
-    setOwnedProject(owned)
-  }, [userData?.data?.library, project._id])
+  }, [ratings, userData, project._id])
 
   useEffect(() => {
     getData()
@@ -212,7 +187,6 @@ function Show() {
 
   return (
     <>
-      <Nav/>
       <div id="showProjectContainer">
         <div className="controls">
           <Link to="/projects"><i className="fa-solid fa-reply"></i> Volver</Link>
@@ -244,11 +218,11 @@ function Show() {
                   <div className="projectDetails">
                     <p><strong>Precio:</strong> {project.price}</p>
                     <p><strong>Tamaño:</strong> {project.size}</p>
-                    <p><strong>Ventas:</strong> {project.purchases}</p>
+                    <p><strong>Ventas:</strong> {project.purchases || 0}</p>
                   </div>
 
                   <div className="projectButtons">
-                    {!ownedProject && project.openSource && project.gitHubRepoUrl && (
+                    {ownedProject && project.openSource && project.gitHubRepoUrl && (
                       <a href={project.gitHubRepoUrl} target="_blank" rel="noopener noreferrer" className="githubButton">
                         <img src="/imgs/Logo GitHub.png" alt="GitHub Icon" draggable={false} />
                       </a>
@@ -257,16 +231,14 @@ function Show() {
                       <div className="ownedProjectWrapper">
                         <div className="ownedProject">
                           <i className="fa-solid fa-circle-check"></i>
-                          <label>Ya tienes este proyecto adquirido</label>
+                          <label>Ya tienes este proyecto en tu biblioteca</label>
                         </div>
-                        <button className="addToCartButton">
-                          <Link to="/library">Ver en Biblioteca</Link>
-                        </button>
+                        <Link className="actionButton" to="/library">Ver en Biblioteca</Link>
                       </div>
                     ) : !project.deleted ? (
-                      <button className="addToCartButton" onClick={addToCart}>
-                        Añadir al carrito
-                      </button>
+                      <div className="ownedProjectWrapper">
+                        <button className="addToCartButton" onClick={addToCart}>Añadir al carrito</button>
+                      </div>
                     ) : (
                       ""
                     )}
@@ -280,7 +252,7 @@ function Show() {
               </div>
             </div>
 
-            {(userData && userData.data && addRating && userData.data.profile != "Administrador") || (userData && userData.data && !userData.data.oAuth && addRating && userData.data.profile != "Administrador") || !userData ? <div className="addRatingSection">
+            {userData && userData.data && addRating && userData.data.profile != "Administrador" && ownedProject ? <div className="addRatingSection">
               <h3>¿Qué te ha parecido este proyecto?</h3>
               <form onSubmit={handleSubmitRating}>
                 <Rating defaultValue={0} precision={0.25} onChange={handleRating}/>
@@ -374,17 +346,14 @@ function Show() {
           {showAlertOwnProject && (
             <div className="modalContainer">
               <div className="modalContent">
-                <p>Para poder poner una valoración de este proyecto, debes tenerlo adquirido. ¿Quieres añadirlo al carrito?</p>
-                <button id="addToCartButton" onClick={() => {
-                  addToCart()
-                  setShowAlertOwnProject(false)
-                }}>Añadir al Carrito</button>
+                <p>Para valorar este proyecto primero debes adquirirlo.</p>
+                <button onClick={() => { addToCart(); setShowAlertOwnProject(false) }}>Añadir al carrito</button>
                 <button onClick={handleAlertOwnProject}>Cancelar</button>
               </div>
             </div>
           )}
+
       </div>
-      <Footer/>
     </>
   )
 }

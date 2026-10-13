@@ -1,12 +1,10 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { TextField, Autocomplete, Box, Avatar, Typography } from '@mui/material'
 import axios from 'axios'
-import Nav from '../../components/Nav'
-import Footer from '../../components/Footer'
 import "../../css/users/New.css"
 import { toastContext } from '../../context/ToastContext'
 import { Link, useNavigate } from 'react-router-dom'
-import StarBorder from '../../components/StarBorder'
+import StarBorder from '../../components/shared/StarBorder'
 import { userContext } from '../../context/UserContext'
 
 function New() {
@@ -114,7 +112,6 @@ function New() {
 
   return (
     <>
-        <Nav/>
         <div id="newUserContainer">
             <h1>Crear Usuario</h1>
 
@@ -180,7 +177,6 @@ function New() {
                 <StarBorder color="#cfcfcf">Enviar</StarBorder>
             </form>
         </div>
-        <Footer/>
     </>
   )
 }

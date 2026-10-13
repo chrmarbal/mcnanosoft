@@ -1,11 +1,9 @@
 import React, { useContext, useEffect, useState } from 'react'
-import Nav from '../components/Nav'
-import Footer from '../components/Footer'
 import "../css/Library.css"
 import { userContext } from '../context/UserContext'
 import { Link, useNavigate } from 'react-router-dom'
-import { useSendRequest } from '../components/SendRequest'
-import ProjectDetail from '../components/ProjectDetail'
+import { useSendRequest } from '../components/api/SendRequest'
+import ProjectDetail from '../components/projects/ProjectDetail'
 
 function Library() {
   const { userData } = useContext(userContext)
@@ -24,7 +22,7 @@ function Library() {
     const allProjects = response.data
     // Filtra los que el usuario realmente posee
     const owned = []
-    for (let op of userData.data.library) {
+    for (let op of userData.data.library || []) {
       for (let pr of allProjects) {
         if (String(op.idProject) === String(pr._id)) {
           owned.push(pr)
@@ -55,7 +53,6 @@ function Library() {
 
   return (
     <>
-      <Nav />
       <div id="libraryContainer">
         {/* Overlay para cerrar el menú al hacer clic fuera */}
         <div
@@ -115,7 +112,6 @@ function Library() {
           )}
         </main>
       </div>
-      <Footer />
     </>
   )
 }

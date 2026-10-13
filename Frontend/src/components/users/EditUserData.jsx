@@ -1,8 +1,8 @@
 import React, { useContext, useEffect, useState } from 'react'
 import Paper from '@mui/material/Paper'
-import { useSendRequest } from './SendRequest'
-import { toastContext } from '../context/ToastContext'
-import { userContext } from '../context/UserContext'
+import { useSendRequest } from '../api/SendRequest'
+import { toastContext } from '../../context/ToastContext'
+import { userContext } from '../../context/UserContext'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
 

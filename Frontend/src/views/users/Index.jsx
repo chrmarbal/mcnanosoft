@@ -1,10 +1,9 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { useSendRequest } from '../../components/SendRequest'
-import Nav from "../../components/Nav"
-import Footer from "../../components/Footer"
+import { useSendRequest } from '../../components/api/SendRequest'
 import "../../css/users/Index.css"
 import { toastContext } from '../../context/ToastContext'
-import SearchFiltersUsers from '../../components/SearchFiltersUsers'
+import SearchFiltersUsers from '../../components/users/SearchFiltersUsers'
+import ResultsSkeleton from '../../components/loaders/ResultsSkeleton'
 import { userContext } from '../../context/UserContext'
 import { Link } from 'react-router-dom'
 
@@ -13,6 +12,7 @@ function Index() {
   const [users, setUsers] = useState([])
   const [busqueda, setBusqueda] = useState("")
   const [results, setResults] = useState([])
+  const [isFiltering, setIsFiltering] = useState(false)
   const [showConfirm, setShowConfirm] = useState(false)
   const [userToDelete, setUserToDelete] = useState({})
   const [isFiltersOpen, setIsFiltersOpen] = useState(false)
@@ -27,9 +27,7 @@ function Index() {
   const { mostrarToast } = useContext(toastContext)
 
   const handleBusqueda = (e) => {
-    const value = e.target.value
-    setBusqueda(value)            
-    setResults(users.filter(us => us.username.toLowerCase().includes(value.toLowerCase())))
+    setBusqueda(e.target.value)
   }
 
   const sendRequest = useSendRequest()
@@ -80,35 +78,33 @@ function Index() {
   }, [])
 
   useEffect(() => {
-    console.log(results)
-  }, [results])
+    setIsFiltering(true)
+    const timeout = setTimeout(() => {
+      const search = busqueda.trim().toLowerCase()
+      const filteredUsers = users
+        .filter(user => user.username.toLowerCase().includes(search) && (filters.active || !user.active))
+        .sort((a, b) => {
+          switch (filters.sortBy) {
+            case "name-asc":
+              return a.username.localeCompare(b.username)
+            case "name-desc":
+              return b.username.localeCompare(a.username)
+            case "recent":
+            default:
+              return new Date(b.created_at) - new Date(a.created_at)
+          }
+        })
 
-  useEffect(() => {
-    const filteredUsers = users
-      .filter(user => {
-        if (!filters.active && user.active) return false
-        return true
-      })
-      .sort((a, b) => {
-        console.log(a)
-        switch (filters.sortBy) {
-          case "name-asc":
-            return a.username.localeCompare(b.username)
-          case "name-desc":
-            return b.username.localeCompare(a.username)
-          case "recent":
-          default:
-            return new Date(b.created_at) - new Date(a.created_at)
-        }
-      })
-  
-    setResults(filteredUsers)
-  }, [filters, users])
+      setResults(filteredUsers)
+      setIsFiltering(false)
+    }, 220)
+
+    return () => clearTimeout(timeout)
+  }, [busqueda, filters, users])
   
       
   return (
     <>
-      <Nav/>
       <div id="allUsers" className="min-vh-100">
         <main className="d-flex">
           <SearchFiltersUsers filters={filters} setFilters={setFilters} isOpen={isFiltersOpen} setIsOpen={setIsFiltersOpen}/>
@@ -124,8 +120,8 @@ function Index() {
               </button>
             </div>
             
-            <div id="usersContainer" className="row g-4 mx-0">
-              {results.length > 0 ? results.map((user, index) => (
+            <div id="usersContainer" className="row g-4 mx-0" aria-busy={isFiltering} role={isFiltering ? "status" : undefined} aria-label={isFiltering ? "Actualizando usuarios" : undefined}>
+              {isFiltering ? <ResultsSkeleton type="users" /> : results.length > 0 ? results.map((user, index) => (
                 !user.active ? (  
                   <div key={index} className="col-12 col-sm-6 col-md-4">
                     <div className="userContainer deletedItem h-100">
@@ -175,7 +171,6 @@ function Index() {
             </div>
           )}
       </div>
-      <Footer/>
     </>
   )
 }

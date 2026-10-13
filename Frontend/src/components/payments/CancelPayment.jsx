@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react'
-import "../css/PaymentResult.css"
+import "../../css/PaymentResult.css"
 import { Link } from 'react-router-dom'
-import { useSendRequest } from './SendRequest'
+import { useSendRequest } from '../api/SendRequest'
 
 function CancelPayment() {
   const estadoCambiado = useRef(false)

@@ -12,11 +12,11 @@ const mongoDBConfig = require("./utils/mongodb.config")
 const usersRoutes = require("./routes/users.routes")
 const projectsRoutes = require("./routes/projects.routes")
 const purchasesRoutes = require("./routes/purchases.routes")
-const ratingsRoutes = require("./routes/ratings.routes")
 const cartRoutes = require("./routes/cart.routes")
+const paymentRoutes = require("./routes/payment.routes")
+const ratingsRoutes = require("./routes/ratings.routes")
 const oAuthGoogleRoutes = require("./routes/oAuthGoogle.routes")
 const oAuthGitHubRoutes = require("./routes/oAuthGitHub.routes")
-const paymentRoutes = require("./routes/payment.routes")
 const logger = require("./utils/logger")
 const AppError = require("./utils/AppError")
 const errorHandlerMW = require("./middlewares/errorHandler.mw")
@@ -77,9 +77,9 @@ app.use(morganMW.usingMorgan()) // Usamos la configuración de Morgan para añad
 app.use(`/api/${process.env.API_VERSION}/users`, usersRoutes)
 app.use(`/api/${process.env.API_VERSION}/projects`, projectsRoutes)
 app.use(`/api/${process.env.API_VERSION}/purchases`, purchasesRoutes)
-app.use(`/api/${process.env.API_VERSION}/ratings`, ratingsRoutes)
 app.use(`/api/${process.env.API_VERSION}/cart`, cartRoutes)
 app.use(`/api/${process.env.API_VERSION}/payment`, paymentRoutes)
+app.use(`/api/${process.env.API_VERSION}/ratings`, ratingsRoutes)
 app.use("/auth/google", oAuthGoogleRoutes)
 app.use("/auth/github", oAuthGitHubRoutes)
 
@@ -115,10 +115,6 @@ if(https_server){
 
         console.log()
 
-        console.log("<============ PURCHASES ============>")
-        console.log(`https://localhost:${port}/api/${process.env.API_VERSION}/purchases`)
-
-        console.log()
 
         console.log("<============ RATINGS ============>")
         console.log(`https://localhost:${port}/api/${process.env.API_VERSION}/ratings`)
@@ -158,10 +154,6 @@ if(https_server){
     
         console.log()
 
-        console.log("<============ PURCHASES ============>")
-        console.log(`https://localhost:${port}/api/${process.env.API_VERSION}/purchases`)
-
-        console.log()
 
         console.log("<============ RATINGS ============>")
         console.log(`https://localhost:${port}/api/${process.env.API_VERSION}/ratings`)

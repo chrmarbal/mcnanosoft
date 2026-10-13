@@ -1,3 +1,30 @@
+.route-content {
+    position: relative;
+    min-height: 100vh;
+}
+
+.route-content.route-background-wide,
+.route-content.route-background-auth {
+    background: linear-gradient(90deg, rgb(53, 51, 205) 0%, rgb(0, 0, 0) 80%);
+}
+
+.route-content.route-background-catalog {
+    background: linear-gradient(90deg, rgb(53, 51, 205) 0%, rgb(0, 0, 0) 95%);
+}
+
+.route-content.route-background-profile {
+    background: linear-gradient(90deg, rgb(53, 51, 205) 0%, rgb(0, 0, 0) 96%);
+}
+
+.route-view-hidden {
+    position: absolute;
+    inset: 0;
+    height: 0;
+    overflow: hidden;
+    visibility: hidden;
+    pointer-events: none;
+}
+
 /* MODAL */
 .modalContainer {
     position: fixed;
@@ -33,14 +60,14 @@
     transition: background-color 0.2s ease;
 }
 
-#addToCartButton{
+#addToCartButton {
     background-color: #3f3dff;
 }
 
-#addToCartButton:hover{
+#addToCartButton:hover {
     background-color: #5f5dff;
 }
-  
+
 .modalContent button:first-of-type {
     background-color: #e74c3c;
     color: #fff;

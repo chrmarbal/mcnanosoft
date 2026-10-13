@@ -1,14 +1,11 @@
 import React, { useContext } from 'react'
-import "../css/Library.css"
-import { useSendRequest } from './SendRequest'
-import { toastContext } from '../context/ToastContext'
+import "../../css/Library.css"
+import { toastContext } from '../../context/ToastContext'
 import axios from 'axios'
 
 const ProjectDetail = ({ project }) => {
-  if (!project) return <p>Selecciona un proyecto para ver los detalles</p>
-
-  const sendRequest = useSendRequest()
   const {mostrarToast} = useContext(toastContext)
+  if (!project) return <p>Selecciona un proyecto para ver los detalles</p>
 
   const handleDownload = async () => {
     const response = await axios.get("/projects/download/" + project.projectUrl, {responseType: "blob"})

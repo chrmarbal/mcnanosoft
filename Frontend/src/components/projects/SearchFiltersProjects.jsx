@@ -1,6 +1,6 @@
 import React, { useContext } from 'react'
-import "../css/Filters.css"
-import { userContext } from '../context/UserContext'
+import "../../css/Filters.css"
+import { userContext } from '../../context/UserContext'
 
 function SearchFiltersProjects({ filters, setFilters, isOpen, setIsOpen }) {
     const technologies = ["JavaScript", "C", "Python", "Java", "C++", "C#", "PHP"]
@@ -26,12 +26,8 @@ function SearchFiltersProjects({ filters, setFilters, isOpen, setIsOpen }) {
                 
                 <legend>Filtrar Proyectos</legend>
                 <form>
-                    <h6>Ordenar Por</h6>
-                    <select 
-                        style={{marginTop: "-10px"}} 
-                        value={filters.sortBy} 
-                        onChange={e => setFilters(f => ({ ...f, sortBy: e.target.value }))}
-                    >
+                    <h6>Ordenar por</h6>
+                    <select value={filters.sortBy} onChange={e => setFilters(f => ({ ...f, sortBy: e.target.value }))}>
                         <option value="recent">Más recientes</option>
                         <option value="cheap">Más baratos</option>
                         <option value="expensive">Más caros</option>
@@ -52,24 +48,22 @@ function SearchFiltersProjects({ filters, setFilters, isOpen, setIsOpen }) {
                         ))}
                     </fieldset>
 
-                    <h6>Filtrar por Precio</h6>
-                    <div className="rangeSliderContainer">
-                        <label>Rango de precio: {filters.minPrice}€ - {filters.maxPrice}€</label>
-                        <div className="sliderTrack">
-                            <input 
-                                type="range" 
-                                min="0" 
-                                max="450" 
-                                value={filters.minPrice}
-                                onChange={e => {
-                                    const value = Number(e.target.value)
-                                    if (value <= filters.maxPrice) {
-                                        setFilters(f => ({ ...f, minPrice: value }))
-                                    }
-                                }}
-                            />
-                        </div>
-                    </div>
+                    <h6>Precio: {filters.minPrice}€ - {filters.maxPrice}€</h6>
+                    <label className="rangeSliderContainer">
+                        Mínimo
+                        <input type="range" min="0" max="450" value={filters.minPrice} onChange={e => {
+                            const minPrice = Number(e.target.value)
+                            if(minPrice <= filters.maxPrice) setFilters(f => ({ ...f, minPrice }))
+                        }}/>
+                    </label>
+                    <label className="rangeSliderContainer">
+                        Máximo
+                        <input type="range" min="0" max="450" value={filters.maxPrice} onChange={e => {
+                            const maxPrice = Number(e.target.value)
+                            if(maxPrice >= filters.minPrice) setFilters(f => ({ ...f, maxPrice }))
+                        }}/>
+                    </label>
+
                     <h6>Otros Filtros</h6>
                     <label>
                         <input 

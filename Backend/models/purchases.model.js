@@ -37,6 +37,9 @@ const purchasesSchema = new mongoose.Schema({
     amount: {
         type: Schema.Types.Decimal128,
         required: true
+    },
+    stripeSessionId: {
+        type: String
     }
 })
 
@@ -98,6 +101,11 @@ purchases.updateStateById = async (id, newState, result) => {
         const purchase = await purchases.findById(id)
         if (!purchase) throw new Error("Compra no encontrada")
 
+        if (purchase.state === newState) {
+            result(null, purchase)
+            return
+        }
+
         const updatedPurchase = await purchases.findByIdAndUpdate(
             id,
             { state: newState },
@@ -106,9 +114,9 @@ purchases.updateStateById = async (id, newState, result) => {
 
         const user = await usersModel.findById(updatedPurchase.idUser)
         if (!user) throw new Error("Usuario no encontrado")
+        user.library = user.library || []
 
-        if (newState !== "Pagado") {
-            // Estado NO pagado => quitar proyectos de library y restar compras
+        if (purchase.state === "Pagado" && newState !== "Pagado") {
             for (const line of updatedPurchase.lines) {
                 const project = await projectsModel.findById(line.idProject)
                 if (project) {
@@ -118,13 +126,11 @@ purchases.updateStateById = async (id, newState, result) => {
             }
 
             // Quitar proyectos de la librería
-            user.library = user.library.filter(pj =>
-                !updatedPurchase.lines.some(line => line.idProject.toString() === pj.toString())
+            user.library = user.library.filter(entry =>
+                !updatedPurchase.lines.some(line => String(line.idProject) === String(entry.idProject || entry))
             )
             await user.save()
-
-        } else {
-            // Estado pagado => añadir proyectos y sumar compras
+        } else if (purchase.state !== "Pagado" && newState === "Pagado") {
             for (const line of updatedPurchase.lines) {
                 const project = await projectsModel.findById(line.idProject)
                 if (project) {
@@ -133,9 +139,8 @@ purchases.updateStateById = async (id, newState, result) => {
                 }
 
                 // Añadir solo si no está ya
-                if (!user.library.some(pj => pj.toString() === line.idProject.toString())) {
+                if (!user.library.some(entry => String(entry.idProject || entry) === String(line.idProject))) {
                     user.library.push({idProject: line.idProject})
-                    break
                 }
             }
 
