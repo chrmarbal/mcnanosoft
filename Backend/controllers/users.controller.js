@@ -4,6 +4,7 @@ const AppError = require("../utils/AppError")
 const bcrypt = require("../utils/bcrypt")
 const jwtMW = require("../middlewares/jwt.mw")
 const fs = require("fs")
+const { promisify } = require("util")
 const nodemailer = require("nodemailer")
 const crypto = require("crypto")
 
@@ -23,13 +24,12 @@ function wrapAsync(fn) {
 
 // FIND ALL
 exports.findAllUsers = wrapAsync(async (req, res, next) => {
-    await usersModel.findAll((err, datosUsers) => {
-        if(err){
-            next(new AppError(err, 404))
-        } else{
-            res.status(200).json(datosUsers)
-        }
-    })
+    try {
+        const datosUsers = await usersModel.findAll()
+        res.status(200).json(datosUsers)
+    } catch (err) {
+        next(new AppError(err.message || err, 404))
+    }
 })
 
 // CREATE USER / REGISTER
@@ -83,11 +83,7 @@ exports.register = wrapAsync(async (req, res, next) => {
 
                 if(profilePicture){
                     const profilePictureUrl = "imgs/users/" + profilePicture.originalname
-                    fs.writeFile("public/" + profilePictureUrl, profilePicture.buffer, (err) => {
-                        if(err){
-                            next(new AppError(err, 500))
-                        }
-                    })
+                    await fs.promises.writeFile("public/" + profilePictureUrl, profilePicture.buffer)
 
                     newUser.profilePicture = profilePictureUrl
                 }
@@ -96,23 +92,22 @@ exports.register = wrapAsync(async (req, res, next) => {
                 newUser.password = await bcrypt.hashPassword(newUser.password)
 
                 console.log(newUser)
-                await usersModel.createUser(newUser, (err, datosUsuarioCreado) => {
-                    if(err){
-                        next(new AppError(err, 400))
-                    } else{
-                        if(!req.session.userLogued){
-                            const jwtToken = jwtMW.createJWT(req, res, next, datosUsuarioCreado)
-                            const userLogued = {
-                                data: datosUsuarioCreado,
-                                token: jwtToken
-                            }
-
-                            req.session.userLogued = userLogued
+                try {
+                    const datosUsuarioCreado = await usersModel.createUser(newUser)
+                    if(!req.session.userLogued){
+                        const jwtToken = jwtMW.createJWT(req, res, next, datosUsuarioCreado)
+                        const userLogued = {
+                            data: datosUsuarioCreado,
+                            token: jwtToken
                         }
 
-                        res.status(200).json(datosUsuarioCreado)
+                        req.session.userLogued = userLogued
                     }
-                })
+
+                    res.status(200).json(datosUsuarioCreado)
+                } catch (err) {
+                    next(new AppError(err.message || err, 400))
+                }
             } else{
                 next(new AppError(errorMessage, 400))
             }            
@@ -123,13 +118,12 @@ exports.register = wrapAsync(async (req, res, next) => {
 // FIND BY ID
 exports.findUserByID = wrapAsync(async (req, res, next) => {
     const { id } = req.params
-    await usersModel.findUserById(id, (err, datosUser) => {
-        if(err){
-            next(new AppError(err, 404))
-        } else{
-            res.status(200).json(datosUser)
-        }
-    })
+    try {
+        const datosUser = await usersModel.findUserById(id)
+        res.status(200).json(datosUser)
+    } catch (err) {
+        next(new AppError(err.message || err, 404))
+    }
 })
 
 // UPDATE BY ID
@@ -176,11 +170,7 @@ exports.updateUserByID = wrapAsync(async (req, res, next) => {
     
                         if(profilePicture){
                             const profilePictureUrl = "imgs/users/" + username + profilePicture.originalname.match(/\.[^.]+$/)
-                            fs.writeFile("public/" + profilePictureUrl, profilePicture.buffer, (err) => {
-                                if(err){
-                                    next(new AppError(err, 500))
-                                }
-                            })
+                            await fs.promises.writeFile("public/" + profilePictureUrl, profilePicture.buffer)
             
                             updatedUser.profilePicture = profilePictureUrl
                         }
@@ -212,29 +202,21 @@ exports.updateUserByID = wrapAsync(async (req, res, next) => {
 
             if(profilePicture){
                 const profilePictureUrl = "imgs/users/" + username + profilePicture.originalname.match(/\.[^.]+$/)
-                fs.writeFile("public/" + profilePictureUrl, profilePicture.buffer, (err) => {
-                    if(err){
-                        next(new AppError(err, 500))
-                    }
-                })
+                await fs.promises.writeFile("public/" + profilePictureUrl, profilePicture.buffer)
 
                 updatedUser.profilePicture = profilePictureUrl
             }
         }
 
         if(updatedUser){
-            await usersModel.updateUserById(id, updatedUser, (err, datosUsuarioActualizado) => {
-                if(err){
-                    next(new AppError(err, 400))
-                } else{
-    
-                    console.log(datosUsuarioActualizado)
-
-                    req.session.userLogued.data = datosUsuarioActualizado
-    
-                    res.status(200).json(datosUsuarioActualizado)
-                }
-            })
+            try {
+                const datosUsuarioActualizado = await usersModel.updateUserById(id, updatedUser)
+                console.log(datosUsuarioActualizado)
+                req.session.userLogued.data = datosUsuarioActualizado
+                res.status(200).json(datosUsuarioActualizado)
+            } catch (err) {
+                next(new AppError(err.message || err, 400))
+            }
         }
     }
 })
@@ -248,18 +230,15 @@ exports.deleteUserByID = wrapAsync(async (req, res, next) => {
     if(userLogued._id != id && userLogued.profile != "Administrador"){
         next(new AppError("No estás autorizado", 403))
     } else{
-        await usersModel.deleteUserById(id, (err, datosUsuarioEliminado) => {
-            if(err){
-                next(new AppError(err, 404))
-            } else{
-
-                if(userLogued._id == id){
-                    return exports.logout(req, res, next)
-                }
-
-                res.status(200).json(datosUsuarioEliminado)
+        try {
+            const datosUsuarioEliminado = await usersModel.deleteUserById(id)
+            if(userLogued._id == id){
+                return exports.logout(req, res, next)
             }
-        })
+            res.status(200).json(datosUsuarioEliminado)
+        } catch (err) {
+            next(new AppError(err.message || err, 404))
+        }
     }
 })
 
@@ -273,46 +252,45 @@ exports.login = wrapAsync(async (req, res, next) => {
     if(req.session.userLogued){
         next(new AppError("Ya estás Logueado", 400))
     } else{
-        await usersModel.findUserByUsername(username, async function(err, userFounded){
-            if(err){
-                next(new AppError(err, 404))
-            } else{
-                const validado = await bcrypt.compareLogin(password, userFounded.password)
-                if(validado){
-                    const jwtToken = jwtMW.createJWT(req, res, next, userFounded)
-                    const userLogued = {
-                        data: userFounded,
-                        token: jwtToken
-                    }
-
-                    req.session.userLogued = userLogued
-
-                    res.status(200).json(userFounded)
-                } else{
-                    next(new AppError("La contraseña introducida es incorrecta", 400))
+        try {
+            const userFounded = await usersModel.findUserByUsername(username)
+            const validado = await bcrypt.compareLogin(password, userFounded.password)
+            if(validado){
+                const jwtToken = jwtMW.createJWT(req, res, next, userFounded)
+                const userLogued = {
+                    data: userFounded,
+                    token: jwtToken
                 }
+
+                req.session.userLogued = userLogued
+
+                res.status(200).json(userFounded)
+            } else{
+                next(new AppError("La contraseña introducida es incorrecta", 400))
             }
-        })
+        } catch (err) {
+            next(new AppError(err.message || err, 404))
+        }
     }
 })
 
 // LOGOUT
-exports.logout = (req, res, next) => {
+exports.logout = wrapAsync(async (req, res, next) => {
     const jwtDestroyed = jwtMW.destroyJWT(req)
 
     if(jwtDestroyed){
-        req.session.destroy((err) => {
-            if(err){
-                return next(new AppError("Error al destruir la sesión", 500))
-            }
-        })
+        try {
+            await promisify(req.session.destroy.bind(req.session))()
+        } catch (err) {
+            return next(new AppError("Error al destruir la sesión", 500))
+        }
         res.clearCookie("mcnanosoft")
     } else{
-        next(new AppError("Error al Elimininar el Token o Sesión Inexistente", 500))
+        return next(new AppError("Error al Elimininar el Token o Sesión Inexistente", 500))
     }
 
     res.status(200).json({msg: "Logout Realizado Con Éxito"})
-}
+})
 
 // OBTENER SESIÓN
 exports.getSession = (req, res) => {
@@ -332,13 +310,12 @@ exports.reviveUser = wrapAsync(async (req, res, next) => {
         const updatedUser = {
             active: active
         }
-        await usersModel.updateUserById(id, updatedUser, async function(err, datosUsuarioActualizado) {
-            if(err){
-                next(new AppError(err, 404))
-            } else{
-                res.status(200).json(datosUsuarioActualizado)
-            }
-        })
+        try {
+            const datosUsuarioActualizado = await usersModel.updateUserById(id, updatedUser)
+            res.status(200).json(datosUsuarioActualizado)
+        } catch (err) {
+            next(new AppError(err.message || err, 404))
+        }
     } else{
         next(new AppError("No estás autorizado", 403))
     }
@@ -502,22 +479,18 @@ exports.resetAccount = wrapAsync(async (req, res, next) => {
                         recoveredUser.active = true
                     }
 
-                    await usersModel.updateUserById(userFounded[0]._id, recoveredUser, (err, resetUserData) => {
-                        if(err){
-                            next(new AppError(err, 400))
-                        } else{
-                            const jwtToken = jwtMW.createJWT(req, res, next, userFounded)
-
-                            const userLogued = {
-                                data: resetUserData,
-                                token: jwtToken
-                            }
-
-                            req.session.userLogued = userLogued
-
-                            res.status(200).json(userLogued)
+                    try {
+                        const resetUserData = await usersModel.updateUserById(userFounded[0]._id, recoveredUser)
+                        const jwtToken = jwtMW.createJWT(req, res, next, userFounded)
+                        const userLogued = {
+                            data: resetUserData,
+                            token: jwtToken
                         }
-                    })
+                        req.session.userLogued = userLogued
+                        res.status(200).json(userLogued)
+                    } catch (err) {
+                        next(new AppError(err.message || err, 400))
+                    }
                 }
             }
         }

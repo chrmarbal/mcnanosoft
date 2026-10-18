@@ -32,82 +32,69 @@ const ratingsSchema = new mongoose.Schema({
 
 const ratings = mongoose.model("ratings", ratingsSchema)
 
-let error = "No hay datos"
-
 // CREATE RATING
-ratings.createRating = async (ratingData, result) => {
-    console.log("HE ENTRADO")
+ratings.createRating = async (ratingData) => {
     ratingData.aproved = "Pendiente"
     ratingData.rated_at = new Date()
     const newRating = new ratings(ratingData)
-    await newRating.save()
-    .then((datos) => {
-        result(null, datos)
-    })
-    .catch((err) => {
-        result(err, null)
-    })
+    return await newRating.save()
 }
 
 // FIND ALL
-ratings.findAll = async (result) => {
+ratings.findAll = async () => {
     const datos = await ratings.find({})
     if(datos && datos.aproved == "Aprobado"){
-        result(null, datos)
+        return datos
     } else{
-        result(error, null)
+        throw new Error("No hay datos")
     }
 }
 
 // FIND RATING BY ID
-ratings.findRatingById = async (id, result) => {
-    error = "No se ha encontrado la opinión"
+ratings.findRatingById = async (id) => {
     const datos = await ratings.findById(id)
     if(datos && datos.aproved == "Aprobado"){
-        result(null, datos)
+        return datos
     } else{
-        result(error, null)
+        throw new Error("No se ha encontrado la opinión")
     }
 }
 
 // FIND RATING BY ID USER
-ratings.findRatingByIdUser = async (idUser, result) => {
-    error = "No se han encontrado las opiniones asociadas a este usuario"
+ratings.findRatingByIdUser = async (idUser) => {
     const datos = await ratings.find({idUser: idUser})
     if(datos && datos.aproved == "Aprobado"){
-        result(null, datos)
+        return datos
     } else{
-        result(error, null)
+        throw new Error("No se han encontrado las opiniones asociadas a este usuario")
     }
 }
 
 // FIND RATING BY ID PROJECT
-ratings.findRatingByIdProject = async (idProject, result) => {
-    error = "No se han encontrado las opiniones asociadas a este proyecto"
+ratings.findRatingByIdProject = async (idProject) => {
     const datos = await ratings.find({idProject: idProject})
     if(datos && datos.length > 0){
-        result(null, datos)
+        return datos
     } else{
-        result(error, null)
+        throw new Error("No se han encontrado las opiniones asociadas a este proyecto")
     }
 }
 
 // CHANGE APROVED
-ratings.changeAproved = async (id, aproved, result) => {
-    error = "No se ha podido aprobar la opinión"
+ratings.changeAproved = async (id, aproved) => {
     if(aproved){
         const datos = await ratings.findByIdAndUpdate(id, {aproved: "Aprobado"}, {runValidators: true, new: true})
         if(datos && datos.aproved == "Aprobado"){
-            result(null, datos)
+            return datos
         } else{
-            result(error, null)
+            throw new Error("No se ha podido aprobar la opinión")
         }
     } else{
         const datos = await ratings.findByIdAndDelete(id)
         if(datos){
-            result(null, datos)
+            return datos
         } else{
-            result("No se ha podido eliminar la opinión", null)
+            throw new Error("No se ha podido eliminar la opinión")
         }
     }
 }

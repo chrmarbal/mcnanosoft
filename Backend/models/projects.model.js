@@ -64,93 +64,72 @@ const projectsSchema = new mongoose.Schema({
 
 const projects = mongoose.model("projects", projectsSchema)
 
-let error = "No hay datos"
-
 // <=============== CRUD PROJECTS ===============>
 
 // CREATE PROJECT
-projects.createProject = async (projectData, result) => {
+projects.createProject = async (projectData) => {
     projectData.created_at = new Date()
     const newProject = new projects(projectData)
 
-    await newProject.save()
-    .then(async(datos) => {
-        const adminData = await usersModel.findOne({profile: "Administrador"})
-        if(adminData){
-            adminData.library = adminData.library || []
-        }
-        if(adminData && !adminData.library.some(item => String(item.idProject || item) === String(datos._id))){
-            adminData.library.push({idProject: datos._id})
-            await adminData.save()
-        }
-        result(null, datos)
-    })
-    .catch((err) => {
-        result(err, null)
-    })
+    const datos = await newProject.save()
+    const adminData = await usersModel.findOne({profile: "Administrador"})
+    if(adminData){
+        adminData.library = adminData.library || []
+    }
+    if(adminData && !adminData.library.some(item => String(item.idProject || item) === String(datos._id))){
+        adminData.library.push({idProject: datos._id})
+        await adminData.save()
+    }
+    return datos
 }
 
 // FIND ALL PROJECTS
-projects.findAll = async (result) => {
+projects.findAll = async () => {
     const datos = await projects.find({})
     if(datos && datos.length > 0){
-        result(null, datos)
+        return datos
     } else{
-        result(error, null)
+        throw new Error("No hay datos")
     }
 }
 
 // FIND PROJECT BY ID
-projects.findProjectById = async (id, result) => {
-    error = "No se ha encontrado el Proyecto"
+projects.findProjectById = async (id) => {
     const datos = await projects.findById(id)
     if(datos && !datos.deleted){
-        result(null, datos)
+        return datos
     } else{
-        result(error, null)
+        throw new Error("No se ha encontrado el Proyecto")
     }
 }
 
 // UPDATE PROJECT BY ID
-projects.updateProjectById = async (id, projectData, result) => {
-    error = "No se ha encontrado el Proyecto"
+projects.updateProjectById = async (id, projectData) => {
     if(projectData.deleted){
-        result(error, null)
-    } else{
-        projectData.modified_at = new Date()
-        await projects.findByIdAndUpdate(id, projectData, {runValidators: true, new: true})
-        .then((datos) => {
-            if(datos){
-                result(null, datos)
-            } else{
-                result(error, null)
-            }
-        })
-        .catch((err) => {
-            result(err, null)
-        })
+        throw new Error("No se ha encontrado el Proyecto")
     }
+
+    projectData.modified_at = new Date()
+    const datos = await projects.findByIdAndUpdate(id, projectData, {runValidators: true, new: true})
+    if(!datos){
+        throw new Error("No se ha encontrado el Proyecto")
+    }
+    return datos
 }
 
 // DELETE PROJECT BY ID
-projects.deleteProjectById = async (id, result) => {
-    error = "No se ha encontrado el Proyecto"
-    
+projects.deleteProjectById = async (id) => {
     const datosProyecto = await projects.findById(id)
+    if(!datosProyecto){
+        throw new Error("No se ha encontrado el Proyecto")
+    }
     datosProyecto.deleted = true
 
-
-    await projects.findByIdAndUpdate(id, datosProyecto, {runValidators: true, new: true})
-    .then((datos) => {
-        if(datos == null){
-            result(error, null)
-        } else{
-            result(null, datos)
-        }
-    })
-    .catch((err) => {
-        result(err, null)
-    })
+    const datos = await projects.findByIdAndUpdate(id, datosProyecto, {runValidators: true, new: true})
+    if(!datos){
+        throw new Error("No se ha encontrado el Proyecto")
+    }
+    return datos
 }
 
 // Exportamos el Modelo

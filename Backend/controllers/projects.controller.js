@@ -23,18 +23,15 @@ function wrapAsync(fn) {
 
 // FIND ALL
 exports.findAllProjects = wrapAsync(async (req, res, next) => {
-    await projectsModel.findAll(async (err, datosProjects) => {
-        if(err){
-            next(new AppError(err, 404))
-        } else{
-
-            for (let project of datosProjects) {
-                project.projectIcon = await sharp(project.projectIcon).resize(300, 200)
-            }
-
-            res.status(200).json(datosProjects)
+    try {
+        const datosProjects = await projectsModel.findAll()
+        for (let project of datosProjects) {
+            project.projectIcon = await sharp(project.projectIcon).resize(300, 200)
         }
-    })
+        res.status(200).json(datosProjects)
+    } catch (err) {
+        next(new AppError(err.message || err, 404))
+    }
 })
 
 // FIND PROJECTS FOR LIBRARY
@@ -56,17 +53,8 @@ exports.createProject = wrapAsync(async (req, res, next) => {
     const thumbnailUrl = "imgs/projects/portadas/" + thumbnail.originalname 
     const projectSource = req.files["source"]?.[0]
 
-    fs.writeFile("public/" + projectIcon, icon.buffer, (err) => {
-        if(err){
-            next(new AppError(err, 500))
-        }
-    })
-
-    fs.writeFile("public/" + thumbnailUrl, thumbnail.buffer, (err) => {
-        if(err){
-            next(new AppError(err, 500))
-        }
-    })
+    await fs.promises.writeFile("public/" + projectIcon, icon.buffer)
+    await fs.promises.writeFile("public/" + thumbnailUrl, thumbnail.buffer)
 
     let projectUrl = await uploadToGoogleDrive(projectSource, name)
 
@@ -89,30 +77,25 @@ exports.createProject = wrapAsync(async (req, res, next) => {
         deleted: false
     }
 
-    await projectsModel.createProject(newProject, async (err, datosProyectoCreado) => {
-        if(err){
-            next(new AppError(err, 400))
-        } else{
-
-            const adminUser = await usersModel.findOne({profile: "Administrador"})
-            
-            req.session.userLogued.data = adminUser
-
-            res.status(200).json({proyectData: datosProyectoCreado, adminData: adminUser})
-        }
-    })
+    try {
+        const datosProyectoCreado = await projectsModel.createProject(newProject)
+        const adminUser = await usersModel.findOne({profile: "Administrador"})
+        req.session.userLogued.data = adminUser
+        res.status(200).json({proyectData: datosProyectoCreado, adminData: adminUser})
+    } catch (err) {
+        next(new AppError(err.message || err, 400))
+    }
 })
 
 // FIND BY ID
 exports.findProjectByID = wrapAsync(async (req, res, next) => {
     const { id } = req.params
-    await projectsModel.findProjectById(id, (err, datosProject) => {
-        if(err){
-            next(new AppError(err, 404))
-        } else{
-            res.status(200).json(datosProject)
-        }
-    })  
+    try {
+        const datosProject = await projectsModel.findProjectById(id)
+        res.status(200).json(datosProject)
+    } catch (err) {
+        next(new AppError(err.message || err, 404))
+    }
 })
 
 // UPDATE BY ID
@@ -142,11 +125,7 @@ exports.updateProjectByID = wrapAsync(async (req, res, next) => {
             const icon = req.files["icon"]?.[0]
             const projectIcon = "imgs/projects/" + icon.originalname
     
-            fs.writeFile("public/" + projectIcon, icon.buffer, (err) => {
-                if(err){
-                    next(new AppError(err, 500))
-                }
-            })
+            await fs.promises.writeFile("public/" + projectIcon, icon.buffer)
     
             updatedProject.projectIcon = projectIcon
         }
@@ -155,11 +134,7 @@ exports.updateProjectByID = wrapAsync(async (req, res, next) => {
             const thumbnail = req.files["thumbnail"]?.[0]
             const thumbnailUrl = "imgs/projects/portadas/" + thumbnail.originalname
         
-            fs.writeFile("public/" + thumbnailUrl, thumbnail.buffer, (err) => {
-                if(err){
-                    next(new AppError(err, 500))
-                }
-            })
+            await fs.promises.writeFile("public/" + thumbnailUrl, thumbnail.buffer)
     
             updatedProject.thumbnail = thumbnailUrl
         }
@@ -173,26 +148,24 @@ exports.updateProjectByID = wrapAsync(async (req, res, next) => {
         }
     }
 
-    await projectsModel.updateProjectById(id, updatedProject, (err, datosUsuarioActualizado) => {
-        if(err){
-            next(new AppError(err, 400))
-        } else{
-            res.status(200).json(datosUsuarioActualizado)
-        }
-    })  
+    try {
+        const datosUsuarioActualizado = await projectsModel.updateProjectById(id, updatedProject)
+        res.status(200).json(datosUsuarioActualizado)
+    } catch (err) {
+        next(new AppError(err.message || err, 400))
+    }
 })
 
 // DELETE BY ID
 exports.deleteProjectByID = wrapAsync(async (req, res, next) => {
     const { id } = req.params
 
-    await projectsModel.deleteProjectById(id, (err, datosProyectoEliminado) => {
-        if(err){
-            next(new AppError(err, 404))
-        } else{
-            res.status(200).json(datosProyectoEliminado)
-        }
-    })
+    try {
+        const datosProyectoEliminado = await projectsModel.deleteProjectById(id)
+        res.status(200).json(datosProyectoEliminado)
+    } catch (err) {
+        next(new AppError(err.message || err, 404))
+    }
 })
 
 // DOWNLOAD PROJECT

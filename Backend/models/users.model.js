@@ -58,89 +58,62 @@ const usersSchema = new mongoose.Schema({
 
 const users = mongoose.model("users", usersSchema)
 
-let error = "No hay datos"
-
 // <=============== CRUD USERS ===============>
 
 // CREATE USER
-users.createUser = async (userData, result) => {
+users.createUser = async (userData) => {
     const newUser = new users(userData)
-    await newUser.save()
-    .then((datos) => {
-        result(null, datos)
-    })
-    .catch((err) => {
-        result(err, null)
-    })
+    return await newUser.save()
 }
 
 // FIND ALL USERS
-users.findAll = async (result) => {
+users.findAll = async () => {
     const datos = await users.find({ profile: "Usuario" })
     if(datos && datos.length > 0){
-        result(null, datos)
+        return datos
     } else{
-        result(error, null)
+        throw new Error("No hay datos")
     }
 }
 
 // FIND USER BY ID
-users.findUserById = async (id, result) => {
-    error = "No se ha encontrado el Usuario"
+users.findUserById = async (id) => {
     const datos = await users.findById(id)
-    console.log(datos)
     if(datos && datos.active){
-        result(null, datos)
+        return datos
     } else{
-        result(error, null)
+        throw new Error("No se ha encontrado el Usuario")
     }
 }
 
 // FIND USER BY USERNAME
-users.findUserByUsername = async (username, result) => {
-    error = "No se ha encontrado el Usuario"
+users.findUserByUsername = async (username) => {
     const datos = await users.find({ username: username })
     if(datos && datos[0] && datos[0].active){
-        result(null, datos[0])
+        return datos[0]
     } else{
-        result(error, null)
+        throw new Error("No se ha encontrado el Usuario")
     }
 }
 
 // UPDATE USER BY ID
-users.updateUserById = async (id, userData, result) => {
-    error = "No se ha encontrado el Usuario"
+users.updateUserById = async (id, userData) => {
     userData.modified_at = new Date()
-    await users.findByIdAndUpdate(id, userData, {runValidators: true, new: true})
-    .then((datos) => {
-        if(datos){
-            result(null, datos)
-        } else{
-            result(error, null)
-        }
-    })
-    .catch((err) => {
-        result(err, null)
-    })
+    const datos = await users.findByIdAndUpdate(id, userData, {runValidators: true, new: true})
+    if(!datos){
+        throw new Error("No se ha encontrado el Usuario")
+    }
+    return datos
 }
 
 // DELETE USER BY ID
-users.deleteUserById = async (id, result) => {
-    error = "No se ha encontrado el Usuario"
-    
+users.deleteUserById = async (id) => {
     const deletedUser = { active: false }
-
-    await users.findByIdAndUpdate(id, deletedUser)
-    .then((datos) => {
-        if(datos == null){
-            result(error, null)
-        } else{
-            result(null, datos)
-        }
-    })
-    .catch((err) => {
-        result(err, null)
-    })
+    const datos = await users.findByIdAndUpdate(id, deletedUser)
+    if(!datos){
+        throw new Error("No se ha encontrado el Usuario")
+    }
+    return datos
 }
 
 // Exportamos el Modelo

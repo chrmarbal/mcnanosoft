@@ -1,4 +1,5 @@
 const passport = require("passport")
+const { promisify } = require("util")
 require("../middlewares/oAuthGitHub.mw")
 const AppError = require("../utils/AppError")
 const jwtMW = require("../middlewares/jwt.mw")
@@ -44,19 +45,19 @@ exports.passportSuccess = async (req, res, next) => {
 
 
     if(addUser){
-        await usersModel.createUser(userData, (err, createdUserData) => {
-            if(err){
-                next(new AppError(err, 400))
-            } else{
-                const jwtToken = jwtMW.createJWT(req, res, next, userData)
-                const userLogued = {
-                    data: createdUserData,
-                    token: jwtToken
-                }
-                
-                req.session.userLogued = userLogued
+        try {
+            const createdUserData = await usersModel.createUser(userData)
+            const jwtToken = jwtMW.createJWT(req, res, next, userData)
+            const userLogued = {
+                data: createdUserData,
+                token: jwtToken
             }
-        })
+
+            req.session.userLogued = userLogued
+        } catch (err) {
+            next(new AppError(err, 400))
+            return
+        }
     } else{
         const user = await usersModel.findOne({username: userData.username})
         if(user && user._id){
@@ -81,7 +82,11 @@ exports.passportFailure = (req, res, next) => {
 }
 
 // Logout destroy
-exports.passportLogout = (req, res) => {
-    req.session.destroy()
+exports.passportLogout = async (req, res, next) => {
+    try {
+        await promisify(req.session.destroy.bind(req.session))()
+    } catch (err) {
+        return next(new AppError("Error al destruir la sesión", 500))
+    }
     res.redirect("https://localhost:5173")
 }

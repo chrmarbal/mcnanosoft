@@ -16,57 +16,53 @@ function wrapAsync(fn) {
 
 // FIND ALL
 exports.findAllRatings = wrapAsync(async (req, res, next) => {
-    await ratingsModel.findAll((err, datosRatings) => {
-        if(err){
-            next(new AppError(err, 404))
-        } else{
-            res.status(200).json(datosRatings)
-        }
-    })
+    try {
+        const datosRatings = await ratingsModel.findAll()
+        res.status(200).json(datosRatings)
+    } catch (err) {
+        next(new AppError(err.message || err, 404))
+    }
 })
 
 // FIND BY ID
 exports.findRatingById = wrapAsync(async (req, res, next) => {
     const { id } = req.params
-    await ratingsModel.findRatingById(id, (err, datosRating) => {
-        if(err){
-            next(new AppError(err, 404))
-        } else{
-            res.status(200).json(datosRating)
-        }
-    })
+    try {
+        const datosRating = await ratingsModel.findRatingById(id)
+        res.status(200).json(datosRating)
+    } catch (err) {
+        next(new AppError(err.message || err, 404))
+    }
 })
 
 // FIND BY ID USER
 exports.findRatingByIdUser = wrapAsync(async (req, res, next) => {
     const { idUser } = req.params
-    await ratingsModel.findRatingByIdUser(idUser, (err, datosRating) => {
-        if(err){
-            next(new AppError(err, 404))
-        } else{
-            res.status(200).json(datosRating)
-        }
-    })
+    try {
+        const datosRating = await ratingsModel.findRatingByIdUser(idUser)
+        res.status(200).json(datosRating)
+    } catch (err) {
+        next(new AppError(err.message || err, 404))
+    }
 })
 
 // FIND BY ID PROJECT
 exports.findRatingByIdProject = wrapAsync(async (req, res, next) => {
     const { id } = req.params
-    await ratingsModel.findRatingByIdProject(id, async (err, datosRating) => {
-        if(err){
-            res.status(204)
-        } else{
+    let datosRating
+    try {
+        datosRating = await ratingsModel.findRatingByIdProject(id)
+    } catch (err) {
+        res.status(204)
+        return
+    }
 
-            const datosUsers = await usersModel.find({active: true, profile: "Usuario"})
-
-            const result = {
-                ratingData: datosRating,
-                usersData: datosUsers
-            }
-
-            res.status(200).json(result)
-        }
-    })
+    const datosUsers = await usersModel.find({active: true, profile: "Usuario"})
+    const result = {
+        ratingData: datosRating,
+        usersData: datosUsers
+    }
+    res.status(200).json(result)
 })
 
 // CREATE RATING
@@ -100,13 +96,12 @@ exports.createRating = wrapAsync(async (req, res, next) => {
             opinion: opinion
         }
 
-        await ratingsModel.createRating(newRating, (err, datosCreatedRating) => {   
-            if(err){
-                next(new AppError(err, 400))
-            } else{
-                res.status(200).json(datosCreatedRating)
-            }
-        })
+        try {
+            const datosCreatedRating = await ratingsModel.createRating(newRating)
+            res.status(200).json(datosCreatedRating)
+        } catch (err) {
+            next(new AppError(err.message || err, 400))
+        }
     } else{
         next(new AppError("No puedes hacer más de una valoración sobre un mismo proyecto", 400))
     }
@@ -117,11 +112,10 @@ exports.changeAproved = wrapAsync(async (req, res, next) => {
     const { id } = req.params
     const { aproved } = req.body
     
-    await ratingsModel.changeAproved(id, aproved, async (err, datosAprovedRating) => {
-        if(err){
-            next(new AppError(err, 500))
-        } else{
-            res.status(200).json(datosAprovedRating)
-        }
-    })
+    try {
+        const datosAprovedRating = await ratingsModel.changeAproved(id, aproved)
+        res.status(200).json(datosAprovedRating)
+    } catch (err) {
+        next(new AppError(err.message || err, 500))
+    }
 })

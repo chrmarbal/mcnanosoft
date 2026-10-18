@@ -19,13 +19,12 @@ function wrapAsync(fn) {
 
 // FIND ALL
 exports.findAllPurchases = wrapAsync(async (req, res, next) => {
-    await purchasesModel.findAll((err, datosPurchases) => {
-        if(err){
-            next(new AppError(err, 404))
-        } else{
-            res.status(200).json(datosPurchases)
-        }
-    })   
+    try {
+        const datosPurchases = await purchasesModel.findAll()
+        res.status(200).json(datosPurchases)
+    } catch (err) {
+        next(new AppError(err.message || err, 404))
+    }
 })
 
 // CREATE PURCHASE
@@ -40,13 +39,12 @@ exports.createPurchase = wrapAsync(async (req, res, next) => {
         amount: amount
     }
 
-    await purchasesModel.createPurchase(newPurchase, (err, datosCreatedPurchase) => {
-        if(err){
-            next(new AppError(err, 400))
-        } else{
-            res.status(200).json(datosCreatedPurchase)
-        }
-    })
+    try {
+        const datosCreatedPurchase = await purchasesModel.createPurchase(newPurchase)
+        res.status(200).json(datosCreatedPurchase)
+    } catch (err) {
+        next(new AppError(err.message || err, 400))
+    }
 })
 
 // FIND BY ID
@@ -71,13 +69,12 @@ exports.findPurchaseByIdUser = wrapAsync(async (req, res, next) => {
         next(new AppError("No tienes permiso para consultar estas compras", 403))
         return
     }
-    await purchasesModel.findPurchaseByIdUser(idUser, (err, datosPurchases) => {
-        if(err){
-            next(new AppError(err, 404))
-        } else{
-            res.status(200).json(datosPurchases)
-        }
-    })
+    try {
+        const datosPurchases = await purchasesModel.findPurchaseByIdUser(idUser)
+        res.status(200).json(datosPurchases)
+    } catch (err) {
+        next(new AppError(err.message || err, 404))
+    }
 })
 
 // UPDATE STATE BY ID
@@ -117,16 +114,15 @@ exports.updateStateById = wrapAsync(async (req, res, next) => {
     }
 
     async function updatePurchaseState(){
-        await purchasesModel.updateStateById(id, state, async (err, datosUpdatedPurchase) => {
-            if(err){
-                next(new AppError(err, 404))
-            } else{
-                const user = await usersModel.findById(datosUpdatedPurchase.idUser)
-                if(String(currentUser._id) === String(user._id)){
-                    req.session.userLogued.data = user
-                }
-                res.status(200).json({purchaseData: datosUpdatedPurchase, userData: user})
+        try {
+            const datosUpdatedPurchase = await purchasesModel.updateStateById(id, state)
+            const user = await usersModel.findById(datosUpdatedPurchase.idUser)
+            if(String(currentUser._id) === String(user._id)){
+                req.session.userLogued.data = user
             }
-        })
+            res.status(200).json({purchaseData: datosUpdatedPurchase, userData: user})
+        } catch (err) {
+            next(new AppError(err.message || err, 404))
+        }
     }
 })

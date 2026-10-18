@@ -24,34 +24,33 @@ exports.addItemToCart = async (req, res, next) => {
 
     let cart = new Cart(req.session.cart ? req.session.cart : {})
 
-    await projectModel.findProjectById(id, (err, projectFound) => {
-        if(err){
-            next(new AppError(err, 404))
-        } else{
-            let addItem = true
+    try {
+        const projectFound = await projectModel.findProjectById(id)
+        let addItem = true
 
-            if(cart.getItems().length > 0){
-                for (let item of cart.getItems()) {
-                    if(item.item._id == projectFound._id){
-                        addItem = false
-                        break
-                    } 
+        if(cart.getItems().length > 0){
+            for (let item of cart.getItems()) {
+                if(item.item._id == projectFound._id){
+                    addItem = false
+                    break
                 }
             }
-
-            if(!addItem){
-                next(new AppError("Ya tienes este proyecto en el carrito", 400))
-            } else{
-                cart.add(projectFound, id)
-                req.session.cart = cart
-                res.status(200).json({
-                    title: "Carrito",
-                    products: cart.getItems(),
-                    totalPrice: cart.totalPrice
-                })
-            }
         }
-    }) 
+
+        if(!addItem){
+            next(new AppError("Ya tienes este proyecto en el carrito", 400))
+        } else{
+            cart.add(projectFound, id)
+            req.session.cart = cart
+            res.status(200).json({
+                title: "Carrito",
+                products: cart.getItems(),
+                totalPrice: cart.totalPrice
+            })
+        }
+    } catch (err) {
+        next(new AppError(err.message || err, 404))
+    }
 }
 
 exports.deleteItemFromCart = (req, res, next) => {

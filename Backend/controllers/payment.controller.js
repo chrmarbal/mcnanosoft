@@ -47,15 +47,11 @@ exports.createCheckoutSession = async (req, res, next) => {
             amount: total
         }
 
-        const purchase = await new Promise((resolve, reject) => {
-            purchasesModel.createPurchase(newPurchase, (err, created) => err ? reject(err) : resolve(created))
-        })
+        const purchase = await purchasesModel.createPurchase(newPurchase)
 
         const paidItems = checkoutItems.filter(item => item.price > 0)
         if(paidItems.length === 0){
-            await new Promise((resolve, reject) => {
-                purchasesModel.updateStateById(purchase._id, "Pagado", (err, updatedPurchase) => err ? reject(err) : resolve(updatedPurchase))
-            })
+            await purchasesModel.updateStateById(purchase._id, "Pagado")
             const updatedUser = await usersModel.findById(user._id)
             req.session.userLogued.data = updatedUser
             const emptyCart = new Cart({})

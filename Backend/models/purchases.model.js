@@ -45,65 +45,54 @@ const purchasesSchema = new mongoose.Schema({
 
 const purchases = mongoose.model("purchases", purchasesSchema)
 
-let error = "No hay datos"
 // <=============== CRUD PURCHASES ===============>
 
 // CREATE PURCHASE
-purchases.createPurchase = async (purchaseData, result) => {
-    let createdPurchase
+purchases.createPurchase = async (purchaseData) => {
     purchaseData.purchased_at = new Date()
     
     const newPurchase = new purchases(purchaseData)
-    await newPurchase.save()
-    .then((datos) => {
-        result(null, datos)
-    })
-    .catch((err) => {
-        result(err, null) 
-    })    
+    return await newPurchase.save()
 }
 
 // FIND ALL PURCHASES
-purchases.findAll = async (result) => {
+purchases.findAll = async () => {
     const datos = await purchases.find({})
     if(datos && datos.length > 0){
-        result(null, datos)
+        return datos
     } else{
-        result(error, null)
+        throw new Error("No hay datos")
     }
 }
 
 // FIND PURCHASE BY ID
-purchases.findPurchaseById = async (id, result) => {
-    error = "No se ha encontrado la compra"
+purchases.findPurchaseById = async (id) => {
     const datos = await purchases.findById(id)
     if(datos){
-        result(null, datos)
+        return datos
     } else{
-        result(error, null)
+        throw new Error("No se ha encontrado la compra")
     }
 }
 
 // FIND PURCHASE BY USER ID
-purchases.findPurchaseByIdUser = async (idUser, result) => {
-    error = "No se ha encontrado la compra"
+purchases.findPurchaseByIdUser = async (idUser) => {
     const datos = await purchases.find({idUser: idUser})
     if(datos){
-        result(null, datos)
+        return datos
     } else{
-        result(error, null)
+        throw new Error("No se ha encontrado la compra")
     }
 }
 
 // UPDATE STATE OF PURCHASE BY ID
-purchases.updateStateById = async (id, newState, result) => {
+purchases.updateStateById = async (id, newState) => {
     try {
         const purchase = await purchases.findById(id)
         if (!purchase) throw new Error("Compra no encontrada")
 
         if (purchase.state === newState) {
-            result(null, purchase)
-            return
+            return purchase
         }
 
         const updatedPurchase = await purchases.findByIdAndUpdate(
@@ -147,10 +136,10 @@ purchases.updateStateById = async (id, newState, result) => {
             await user.save()
         }
 
-        result(null, updatedPurchase)
+        return updatedPurchase
     } catch (err) {
         console.error("Error updateStateById:", err.message)
-        result("No se ha podido actualizar el estado de la compra", null)
+        throw new Error("No se ha podido actualizar el estado de la compra")
     }
 }
 
