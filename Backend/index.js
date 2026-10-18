@@ -35,7 +35,7 @@ try {
 }
 
 // CONFIGURACIÓN CORS
-const whiteList = ["http://localhost:5173", "https://localhost:5173"]
+const whiteList = ["http://localhost:5173", "https://localhost:5173", "https://mcnanosoft.vercel.app"]
 const corsOptions = {
     origin: (origin, callback) => {
         if(whiteList.includes(origin) || !origin){
