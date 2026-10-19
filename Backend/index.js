@@ -73,6 +73,17 @@ app.use(methodOverride("_method")) // Para Poder hacer Patch y Delete
 app.use(express.static(path.join(__dirname, "public"))) // Asignamos la carpeta "public" como la carpeta de contenido estático (imágenes, css, etc.)
 app.use(morganMW.usingMorgan()) // Usamos la configuración de Morgan para añadir los logs de acceso al API
 
+// MIDDLEWARE DE CONEXIÓN SERVERLESS
+app.use(async (req, res, next) => {
+    try {
+        await mongoDBConfig.conectarMongoDB()
+        next()
+    } catch (err) {
+        console.error("Error crítico de conexión a MongoDB en middleware:", err)
+        next(new AppError("Error de conexión con la base de datos", 500))
+    }
+})
+
 // RUTAS
 app.use(`/api/${process.env.API_VERSION}/users`, usersRoutes)
 app.use(`/api/${process.env.API_VERSION}/projects`, projectsRoutes)
@@ -176,3 +187,6 @@ if(https_server){
         }
     })
 }
+
+// Exportamos la app para Vercel
+module.exports = app
