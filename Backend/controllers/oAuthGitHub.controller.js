@@ -4,6 +4,7 @@ require("../middlewares/oAuthGitHub.mw")
 const AppError = require("../utils/AppError")
 const jwtMW = require("../middlewares/jwt.mw")
 const usersModel = require("../models/users.model")
+const { normalizeOAuthUsername } = require("../utils/usernames")
 
 // Inicia la autenticación con GitHub
 exports.passportAuthenticate = passport.authenticate("github", { scope: ["user", "user:email"] })
@@ -17,18 +18,19 @@ exports.passportCallback = passport.authenticate("github", {
 // Éxito en la autenticación
 exports.passportSuccess = async (req, res, next) => {
     let userDataGitHub = req.session.passport.user
+    const username = normalizeOAuthUsername(userDataGitHub.username)
 
     const users = await usersModel.find({profile: "Usuario"})
     let addUser = true
     for (let user of users) {
-        if(user.username == userDataGitHub.username){
+        if(user.username == username){
             addUser = false
             break
         }
     }
 
     const userData = {
-        username: userDataGitHub.username,
+        username,
         firstName: userDataGitHub.username,
         lastName: userDataGitHub.username,
         profilePicture: userDataGitHub.photos[0].value,

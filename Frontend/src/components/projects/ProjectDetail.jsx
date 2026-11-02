@@ -2,6 +2,7 @@ import React, { useContext } from 'react'
 import "../../css/Library.css"
 import { toastContext } from '../../context/ToastContext'
 import axios from 'axios'
+import { getProjectImageUrl } from './projectImages'
 
 const ProjectDetail = ({ project }) => {
   const {mostrarToast} = useContext(toastContext)
@@ -45,7 +46,7 @@ const ProjectDetail = ({ project }) => {
   return (
     <div className="project-card">
       <div className="project-header">
-        <img className="project-logo" src={`https://localhost:3016/${project.projectIcon}`} alt={`${project.name} Logo`} draggable={false}/>
+        <img className="project-logo" src={getProjectImageUrl(project.projectIcon)} alt={`${project.name} Logo`} draggable={false}/>
         <h2>{project.name}</h2>
         {project.price == "FREE" && project.gitHubRepoUrl && (
           <a href={project.gitHubRepoUrl} target="_blank" rel="noopener noreferrer" className="githubButton">
@@ -56,7 +57,7 @@ const ProjectDetail = ({ project }) => {
       <p className="project-description">{project.description}</p>
 
       <div className="project-media">
-        <img className="project-cover" src={`https://localhost:3016/${project.thumbnail}`} alt={`${project.name} Cover`} draggable={false}/>
+        <img className="project-cover" src={getProjectImageUrl(project.thumbnail)} alt={`${project.name} Cover`} draggable={false}/>
       </div>
 
       <button className="download-button" onClick={handleDownload}>

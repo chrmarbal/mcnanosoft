@@ -6,6 +6,7 @@ import { toastContext } from '../../context/ToastContext'
 import { Link, useNavigate } from 'react-router-dom'
 import StarBorder from '../../components/shared/StarBorder'
 import { userContext } from '../../context/UserContext'
+import { isValidUsername, USERNAME_HELP } from '../../utils/username'
 
 function New() {
 
@@ -18,12 +19,12 @@ function New() {
     const [username, setUsername] = useState("")
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
-    const [repeatPassword, setRepeatPassword] = useState("")
     const [profilePicture, setProfilePicture] = useState("")
     const [profilePictureName, setProfilePictureName] = useState("Selecciona un Archivo")
 
     const [errorPassword, setErrorPassword] = useState("")
     const [errorRepeatPassword, setErrorRepeatPassword] = useState("")
+    const [errorUsername, setErrorUsername] = useState("")
 
     const handleFirstName = (e) => {
         setFirstName(e.target.value)
@@ -35,6 +36,7 @@ function New() {
 
     const handleUsername = (e) => {
         setUsername(e.target.value)
+        setErrorUsername(e.target.value && !isValidUsername(e.target.value) ? USERNAME_HELP : "")
     }
 
     const handleEmail = (e) => {
@@ -47,7 +49,6 @@ function New() {
     }
 
     const handleRepeatPassword = (e) => {
-        setRepeatPassword(e.target.value)
         setErrorRepeatPassword(e.target.value !== password ? "Las contraseñas deben coincidir" : "")
     }
 
@@ -58,6 +59,10 @@ function New() {
 
     const handleSubmit = async (e) => {
         e.preventDefault()
+        if (!isValidUsername(username)) {
+            setErrorUsername(USERNAME_HELP)
+            return
+        }
         const user = {
             firstName: firstName,
             lastName: lastName,
@@ -87,7 +92,7 @@ function New() {
         const regexMayuscula = /[A-Z]/
         const regexMinuscula = /[a-z]/
         const regexNumero = /\d/
-        const regexCarEsp = /[!@#$%^&*(),.?":{}|<>_=+\-]/
+        const regexCarEsp = /[!@#$%^&*(),.?":{}|<>_=+-]/
     
         if (!regexMayuscula.test(password)){
             return "La contraseña debe tener al menos una mayúscula"
@@ -134,7 +139,8 @@ function New() {
 
                 <label htmlFor="username">Nombre de Usuario</label>
                 <br />
-                <TextField className="newUserText" size="small" onChange={handleUsername} variant="outlined" required></TextField>
+                <TextField className="newUserText" size="small" onChange={handleUsername} variant="outlined" required inputProps={{ minLength: 3, maxLength: 30, pattern: "[A-Za-z0-9][A-Za-z0-9._-]{1,28}[A-Za-z0-9]", title: USERNAME_HELP }}></TextField>
+                {errorUsername ? <span className="error">{errorUsername}</span> : ""}
 
                 <br /><br />
 

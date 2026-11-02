@@ -5,6 +5,7 @@ const AppError = require("../utils/AppError")
 const jwtMW = require("../middlewares/jwt.mw")
 const googleApis = require("googleapis").google
 const usersModel = require("../models/users.model")
+const { normalizeOAuthUsername } = require("../utils/usernames")
 
 exports.passportAuthenticate = passport.authenticate("google", {scope: ["email", "profile"]})
 
@@ -16,18 +17,19 @@ exports.passportCallback = passport.authenticate("google", {
 exports.passportSuccess = async (req, res, next) => {
     // Login OK con Google
     let userDataGoogle = req.session.passport.user
+    const username = normalizeOAuthUsername(userDataGoogle.displayName)
     
     const users = await usersModel.find({profile: "Usuario"})
     let addUser = true
     for (let user of users) {
-        if(user.username == userDataGoogle.displayName){
+        if(user.username == username){
             addUser = false
             break
         }
     }
 
     let userData = {
-        username: userDataGoogle.displayName,
+        username,
         firstName: userDataGoogle.given_name,
         lastName: userDataGoogle.family_name ? userDataGoogle.family_name : userDataGoogle.given_name,
         email: userDataGoogle.email,

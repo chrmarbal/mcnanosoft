@@ -8,6 +8,7 @@ import ResultsSkeleton from '../../components/loaders/ResultsSkeleton'
 import { cartContext } from '../../context/CartContext'
 import { userContext } from '../../context/UserContext'
 import { Link } from 'react-router-dom'
+import { getProjectImageUrl } from '../../components/projects/projectImages'
 
 function Index() {
 
@@ -164,7 +165,7 @@ function Index() {
                 pr.deleted && userData && userData.data && userData.data.profile == "Administrador" ? (
                   <div key={index} className="col-12 col-sm-6 col-md-4">
                     <div className="projectContainer deletedItem h-100">
-                      <Link to={"/projects/" + pr.name}><img src={"https://localhost:3016/" + pr.projectIcon} alt={"Icon " + pr.name} draggable="false" /></Link>
+                      <Link to={"/projects/" + pr.name}><img src={getProjectImageUrl(pr.projectIcon)} alt={"Icon " + pr.name} draggable="false" /></Link>
                       <p>{pr.name}</p>
                       <p>{pr.price}</p>
                       <div>
@@ -178,7 +179,7 @@ function Index() {
                   userData && userData.data && userData.data.profile == "Administrador" || !pr.deleted ? (
                     <div key={index} className="col-12 col-sm-6 col-md-4">
                       <div className="projectContainer h-100">
-                        <Link to={"/projects/" + pr.name}><img src={"https://localhost:3016/" + pr.projectIcon} alt={"Icon " + pr.name} draggable="false" /></Link>
+                        <Link to={"/projects/" + pr.name}><img src={getProjectImageUrl(pr.projectIcon)} alt={"Icon " + pr.name} draggable="false" /></Link>
                         <p>{pr.name}</p>
                         <p>{pr.price}</p>
                         <div>

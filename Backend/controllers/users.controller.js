@@ -3,10 +3,11 @@ const usersModel = require("../models/users.model")
 const AppError = require("../utils/AppError")
 const bcrypt = require("../utils/bcrypt")
 const jwtMW = require("../middlewares/jwt.mw")
-const fs = require("fs")
 const { promisify } = require("util")
 const nodemailer = require("nodemailer")
 const crypto = require("crypto")
+const cloudinaryImages = require("../utils/cloudinary")
+const { isValidUsername } = require("../utils/usernames")
 
 let tokenCookie = {}
 
@@ -36,6 +37,10 @@ exports.findAllUsers = wrapAsync(async (req, res, next) => {
 exports.register = wrapAsync(async (req, res, next) => {
     const { username, password, firstName, lastName, email } = JSON.parse(req.body.user)
     const profilePicture = req.file
+
+    if (!isValidUsername(username)) {
+        throw new AppError("El nombre de usuario debe tener entre 3 y 30 caracteres: letras, números, punto, guion o guion bajo; debe empezar y terminar con una letra o número", 400)
+    }
 
     if(req.session.userLogued && req.session.userLogued.data.profile != "Administrador"){
         next(new AppError("No estás autorizado", 403))
@@ -82,10 +87,14 @@ exports.register = wrapAsync(async (req, res, next) => {
                 }
 
                 if(profilePicture){
-                    const profilePictureUrl = "imgs/users/" + profilePicture.originalname
-                    await fs.promises.writeFile("public/" + profilePictureUrl, profilePicture.buffer)
-
-                    newUser.profilePicture = profilePictureUrl
+                    const folder = "mcnanosoft/users"
+                    const uploadedImage = await cloudinaryImages.replaceImage(
+                        profilePicture.buffer,
+                        null,
+                        folder,
+                        username
+                    )
+                    newUser.profilePicture = uploadedImage.secure_url
                 }
 
                 // CIFRAR CONTRASEÑA
@@ -129,95 +138,101 @@ exports.findUserByID = wrapAsync(async (req, res, next) => {
 // UPDATE BY ID
 exports.updateUserByID = wrapAsync(async (req, res, next) => {
     const { id } = req.params
-    const { username, firstName, lastName, email, currentPassword = "", newPassword = "" } = JSON.parse(req.body.user)
+    const {
+        username,
+        firstName,
+        lastName,
+        email,
+        currentPassword = "",
+        newPassword = ""
+    } = JSON.parse(req.body.user)
     const profilePicture = req.file
+    const userLogued = req.session.userLogued?.data
 
-    const userLogued = req.session.userLogued.data
+    if (String(userLogued?._id) !== id) {
+        throw new AppError("No estás autorizado", 403)
+    }
 
-    if(userLogued._id != id){
-        next(new AppError("No estás autorizado", 403))
-    } else{
-        let updatedUser = {}
-        const user = await usersModel.findById(id)
-        if(currentPassword != "" && newPassword != ""){
-            const validado = await bcrypt.compareLogin(currentPassword, user.password)
-        
-            if(validado){
-                if(newPassword.length < 8){
-                    next(new AppError("Aumenta la longitud de la contraseña en 8 caracteres como mínimo",400))
-                }else if(!newPassword.match(/[A-Z]/)){
-                   next(new AppError("La contraseña debe tener al menos una mayúscula",400))
-                }else if(!newPassword.match(/[a-z]/)){
-                   next(new AppError("La contraseña debe tener al menos una minúscula",400))
-                }else if(!newPassword.match(/[/\d/]/)){
-                   next(new AppError("La contraseña debe tener al menos un número",400))
-                }else if(!newPassword.match(/^(?=.*[!@#$%^&*(),.?":{}|<>_=+-])/)){
-                   next(new AppError("La contraseña debe tener al menos un carácter especial",400))
-                } else{
-    
-                    if(newPassword === currentPassword){
-                        next(new AppError("La nueva contraseña debe ser distinta a la actual", 400))
-                    } else{
-                        const password = await bcrypt.hashPassword(newPassword)
-    
-                        updatedUser = {
-                            username: username,
-                            password: password,
-                            firstName: firstName,
-                            lastName: lastName,
-                            email: email
-                        }
-    
-                        if(profilePicture){
-                            const profilePictureUrl = "imgs/users/" + username + profilePicture.originalname.match(/\.[^.]+$/)
-                            await fs.promises.writeFile("public/" + profilePictureUrl, profilePicture.buffer)
-            
-                            updatedUser.profilePicture = profilePictureUrl
-                        }
-                    }
-                }
-            } else{
-                next(new AppError("La contraseña actual es incorrecta", 400))
-            }
-        } else if(currentPassword == "" && newPassword != ""){
-            next(new AppError("La contraseña actual es requerida", 400))
-        } else if(currentPassword != "" && newPassword == ""){
-            next(new AppError("La nueva contraseña es requerida", 400))
-        } else if(username && username != ""){
-            if(username && username != ""){
-                updatedUser.username = username
-            }
+    const user = await usersModel.findById(id)
+    if (!user) {
+        throw new AppError("No se ha encontrado el Usuario", 404)
+    }
 
-            if(firstName && firstName != ""){
-                updatedUser.firstName = firstName
-            }
-
-            if(lastName && lastName != ""){
-                updatedUser.lastName = lastName
-            }
-
-            if(email && email != ""){
-                updatedUser.email = email
-            }
-
-            if(profilePicture){
-                const profilePictureUrl = "imgs/users/" + username + profilePicture.originalname.match(/\.[^.]+$/)
-                await fs.promises.writeFile("public/" + profilePictureUrl, profilePicture.buffer)
-
-                updatedUser.profilePicture = profilePictureUrl
+    const updatedUser = {}
+    if (username !== undefined && username !== "") {
+        if (!isValidUsername(username)) {
+            throw new AppError("El nombre de usuario debe tener entre 3 y 30 caracteres: letras, números, punto, guion o guion bajo; debe empezar y terminar con una letra o número", 400)
+        }
+        if (username !== user.username) {
+            const usernameInUse = await usersModel.findOne({ username, _id: { $ne: id } })
+            if (usernameInUse) {
+                throw new AppError("El Nombre de Usuario introducido ya está vinculado a una cuenta", 400)
             }
         }
+        updatedUser.username = username
+    }
+    if (firstName) updatedUser.firstName = firstName
+    if (lastName) updatedUser.lastName = lastName
+    if (email) updatedUser.email = email
 
-        if(updatedUser){
-            try {
-                const datosUsuarioActualizado = await usersModel.updateUserById(id, updatedUser)
-                console.log(datosUsuarioActualizado)
-                req.session.userLogued.data = datosUsuarioActualizado
-                res.status(200).json(datosUsuarioActualizado)
-            } catch (err) {
-                next(new AppError(err.message || err, 400))
-            }
+    if (currentPassword || newPassword) {
+        if (!currentPassword) {
+            throw new AppError("La contraseña actual es requerida", 400)
         }
+        if (!newPassword) {
+            throw new AppError("La nueva contraseña es requerida", 400)
+        }
+        if (!(await bcrypt.compareLogin(currentPassword, user.password))) {
+            throw new AppError("La contraseña actual es incorrecta", 400)
+        }
+        if (newPassword.length < 8) {
+            throw new AppError("Aumenta la longitud de la contraseña en 8 caracteres como mínimo", 400)
+        }
+        if (!/[A-Z]/.test(newPassword)) {
+            throw new AppError("La contraseña debe tener al menos una mayúscula", 400)
+        }
+        if (!/[a-z]/.test(newPassword)) {
+            throw new AppError("La contraseña debe tener al menos una minúscula", 400)
+        }
+        if (!/\d/.test(newPassword)) {
+            throw new AppError("La contraseña debe tener al menos un número", 400)
+        }
+        if (!/[!@#$%^&*(),.?":{}|<>_=+-]/.test(newPassword)) {
+            throw new AppError("La contraseña debe tener al menos un carácter especial", 400)
+        }
+        if (newPassword === currentPassword) {
+            throw new AppError("La nueva contraseña debe ser distinta a la actual", 400)
+        }
+        updatedUser.password = await bcrypt.hashPassword(newPassword)
+    }
+
+    const updatedUsername = updatedUser.username || user.username
+    const userFolder = "mcnanosoft/users"
+    if (profilePicture) {
+        const uploadedImage = await cloudinaryImages.replaceImage(
+            profilePicture.buffer,
+            user.profilePicture,
+            userFolder,
+            updatedUsername
+        )
+        updatedUser.profilePicture = uploadedImage.secure_url
+    } else if (updatedUsername !== user.username && user.profilePicture) {
+        const movedImage = await cloudinaryImages.moveImage(
+            user.profilePicture,
+            userFolder,
+            updatedUsername
+        )
+        if (movedImage?.secure_url) {
+            updatedUser.profilePicture = movedImage.secure_url
+        }
+    }
+
+    try {
+        const datosUsuarioActualizado = await usersModel.updateUserById(id, updatedUser)
+        req.session.userLogued.data = datosUsuarioActualizado
+        res.status(200).json(datosUsuarioActualizado)
+    } catch (err) {
+        next(new AppError(err.message || err, 400))
     }
 })
 
@@ -248,6 +263,10 @@ exports.deleteUserByID = wrapAsync(async (req, res, next) => {
 // LOGIN
 exports.login = wrapAsync(async (req, res, next) => {
     const { username, password } = req.body
+
+    if (!isValidUsername(username)) {
+        throw new AppError("El nombre de usuario debe tener entre 3 y 30 caracteres válidos", 400)
+    }
 
     if(req.session.userLogued){
         next(new AppError("Ya estás Logueado", 400))

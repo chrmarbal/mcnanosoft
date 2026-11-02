@@ -4,6 +4,7 @@ import { gsap } from 'gsap'
 import "../css/Index.css"
 import { useSendRequest } from '../components/api/SendRequest'
 import { Link } from 'react-router-dom'
+import { getProjectImageUrl } from '../components/projects/projectImages'
 
 function Index() {
   const sendRequest = useSendRequest()
@@ -89,10 +90,10 @@ function Index() {
       
           <div className="featuredProjects">
             <h1>Proyectos Destacados</h1>
-            <div className="projects-grid">
+            <div className="projects-grid">              
               {featuredProjects.map((project, index) => (
                 <div key={index} className="project-card" style={{
-                  backgroundImage: `url("https://localhost:3016/${project.thumbnail}")`,
+                  backgroundImage: `url("${getProjectImageUrl(project.thumbnail)}")`,
                 }}>
                   <div className="overlayIndex">
                     <h2>{project.name}</h2>

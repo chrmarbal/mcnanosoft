@@ -19,7 +19,7 @@ McnanoSoft es una plataforma para descubrir y gestionar proyectos de software. L
 | Frontend | React 19, Vite, React Router, Material UI, Bootstrap, Axios, GSAP |
 | Backend | Node.js, Express, MongoDB, Mongoose |
 | Autenticación | JWT, sesiones de Express, Passport, OAuth Google/GitHub |
-| Pagos y archivos | Stripe, Google Drive API, Multer, Sharp |
+| Pagos y archivos | Stripe, Cloudinary, Google Drive API, Multer, Sharp |
 | Otros | Nodemailer, React Toastify, Font Awesome |
 
 ## Estructura
@@ -43,8 +43,9 @@ Frontend/
 - Node.js y npm.
 - MongoDB accesible desde el backend.
 - Claves de desarrollo de Stripe y credenciales OAuth de Google/GitHub; el backend inicializa estas estrategias al arrancar.
+- Credenciales de Cloudinary para almacenar imágenes de proyectos y perfiles.
 - Certificados HTTPS locales para Vite y el backend.
-- Credenciales de correo y Google Drive para habilitar recuperación por email y gestión de archivos.
+- Credenciales de correo y Google Drive para habilitar recuperación por email y descarga de archivos de proyectos.
 
 ## Configuración
 
@@ -68,6 +69,9 @@ MONGODB_CONSTRING=mongodb://localhost:27017/mcnanosoft
 SECRET_JWT=cambia-este-secreto
 SESSION_SECRET=cambia-este-secreto
 STRIPE_PRIVATE_API_KEY=sk_test_...
+CLOUDINARY_CLOUD_NAME=
+CLOUDINARY_API_KEY=
+CLOUDINARY_API_SECRET=
 
 # Necesarias para inicializar las estrategias OAuth del backend
 GOOGLE_CLIENT_ID=
@@ -148,8 +152,9 @@ npm run lint
 ## Integraciones
 
 - **Stripe:** configura claves de prueba mientras desarrollas. El servidor valida la sesión de Stripe antes de conceder una compra.
+- **Cloudinary:** las imágenes de proyecto se guardan en `mcnanosoft/projects/<nombre-normalizado>/logo.<ext>` y `thumbnail.<ext>`; las fotos de usuario se guardan en `mcnanosoft/users/<nombre_usuario>.<ext>`. Define las tres variables de Cloudinary en el entorno del backend. Los nombres de usuario admiten entre 3 y 30 letras, números, puntos, guiones y guiones bajos; deben empezar y terminar con letra o número.
 - **Google y GitHub OAuth:** configura los identificadores, secretos y URLs de callback en las consolas correspondientes; son necesarios para iniciar el backend tal como está implementado actualmente.
-- **Google Drive:** el backend espera la clave de la cuenta de servicio en `Backend/private/mcnanosoft-6386bcc17091.json` para almacenar y descargar archivos. Mantén ese archivo fuera del control de versiones.
+- **Google Drive:** se mantiene para almacenar y descargar los archivos ZIP de proyectos. El backend espera la clave de la cuenta de servicio en `Backend/private/mcnanosoft-6386bcc17091.json`; mantén ese archivo fuera del control de versiones.
 - **Correo:** la recuperación de cuenta requiere `EMAIL_USER` y `GOOGLE_APP_PASSWORD`.
 
 No uses claves de producción ni datos personales reales en entornos locales o de prueba.

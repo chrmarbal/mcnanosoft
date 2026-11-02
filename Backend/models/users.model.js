@@ -1,12 +1,14 @@
 const mongoose = require("mongoose")
 const { type } = require("os")
 const { Schema } = mongoose
+const { USERNAME_PATTERN } = require("../utils/usernames")
 
 // Esquema MongoDB
 const usersSchema = new mongoose.Schema({
     username: {
         type: String,
         required: true,
+        match: [USERNAME_PATTERN, "El nombre de usuario debe tener entre 3 y 30 caracteres válidos"],
         unique: true
     },
     password: {

@@ -4,6 +4,7 @@ import { userContext } from '../context/UserContext'
 import "../css/Login.css"
 import { Link } from 'react-router-dom'
 import 'bootstrap/dist/css/bootstrap.min.css'
+import { isValidUsername, USERNAME_HELP } from '../utils/username'
 
 function Login() {
     const sendRequest = useSendRequest()
@@ -11,9 +12,11 @@ function Login() {
 
     const [userName, setUserName] = useState("")
     const [password, setPassword] = useState("")
+    const [usernameError, setUsernameError] = useState("")
 
     const handleUserName = (e) => {
         setUserName(e.target.value)
+        setUsernameError(e.target.value && !isValidUsername(e.target.value) ? USERNAME_HELP : "")
     }
 
     const handlePassword = (e) => {
@@ -22,6 +25,10 @@ function Login() {
 
     const handleSubmit = async (e) => {
         e.preventDefault()
+        if (!isValidUsername(userName)) {
+            setUsernameError(USERNAME_HELP)
+            return
+        }
         const user = {
             username: userName,
             password: password
@@ -57,7 +64,8 @@ function Login() {
                         <form onSubmit={handleSubmit} className="mt-4">
                             <div className="campo mb-3">
                                 <label htmlFor="userName">Usuario</label>
-                                <input type="text" name="userName" id="userName" onChange={handleUserName}/>
+                                <input type="text" name="userName" id="userName" minLength={3} maxLength={30} pattern="[A-Za-z0-9][A-Za-z0-9._-]{1,28}[A-Za-z0-9]" title={USERNAME_HELP} onChange={handleUserName} required/>
+                                <span style={{color: "red"}}>{usernameError}</span>
                             </div>
 
                             <div className="campo">

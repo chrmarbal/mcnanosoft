@@ -5,6 +5,7 @@ import Paper from '@mui/material/Paper'
 import "../css/UserData.css"
 import EditUserData from '../components/users/EditUserData'
 import { useNavigate } from 'react-router-dom'
+import { getProjectImageUrl } from '../components/projects/projectImages'
 
 function UserData() {
     const go = useNavigate()
@@ -43,7 +44,7 @@ function UserData() {
         {userData && userData.data ? <div id="userData">
             <div id="content-userData">
                 <div>
-                    {userData.data.profilePicture ? <img src={"https://localhost:3016/" + userData.data.profilePicture} alt="Profile Picture" draggable={false}/> : userData.data.picture ? <img src={userData.data.picture} alt="Profile Picture" draggable={false}/> : <img src="https://localhost:3016/imgs/default/user.jpg" alt="Profile Picture" draggable={false}/>}
+                    {userData.data.profilePicture ? <img src={getProjectImageUrl(userData.data.profilePicture)} alt="Profile Picture" draggable={false}/> : userData.data.picture ? <img src={userData.data.picture} alt="Profile Picture" draggable={false}/> : <img src="https://localhost:3016/imgs/default/user.jpg" alt="Profile Picture" draggable={false}/>}
                     <p>{userData.data.username}</p>
                     {!userData.data.oAuth && userData.data.profile != "Administrador" ? <button onClick={() => setEditUser(true)}><i className="fa-solid fa-pencil"></i>Editar Cuenta</button> : ""}
                 </div>

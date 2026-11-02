@@ -6,14 +6,14 @@ import path from 'path'
 // Comprobamos si los certificados locales existen
 const certsPath = path.resolve(__dirname, 'certs');
 const hasCerts = fs.existsSync(path.join(certsPath, 'private.key')) && 
-                 fs.existsSync(path.join(certsPath, 'certificate.crt'));
+                 fs.existsSync(path.join(certsPath, 'cert.crt'));
 
 export default defineConfig({
   plugins: [react()],
   server: hasCerts ? {
     https: {
       key: fs.readFileSync(path.join(certsPath, 'private.key')),
-      cert: fs.readFileSync(path.join(certsPath, 'certificate.crt'))
+      cert: fs.readFileSync(path.join(certsPath, 'cert.crt'))
     }
   } : {}
 })

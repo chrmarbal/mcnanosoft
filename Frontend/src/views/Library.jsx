@@ -4,6 +4,7 @@ import { userContext } from '../context/UserContext'
 import { Link, useNavigate } from 'react-router-dom'
 import { useSendRequest } from '../components/api/SendRequest'
 import ProjectDetail from '../components/projects/ProjectDetail'
+import { getProjectImageUrl } from '../components/projects/projectImages'
 
 function Library() {
   const { userData } = useContext(userContext)
@@ -71,7 +72,7 @@ function Library() {
                   className={pr.deleted ? 'deleted' : ''}
                 >
                   <img
-                    src={`https://localhost:3016/${pr.projectIcon}`}
+                    src={getProjectImageUrl(pr.projectIcon)}
                     alt="Project Icon"
                     draggable={false}
                   />

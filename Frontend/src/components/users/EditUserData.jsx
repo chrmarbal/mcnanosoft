@@ -1,15 +1,12 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useState } from 'react'
 import Paper from '@mui/material/Paper'
-import { useSendRequest } from '../api/SendRequest'
 import { toastContext } from '../../context/ToastContext'
 import { userContext } from '../../context/UserContext'
-import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
+import { isValidUsername, USERNAME_HELP } from '../../utils/username'
 
 
 function EditUserData({ userData, setEditUser }) {
-    const go = useNavigate()
-
     const { setUserData } = useContext(userContext)
     const { mostrarToast } = useContext(toastContext)
 
@@ -19,17 +16,18 @@ function EditUserData({ userData, setEditUser }) {
     const [email, setEmail] = useState(userData.email)
     const [currentPassword, setCurrentPassword] = useState("")
     const [newPassword, setNewPassword] = useState("")
-    const [repeatNewPassword, setRepeatNewPassword] = useState("")
     
     const [profilePicture, setProfilePicture] = useState("")
     const [profilePictureName, setProfilePictureName] = useState("Selecciona un Archivo")
 
     const [errorPassword, setErrorPassword] = useState("")
     const [errorRepeatPassword, setErrorRepeatPassword] = useState("")
+    const [errorUsername, setErrorUsername] = useState("")
 
 
     const handleUserName = (e) => {
         setUsername(e.target.value)
+        setErrorUsername(e.target.value && !isValidUsername(e.target.value) ? USERNAME_HELP : "")
     }
 
     const handleFirstName = (e) => {
@@ -54,7 +52,6 @@ function EditUserData({ userData, setEditUser }) {
     }
 
     const handleRepeatNewPassword = (e) => {
-        setRepeatNewPassword(e.target.value)
         setErrorRepeatPassword(e.target.value !== newPassword ? "Las contraseñas no coinciden" : "")
     }
 
@@ -65,6 +62,10 @@ function EditUserData({ userData, setEditUser }) {
 
     const handleSubmit = async (e) => {
         e.preventDefault()
+        if (!isValidUsername(username)) {
+            setErrorUsername(USERNAME_HELP)
+            return
+        }
 
         const updatedUser = {
             username: username,
@@ -100,7 +101,7 @@ function EditUserData({ userData, setEditUser }) {
         const regexMayuscula = /[A-Z]/
         const regexMinuscula = /[a-z]/
         const regexNumero = /\d/
-        const regexCarEsp = /[!@#$%^&*(),.?":{}|<>_=+\-]/
+        const regexCarEsp = /[!@#$%^&*(),.?":{}|<>_=+-]/
     
         if (!regexMayuscula.test(password)){
           return "La contraseña debe tener al menos una mayúscula"
@@ -134,7 +135,8 @@ function EditUserData({ userData, setEditUser }) {
             <div className="campos">
                 <div className="campo">
                     <label>Nombre de Usuario</label>
-                    <input type="text" defaultValue={userData.username} id="userData-username" onChange={handleUserName}/>
+                    <input type="text" defaultValue={userData.username} id="userData-username" minLength={3} maxLength={30} pattern="[A-Za-z0-9][A-Za-z0-9._-]{1,28}[A-Za-z0-9]" title={USERNAME_HELP} onChange={handleUserName} required/>
+                    <span style={{color: "#e74c3c"}} className="error">{errorUsername}</span>
                 </div>
 
                 <div className="campo">

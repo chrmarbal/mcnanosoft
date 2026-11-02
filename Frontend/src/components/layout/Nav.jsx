@@ -4,6 +4,7 @@ import { userContext } from '../../context/UserContext'
 import { cartContext } from '../../context/CartContext'
 import { useSendRequest } from '../api/SendRequest'
 import CartSkeleton from '../loaders/CartSkeleton'
+import { getProjectImageUrl } from '../projects/projectImages'
 import "../../css/Nav.css"
 
 function Nav() {
@@ -86,7 +87,7 @@ function Nav() {
                 {userData.data.profilePicture && !userData.data.oAuth ? <>
                     <button className="nav-menu-toggle" onClick={toggleMenu}><i className="fa-solid fa-bars"></i></button>
                     <Link to="/profile">
-                        <img src={"https://localhost:3016/" + userData.data.profilePicture} alt="Profile Picture" draggable={false}/>
+                        <img src={getProjectImageUrl(userData.data.profilePicture)} alt="Profile Picture" draggable={false}/>
                     </Link>
                 </> : userData.data.oAuth ? <>
                     <button className="nav-menu-toggle" onClick={toggleMenu}><i className="fa-solid fa-bars"></i></button>
@@ -111,7 +112,7 @@ function Nav() {
                 <h2>Tu carrito</h2>
                 {isCartLoading ? <CartSkeleton /> : cartProducts?.products?.length > 0 ? cartProducts.products.map((product, index) => (
                     <div key={product.item._id || index} className="cartItem">
-                        <img src={`https://localhost:3016/${product.item.projectIcon}`} alt="" draggable={false}/>
+                        <img src={getProjectImageUrl(product.item.projectIcon)} alt="" draggable={false}/>
                         <div className="cartItemInfo">
                             <p className="itemName">{product.item.name}</p>
                             <p className="itemPrice">{product.item.price === "FREE" ? "Gratis" : `${product.price}€`}</p>

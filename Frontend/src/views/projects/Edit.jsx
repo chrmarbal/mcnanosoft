@@ -105,9 +105,8 @@ function Edit() {
       setDescription(project.description)
       setPrice(project.price === "FREE" ? 0 : Number.parseFloat(project.price.replace(/[^\d.,]/g, "").replace(",", ".")) || 0)
 
-      setIconName(project.projectIcon.replace("imgs/projects/", "")) 
-      console.log(project.thumbnail)
-      setThumbnailName(project.thumbnail.replace("imgs/projects/portadas/", ""))
+      setIconName("Logo.png")
+      setThumbnailName("Thumbnail.png")
     
       setProjectData(project)
     }
@@ -135,13 +134,13 @@ function Edit() {
         {projectData && projectData._id ? <form onSubmit={handleSubmit}>
           <label htmlFor="projectName">Nombre</label>
           <br />
-          <TextField className="newProjectText" size="small" onChange={handleName} value={projectData.name} variant="outlined"></TextField>
+          <TextField className="newProjectText" size="small" onChange={handleName} value={name} variant="outlined"></TextField>
 
           <br /><br />
 
           <label htmlFor="projectDescription">Descripción</label>
           <br />
-          <TextField className="newProjectText" size="small" onChange={handleDescription} value={projectData.description} variant="outlined"></TextField>
+          <TextField className="newProjectText" size="small" onChange={handleDescription} value={description} variant="outlined"></TextField>
 
           <br /><br />
 

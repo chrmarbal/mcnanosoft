@@ -30,23 +30,25 @@ const defaultUsers = async () => {
             created_at: new Date()
         },
         {
-            username: "paco_porras",
+            username: "aitor_cazador",
             password: "$2b$12$gpsDblSYYsw0KtNMF46oFOM3FwmFepHJWDN8Pea7jWOt1Sae9QdZ2",
-            firstName: "Paco",
-            lastName: "Porras",
-            email: "pacoPorras@gmail.com",
+            firstName: "Aitor",
+            lastName: "Cazador",
+            email: "aitor.cazador@gmail.com",
             library: projects[0] ? [{ idProject: projects[0]._id }] : [],
+            profilePicture: "https://res.cloudinary.com/lrqcuid8/image/upload/v1793636518/mcnanosoft/users/aitor_cazador.png",
             profile: "Usuario",
             active: true,
             created_at: new Date()
         },
         {
-            username: "morenito69",
+            username: "jude_sharp",
             password: "$2b$12$TMLqxuIV9Tv/pf9yD1ispuIN8vjezmL7hTwx9k4YVh/zOXfCnv1um",
-            firstName: "Morenito",
-            lastName: "Morenote",
-            email: "morenito69@gmail.com",
+            firstName: "Jude",
+            lastName: "Sharp",
+            email: "jude.sharp@gmail.com",
             library: projects[1] ? [{ idProject: projects[1]._id }] : [],
+            profilePicture: "https://res.cloudinary.com/lrqcuid8/image/upload/v1793636528/mcnanosoft/users/jude_sharp.png",
             profile: "Usuario",
             active: true,
             created_at: new Date()

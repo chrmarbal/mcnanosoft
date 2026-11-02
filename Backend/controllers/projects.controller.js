@@ -5,9 +5,9 @@ const AppError = require("../utils/AppError")
 const { google } = require("googleapis")
 const { Readable } = require("stream")
 const path = require("path")
-const fs = require("fs")
-const sharp = require("sharp")
-const os = require("os")
+const cloudinaryImages = require("../utils/cloudinary")
+
+const GOOGLE_DRIVE_SCOPE = "https://www.googleapis.com/auth/drive"
 
 // Función Para Capturar Errores Asíncronos
 function wrapAsync(fn) {
@@ -18,6 +18,12 @@ function wrapAsync(fn) {
     }
 }
 
+// Solo Para Producción
+let credentialsConfig
+if (process.env.GOOGLE_CREDENTIALS_JSON) {
+    credentialsConfig = JSON.parse(process.env.GOOGLE_CREDENTIALS_JSON)
+}
+
 // #region CRUD PROJECTS
 // <============ CRUD PROJECTS ============>
 
@@ -25,9 +31,6 @@ function wrapAsync(fn) {
 exports.findAllProjects = wrapAsync(async (req, res, next) => {
     try {
         const datosProjects = await projectsModel.findAll()
-        for (let project of datosProjects) {
-            project.projectIcon = await sharp(project.projectIcon).resize(300, 200)
-        }
         res.status(200).json(datosProjects)
     } catch (err) {
         next(new AppError(err.message || err, 404))
@@ -47,14 +50,18 @@ exports.getLibrary = wrapAsync(async (req, res, next) => {
 // CREATE PROJECT
 exports.createProject = wrapAsync(async (req, res, next) => {
     const { name, description, price, size, technology } = JSON.parse(req.body.project)
-    const icon = req.files["icon"]?.[0]
-    const projectIcon = "imgs/projects/" + icon.originalname
-    const thumbnail = req.files["thumbnail"]?.[0]
-    const thumbnailUrl = "imgs/projects/portadas/" + thumbnail.originalname 
-    const projectSource = req.files["source"]?.[0]
+    const icon = req.files?.["icon"]?.[0]
+    const thumbnail = req.files?.["thumbnail"]?.[0]
+    const projectSource = req.files?.["source"]?.[0]
 
-    await fs.promises.writeFile("public/" + projectIcon, icon.buffer)
-    await fs.promises.writeFile("public/" + thumbnailUrl, thumbnail.buffer)
+    if (!icon || !thumbnail || !projectSource) {
+        throw new AppError("El logo, la portada y el código fuente son obligatorios", 400)
+    }
+
+    const { projectIcon, thumbnail: thumbnailUrl } = await uploadProjectImages(name, {
+        icon,
+        thumbnail
+    })
 
     let projectUrl = await uploadToGoogleDrive(projectSource, name)
 
@@ -102,6 +109,13 @@ exports.findProjectByID = wrapAsync(async (req, res, next) => {
 exports.updateProjectByID = wrapAsync(async (req, res, next) => {
     const { id } = req.params
     const { name, description, price, size = null, deleted = false} = JSON.parse(req.body.project)
+    const existingProject = await projectsModel.findById(id)
+    if (!existingProject) {
+        throw new AppError("No se ha encontrado el Proyecto", 404)
+    }
+    if (name !== existingProject.name && await projectsModel.findOne({ name, _id: { $ne: id } })) {
+        throw new AppError("Ya existe un proyecto con ese nombre", 400)
+    }
 
     const numericPrice = Number(price)
     const projectPrice = String(price).toUpperCase() === "FREE" || numericPrice === 0
@@ -120,25 +134,22 @@ exports.updateProjectByID = wrapAsync(async (req, res, next) => {
         updatedProject.size = size
     }
 
+    const icon = req.files?.["icon"]?.[0]
+    const thumbnail = req.files?.["thumbnail"]?.[0]
+    if (icon || thumbnail || existingProject.name !== name) {
+        const imageUrls = await uploadProjectImages(name, {
+            icon,
+            thumbnail
+        }, existingProject)
+        if (imageUrls.projectIcon) {
+            updatedProject.projectIcon = imageUrls.projectIcon
+        }
+        if (imageUrls.thumbnail) {
+            updatedProject.thumbnail = imageUrls.thumbnail
+        }
+    }
+
     if(req.files){
-        if(req.files["icon"]?.[0]){
-            const icon = req.files["icon"]?.[0]
-            const projectIcon = "imgs/projects/" + icon.originalname
-    
-            await fs.promises.writeFile("public/" + projectIcon, icon.buffer)
-    
-            updatedProject.projectIcon = projectIcon
-        }
-    
-        if(req.files["thumbnail"]?.[0]){
-            const thumbnail = req.files["thumbnail"]?.[0]
-            const thumbnailUrl = "imgs/projects/portadas/" + thumbnail.originalname
-        
-            await fs.promises.writeFile("public/" + thumbnailUrl, thumbnail.buffer)
-    
-            updatedProject.thumbnail = thumbnailUrl
-        }
-         
         if(req.files["source"]?.[0]){
             const projectSource = req.files["source"]?.[0]
     
@@ -160,12 +171,18 @@ exports.updateProjectByID = wrapAsync(async (req, res, next) => {
 exports.deleteProjectByID = wrapAsync(async (req, res, next) => {
     const { id } = req.params
 
+    let datosProyectoEliminado
     try {
-        const datosProyectoEliminado = await projectsModel.deleteProjectById(id)
-        res.status(200).json(datosProyectoEliminado)
+        datosProyectoEliminado = await projectsModel.deleteProjectById(id)
     } catch (err) {
-        next(new AppError(err.message || err, 404))
+        return next(new AppError(err.message || err, 404))
     }
+
+    await Promise.all([
+        cloudinaryImages.deleteImage(datosProyectoEliminado.projectIcon),
+        cloudinaryImages.deleteImage(datosProyectoEliminado.thumbnail)
+    ])
+    res.status(200).json(datosProyectoEliminado)
 })
 
 // DOWNLOAD PROJECT
@@ -173,8 +190,11 @@ exports.downloadProject = wrapAsync(async(req, res, next) => {
     const { projectUrl } = req.params
 
     const auth = new google.auth.GoogleAuth({
-        keyFile: path.join(__dirname, "../private/mcnanosoft-6386bcc17091.json"),
-        scopes: ["https://www.googleapis.com/auth/drive"],
+        ...(credentialsConfig
+            ? { credentials: credentialsConfig }
+            : { keyFile: path.join(__dirname, "../private/mcnanosoft-6386bcc17091.json") }
+        ),
+        scopes: [GOOGLE_DRIVE_SCOPE],
     })
 
     try {
@@ -217,25 +237,78 @@ exports.downloadProject = wrapAsync(async(req, res, next) => {
 
 })
 
-// UPLOAD TO GOOGLE DRIVE
-async function uploadToGoogleDrive(projectSource, name) {
+async function createDriveClient() {
     const auth = new google.auth.GoogleAuth({
-        keyFile: path.join(__dirname, "../private/mcnanosoft-6386bcc17091.json"),
-        scopes: ["https://www.googleapis.com/auth/drive"],
+        ...(credentialsConfig
+            ? { credentials: credentialsConfig }
+            : { keyFile: path.join(__dirname, "../private/mcnanosoft-6386bcc17091.json") }
+        ),
+        scopes: [GOOGLE_DRIVE_SCOPE],
     })
 
+    const authClient = await auth.getClient()
+    return google.drive({ version: "v3", auth: authClient })
+}
+
+function escapeDriveQueryValue(value) {
+    return value.replace(/\\/g, "\\\\").replace(/'/g, "\\'")
+}
+
+async function uploadProjectImages(name, images, existingProject) {
+    let projectFolder
+    try {
+        projectFolder = `mcnanosoft/projects/${cloudinaryImages.normalizeProjectFolderName(name)}`
+    } catch (error) {
+        throw new AppError(error.message, 400)
+    }
+
+    const imageUrls = {}
+    const projectImages = [
+        { key: "icon", property: "projectIcon", publicId: "logo" },
+        { key: "thumbnail", property: "thumbnail", publicId: "thumbnail" }
+    ]
+
+    for (const projectImage of projectImages) {
+        const previousUrl = existingProject?.[projectImage.property]
+        let result
+
+        if (images[projectImage.key]) {
+            result = await cloudinaryImages.replaceImage(
+                images[projectImage.key].buffer,
+                previousUrl,
+                projectFolder,
+                projectImage.publicId
+            )
+        } else if (existingProject && existingProject.name !== name) {
+            result = await cloudinaryImages.moveImage(
+                previousUrl,
+                projectFolder,
+                projectImage.publicId
+            )
+        }
+
+        if (result?.secure_url) {
+            imageUrls[projectImage.property] = result.secure_url
+        }
+    }
+
+    return imageUrls
+}
+
+// UPLOAD TO GOOGLE DRIVE
+async function uploadToGoogleDrive(projectSource, name) {
     try {
         const zipBuffer = projectSource.buffer
         const projectName = name
 
-        const authClient = await auth.getClient()
-        const drive = google.drive({ version: "v3", auth: authClient })
+        const drive = await createDriveClient()
 
         const sharedFolderId = "1MLR5PkMOsRLRglQ7ym7r3lo3jEQWLjVy"
+        const escapedProjectName = escapeDriveQueryValue(projectName)
 
         // 1. Buscar si ya existe una carpeta con ese nombre en la carpeta padre
         const { data: list } = await drive.files.list({
-            q: `'${sharedFolderId}' in parents and name='${projectName}' and mimeType='application/vnd.google-apps.folder' and trashed=false`,
+            q: `'${sharedFolderId}' in parents and name='${escapedProjectName}' and mimeType='application/vnd.google-apps.folder' and trashed=false`,
             fields: "files(id, name)",
         })
 

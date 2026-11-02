@@ -5,6 +5,7 @@ import { useSendRequest } from '../../components/api/SendRequest'
 import Paper from '@mui/material/Paper'
 import "../../css/users/Show.css"
 import { toastContext } from '../../context/ToastContext'
+import { getProjectImageUrl } from '../../components/projects/projectImages'
 
 function Show() {
 
@@ -96,7 +97,7 @@ function Show() {
             {user && user._id ? <>
                 <Paper elevation={3} className="userPaperContainer">
                     <div id="showUserContent">
-                        {user.profilePicture && !user.oAuth ? <img src={"https://localhost:3016/" + user.profilePicture} alt="Profile Picture" draggable={false}/> : user.oAuth ? <img src={user.profilePicture} alt="Profile Picture" draggable={false}/> : <img src="https://localhost:3016/imgs/default/user.jpg" alt="Profile Picture" draggable={false}/>}
+                        {user.profilePicture && !user.oAuth ? <img src={getProjectImageUrl(user.profilePicture)} alt="Profile Picture" draggable={false}/> : user.oAuth ? <img src={user.profilePicture} alt="Profile Picture" draggable={false}/> : <img src="https://localhost:3016/imgs/default/user.jpg" alt="Profile Picture" draggable={false}/>}
                         <h2>{user.username}</h2>
                     </div>
                     

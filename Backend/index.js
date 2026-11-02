@@ -104,7 +104,6 @@ app.use((req, res) => {
 app.use(errorHandlerMW.errorHandler)
 
 // LEVANTAR EL SERVIDOR
-
 if(https_server){
     // HTTPS
     https.createServer({
@@ -148,26 +147,26 @@ if(https_server){
         }
     })
 } else{
-    // https
+    // http
     app.listen(port, async () => {
         console.log("RUTA BASE: ")
-        console.log(`https://localhost:${port}`)
+        console.log(`http://localhost:${port}`)
     
         console.log()
     
         console.log("<============ USERS ============>")
-        console.log(`https://localhost:${port}/api/${process.env.API_VERSION}/users`)
+        console.log(`http://localhost:${port}/api/${process.env.API_VERSION}/users`)
     
         console.log()
     
         console.log("<============ PROJECTS ============>")
-        console.log(`https://localhost:${port}/api/${process.env.API_VERSION}/projects`)
+        console.log(`http://localhost:${port}/api/${process.env.API_VERSION}/projects`)
     
         console.log()
 
 
         console.log("<============ RATINGS ============>")
-        console.log(`https://localhost:${port}/api/${process.env.API_VERSION}/ratings`)
+        console.log(`http://localhost:${port}/api/${process.env.API_VERSION}/ratings`)
 
         console.log()
     

@@ -11,7 +11,7 @@ import "bootstrap/dist/css/bootstrap.min.css"
 import "bootstrap/dist/js/bootstrap.bundle.js"
 
 // RUTA PARA ACCEDER AL BACKEND
-let host = import.meta.env.VITE_BASE_URL_BACKEND
+let host = import.meta.env.VITE_BASE_URL_API_BACKEND
 
 // CONFIGURACIONES AXIOS
 window.axios = axios

@@ -7,6 +7,7 @@ import "../../css/projects/Show.css"
 import { toastContext } from '../../context/ToastContext'
 import { Rating } from '@mui/material'
 import { cartContext } from '../../context/CartContext'
+import { getProjectImageUrl } from '../../components/projects/projectImages'
 
 function Show() {
 
@@ -203,7 +204,7 @@ function Show() {
             <div id="projectDetailWrapper">
               <div className="projectSection">
                 <div className="projectInfoCard">
-                  <img src={"https://localhost:3016/" + project.projectIcon} alt="Project Icon" draggable={false} />
+                  <img src={getProjectImageUrl(project.projectIcon)} alt="Project Icon" draggable={false} />
                   <h2>{project.name}</h2>
                   <p>{project.description}</p>
 
@@ -248,7 +249,7 @@ function Show() {
               </div>
 
               <div id="projectHeroSection">
-                <img src={`https://localhost:3016/${project.thumbnail}`} alt="Project Cover" draggable={false}/>
+                <img src={getProjectImageUrl(project.thumbnail)} alt="Project Cover" draggable={false}/>
               </div>
             </div>
 
@@ -275,7 +276,7 @@ function Show() {
                           <Rating precision={0.25} value={rt.rating} readOnly />
                           {user && (
                             <div className="ratingUser">
-                              {user.profilePicture && !user.oAuth ? <img src={"https://localhost:3016/" + user.profilePicture} alt="Profile Picture" draggable={false}/> : user.oAuth ? <img src={user.profilePicture} alt="Profile Picture" draggable={false}/> : <img src="https://localhost:3016/imgs/default/user.jpg" alt="Profile Picture" draggable={false}/>}
+                              {user.profilePicture && !user.oAuth ? <img src={getProjectImageUrl(user.profilePicture)} alt="Profile Picture" draggable={false}/> : user.oAuth ? <img src={user.profilePicture} alt="Profile Picture" draggable={false}/> : <img src="https://localhost:3016/imgs/default/user.jpg" alt="Profile Picture" draggable={false}/>}
                               <p>{user.username}</p>
                             </div>
                           )}
@@ -303,7 +304,7 @@ function Show() {
                             <Rating precision={0.25} value={rt.rating} readOnly />
                             {user && (
                               <div className="ratingUser">
-                                {user.profilePicture && !user.oAuth ? <img src={"https://localhost:3016/" + user.profilePicture} alt="Profile Picture" draggable={false}/> : user.oAuth ? <img src={user.profilePicture} alt="Profile Picture" draggable={false}/> : <img src="https://localhost:3016/imgs/default/user.jpg" alt="Profile Picture" draggable={false}/>}
+                                {user.profilePicture && !user.oAuth ? <img src={getProjectImageUrl(user.profilePicture)} alt="Profile Picture" draggable={false}/> : user.oAuth ? <img src={user.profilePicture} alt="Profile Picture" draggable={false}/> : <img src="https://localhost:3016/imgs/default/user.jpg" alt="Profile Picture" draggable={false}/>}
                                 <p>{user.username}</p>
                               </div>
                             )}

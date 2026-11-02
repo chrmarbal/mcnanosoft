@@ -153,7 +153,7 @@ function New() {
                     <i className="fa-solid fa-upload"></i>
                     {iconName}
                 </label>
-                <input type="file" name="projectIcon" id="projectIcon" onChange={handleIcon}/>
+                <input type="file" name="projectIcon" id="projectIcon" onChange={handleIcon} required/>
 
                 <br />
 
@@ -163,7 +163,7 @@ function New() {
                     <i className="fa-solid fa-upload"></i>
                     {thumbnailName}
                 </label>
-                <input type="file" name="thumbnail" id="thumbnail" onChange={handleThumbnail}/>
+                <input type="file" name="thumbnail" id="thumbnail" onChange={handleThumbnail} required/>
 
                 <br />
 
@@ -212,7 +212,7 @@ function New() {
                     <i className="fa-solid fa-upload"></i>
                     {sourceName}
                 </label>
-                <input type="file" name="projectSource" id="projectSource" onChange={handleSource}/>
+                <input type="file" name="projectSource" id="projectSource" onChange={handleSource} required/>
 
                 {source ? <>
                     <p>Tamaño: {size}</p>

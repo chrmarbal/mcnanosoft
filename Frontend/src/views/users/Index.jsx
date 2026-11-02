@@ -6,6 +6,7 @@ import SearchFiltersUsers from '../../components/users/SearchFiltersUsers'
 import ResultsSkeleton from '../../components/loaders/ResultsSkeleton'
 import { userContext } from '../../context/UserContext'
 import { Link } from 'react-router-dom'
+import { getProjectImageUrl } from '../../components/projects/projectImages'
 
 function Index() {
 
@@ -126,7 +127,7 @@ function Index() {
                   <div key={index} className="col-12 col-sm-6 col-md-4">
                     <div className="userContainer deletedItem h-100">
                       <Link to={"/users/" + user.username}>
-                        {user.profilePicture && !user.oAuth ? <img src={"https://localhost:3016/" + user.profilePicture} alt="Profile Picture" draggable={false}/> : user.oAuth ? <img src={user.profilePicture} alt="Profile Picture" draggable={false}/> : <img src="https://localhost:3016/imgs/default/user.jpg" alt="Profile Picture" draggable={false}/>}
+                        {user.profilePicture && !user.oAuth ? <img src={getProjectImageUrl(user.profilePicture)} alt="Profile Picture" draggable={false}/> : user.oAuth ? <img src={user.profilePicture} alt="Profile Picture" draggable={false}/> : <img src="https://localhost:3016/imgs/default/user.jpg" alt="Profile Picture" draggable={false}/>}
                       </Link>
                       <p>{user.username}</p>
                       <div>
@@ -140,7 +141,7 @@ function Index() {
                   <div key={index} className="col-12 col-sm-6 col-md-4">
                     <div className="userContainer h-100">
                       <Link to={"/users/" + user.username}>
-                        {user.profilePicture && !user.oAuth ? <img src={"https://localhost:3016/" + user.profilePicture} alt="Profile Picture" draggable={false}/> : user.oAuth ? <img src={user.profilePicture} alt="Profile Picture" draggable={false}/> : <img src="https://localhost:3016/imgs/default/user.jpg" alt="Profile Picture" draggable={false}/>}
+                        {user.profilePicture && !user.oAuth ? <img src={getProjectImageUrl(user.profilePicture)} alt="Profile Picture" draggable={false}/> : user.oAuth ? <img src={user.profilePicture} alt="Profile Picture" draggable={false}/> : <img src="https://localhost:3016/imgs/default/user.jpg" alt="Profile Picture" draggable={false}/>}
                       </Link>
                       <p>{user.username}</p>
                       <div>
