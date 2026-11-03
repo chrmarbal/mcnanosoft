@@ -10,6 +10,7 @@ import PasswordInput from '../components/shared/PasswordInput'
 function Login() {
     const sendRequest = useSendRequest()
     const { setUserData } = useContext(userContext)
+    const backendUrl = import.meta.env.VITE_BASE_URL_BACKEND
 
     const [userName, setUserName] = useState("")
     const [password, setPassword] = useState("")
@@ -54,10 +55,10 @@ function Login() {
                         <h1 className="mb-4">INICIAR SESIÓN</h1>
 
                         <div className="auth flex-column flex-sm-row">
-                            <button className="mb-3 mb-sm-0" onClick={() => {window.location.href = "https://localhost:3016/auth/google"}}>
+                            <button className="mb-3 mb-sm-0" onClick={() => {window.location.href = `${backendUrl}/auth/google`}}>
                                 <img src="/imgs/Logo Google.png" alt="Logo Google" draggable={false}/>Continuar con Google
                             </button>
-                            <button onClick={() => {window.location.href = "https://localhost:3016/auth/github"}}>
+                            <button onClick={() => {window.location.href = `${backendUrl}/auth/github`}}>
                                 <img src="/imgs/Logo GitHub.png" alt="Logo GitHub" draggable={false}/> Continuar con GitHub
                             </button>
                         </div>

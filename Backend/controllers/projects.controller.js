@@ -20,8 +20,8 @@ function wrapAsync(fn) {
 
 // Solo Para Producción
 let credentialsConfig
-if (process.env.GOOGLE_CREDENTIALS_JSON) {
-    credentialsConfig = JSON.parse(process.env.GOOGLE_CREDENTIALS_JSON)
+if (process.env.GOOGLE_CREDENTIALS_BASE64) {
+    credentialsConfig = JSON.parse(Buffer.from(process.env.GOOGLE_CREDENTIALS_BASE64, "base64").toString("utf-8"))
 }
 
 // #region CRUD PROJECTS
