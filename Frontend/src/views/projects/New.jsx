@@ -15,7 +15,7 @@ function New() {
 
     const [name, setName] = useState("")
     const [description, setDescription] = useState("")
-    const [price, setPrice] = useState(0)
+    const [price, setPrice] = useState("0")
     const [icon, setIcon] = useState("")
     const [technology, setTechnology] = useState(null)
     const [thumbnail, setThumbnail] = useState("")
@@ -45,7 +45,7 @@ function New() {
     }
 
     const handlePrice = (e) => {
-        setPrice(Math.max(0, Number(e.target.value)))
+        setPrice(e.target.value)
     }
 
     const handleIcon = (e) => {
@@ -88,13 +88,14 @@ function New() {
     const handleSubmit = async (e) => {
         e.preventDefault()
 
+        const projectPrice = Math.max(0, Number(price) || 0)
         const project = {
             name: name,
             description: description,
-            price: price,
+            price: projectPrice,
             size: size,
             technology: technology.label,
-            openSource: price === 0
+            openSource: projectPrice === 0
         }
 
         const formData = new FormData()

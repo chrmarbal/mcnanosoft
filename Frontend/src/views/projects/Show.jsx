@@ -165,6 +165,7 @@ function Show() {
     const response = await sendRequest("patch", { aproved: false }, "/ratings/" + id, "", true)
     if(response.status == 200){
       mostrarToast("Opinión Rechazada Correctamente", "success")
+      setRatings(currentRatings => currentRatings.filter(rating => rating._id !== id))
       getData()
     }
   }

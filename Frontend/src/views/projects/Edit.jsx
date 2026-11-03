@@ -21,7 +21,7 @@ function Edit() {
 
   const [name, setName] = useState("")
   const [description, setDescription] = useState("")
-  const [price, setPrice] = useState(0)
+  const [price, setPrice] = useState("0")
   const [icon, setIcon] = useState("")
   const [thumbnail, setThumbnail] = useState("")
   const [source, setSource] = useState("")
@@ -40,7 +40,7 @@ function Edit() {
   }
 
   const handlePrice = (e) => {
-    setPrice(Math.max(0, Number(e.target.value)))
+    setPrice(e.target.value)
   }
 
   const handleIcon = (e) => {
@@ -62,11 +62,12 @@ function Edit() {
   const handleSubmit = async (e) => {
     e.preventDefault()
 
+    const projectPrice = Math.max(0, Number(price) || 0)
     const project = {
       name: name,
       description: description,
-      price: price,
-      openSource: price === 0
+      price: projectPrice,
+      openSource: projectPrice === 0
     }
 
     if(size != ""){
@@ -103,7 +104,7 @@ function Edit() {
 
       setName(project.name)
       setDescription(project.description)
-      setPrice(project.price === "FREE" ? 0 : Number.parseFloat(project.price.replace(/[^\d.,]/g, "").replace(",", ".")) || 0)
+      setPrice(project.price === "FREE" ? "0" : String(Number.parseFloat(project.price.replace(/[^\d.,]/g, "").replace(",", ".")) || 0))
 
       setIconName("Logo.png")
       setThumbnailName("Thumbnail.png")

@@ -5,6 +5,7 @@ import "../css/Login.css"
 import { Link } from 'react-router-dom'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import { isValidUsername, USERNAME_HELP } from '../utils/username'
+import PasswordInput from '../components/shared/PasswordInput'
 
 function Login() {
     const sendRequest = useSendRequest()
@@ -70,7 +71,7 @@ function Login() {
 
                             <div className="campo">
                                 <label htmlFor="password">Contraseña</label>
-                                <input type="password" min={8} name="password" id="password" onChange={handlePassword}/>
+                                <PasswordInput min={8} name="password" id="password" onChange={handlePassword}/>
                                 <div className="links mt-2">
                                     <Link to="/register">Registrarse</Link>
                                     <Link to="/recovery">¿Has olvidado tu contraseña?</Link>

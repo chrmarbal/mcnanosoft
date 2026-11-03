@@ -7,6 +7,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import StarBorder from '../../components/shared/StarBorder'
 import { userContext } from '../../context/UserContext'
 import { isValidUsername, USERNAME_HELP } from '../../utils/username'
+import PasswordInput from '../../components/shared/PasswordInput'
 
 function New() {
 
@@ -152,7 +153,7 @@ function New() {
 
                 <label htmlFor="email">Contraseña</label>
                 <br />
-                <TextField className="newUserText" size="small" type="password" min={8} onChange={handlePassword} variant="outlined" required></TextField>
+                <PasswordInput material className="newUserText" size="small" min={8} onChange={handlePassword} variant="outlined" required />
                 {errorPassword ? <>
                     <br />
                     <span className="error">{errorPassword}</span>
@@ -162,7 +163,7 @@ function New() {
 
                 <label htmlFor="email">Repetir Contraseña</label>
                 <br />
-                <TextField className="newUserText" size="small" type="password" min={8} onChange={handleRepeatPassword} variant="outlined" required></TextField>
+                <PasswordInput material className="newUserText" size="small" min={8} onChange={handleRepeatPassword} variant="outlined" required />
                 {errorRepeatPassword ? <>
                     <br />
                     <span className="error">{errorRepeatPassword}</span>

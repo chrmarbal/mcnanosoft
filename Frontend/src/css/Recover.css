@@ -58,18 +58,6 @@
     display: block;
 }
 
-.showPasswordsContainer{
-    display: flex;
-    flex-direction: row;
-    gap: 8px;
-    color: #191860;
-    font-family: "Proxima Nova Condensed Regular";
-    align-items: center;
-    width: 350px;
-    font-size: 14px;
-    justify-content: center;
-}
-
 #submitRecover{
     border: 1px solid black;
     border-radius: 20px;
@@ -92,12 +80,11 @@
     font-family: "Proxima Nova Condensed Regular";
 }
 
-/* Para pantallas menores a 768px */
 @media (max-width: 768px) {
     #content-recover {
         background: transparent;
     }
-    
+
     #recover {
         background: linear-gradient(90deg, rgb(53, 51, 205) 0%, rgb(0, 0, 0) 80%);
     }
@@ -116,14 +103,8 @@
         width: 100%;
         max-width: 400px;
     }
-
-    .showPasswordsContainer {
-        width: 100%;
-        max-width: 400px;
-    }
 }
 
-/* Para Movil L */
 @media (max-width: 425px) {
     #form-recover {
         padding: 1.2rem;
@@ -132,26 +113,16 @@
     .campo label {
         font-size: 13px;
     }
-
-    .showPasswordsContainer {
-        font-size: 13px;
-    }
 }
 
-/* Para móviles medianos */
 @media (max-width: 375px) {
     #form-recover {
         padding: 1rem;
     }
 }
 
-/* Para móviles pequeños */
 @media (max-width: 320px) {
     .campo label {
-        font-size: 12px;
-    }
-
-    .showPasswordsContainer {
         font-size: 12px;
     }
 
@@ -162,7 +133,6 @@
     }
 }
 
-/* Para 2560px */
 @media (min-width: 2560px) {
     #form-recover {
         max-width: 900px;
@@ -176,11 +146,6 @@
     .campo label {
         font-size: 22px;
         margin-bottom: 0.8rem;
-    }
-
-    .showPasswordsContainer {
-        width: 700px;
-        font-size: 20px;
     }
 
     #submitRecover {

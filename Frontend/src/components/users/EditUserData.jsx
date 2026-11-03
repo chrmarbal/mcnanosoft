@@ -4,6 +4,7 @@ import { toastContext } from '../../context/ToastContext'
 import { userContext } from '../../context/UserContext'
 import axios from 'axios'
 import { isValidUsername, USERNAME_HELP } from '../../utils/username'
+import PasswordInput from '../shared/PasswordInput'
 
 
 function EditUserData({ userData, setEditUser }) {
@@ -148,20 +149,20 @@ function EditUserData({ userData, setEditUser }) {
             <div className="campos">
                 <div className="campo" id="currentPasswordContainer">
                     <label>Contraseña Actual</label>
-                    <input type="password" min={8} id="userData-cpass" onChange={handleCurrentPassword}/>
+                    <PasswordInput min={8} id="userData-cpass" onChange={handleCurrentPassword}/>
                 </div>
             </div>
 
             <div className="campos">
                 <div className="campo">
                     <label>Contraseña Nueva</label>
-                    <input type="password" min={8} id="userData-npass" onChange={handleNewPassword}/>
+                    <PasswordInput min={8} id="userData-npass" onChange={handleNewPassword}/>
                     <span style={{color: "#e74c3c"}} className="error">{errorPassword ? errorPassword : ""}</span>
                 </div>
 
                 <div className="campo">
                     <label>Repetir Nueva Contraseña</label>
-                    <input type="password" min={8} id="userData-rnpass" onChange={handleRepeatNewPassword}/>
+                    <PasswordInput min={8} id="userData-rnpass" onChange={handleRepeatNewPassword}/>
                     <span style={{color: "#e74c3c"}} className="error">{errorRepeatPassword ? errorRepeatPassword : ""}</span>
                 </div>
             </div>

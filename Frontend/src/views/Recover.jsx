@@ -1,13 +1,12 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { useSendRequest } from '../components/api/SendRequest'
-import { IconButton, InputAdornment, TextField } from '@mui/material'
+import { TextField } from '@mui/material'
 import { userContext } from '../context/UserContext'
 import "../css/Recover.css"
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { toastContext } from '../context/ToastContext'
-import Visibility from '@mui/icons-material/Visibility'
-import VisibilityOff from '@mui/icons-material/VisibilityOff'
 import 'bootstrap/dist/css/bootstrap.min.css'
+import PasswordInput from '../components/shared/PasswordInput'
 
 function Recover() {
 
@@ -18,15 +17,12 @@ function Recover() {
     const sendRequest = useSendRequest()
 
     const { mostrarToast } = useContext(toastContext)
-    const {userData, setUserData} = useContext(userContext)
+    const {setUserData} = useContext(userContext)
 
     const [password, setPassword] = useState("")
-    const [repeatPassword, setRepeatPassword] = useState("")
 
     const [errorPassword, setErrorPassword] = useState("")
     const [errorRepeatPassword, setErrorRepeatPassword] = useState("")
-
-    const [showPasswords, setShowPasswords] = useState(false)
 
     const handlePassword = (e) => {
         setPassword(e.target.value)
@@ -34,7 +30,6 @@ function Recover() {
     }
 
     const handleRepeatPassword = (e) => {
-        setRepeatPassword(e.target.value)
         setErrorRepeatPassword(e.target.value !== password ? "Las contraseñas deben coincidir" : "")
     }
 
@@ -61,7 +56,7 @@ function Recover() {
         const regexMayuscula = /[A-Z]/
         const regexMinuscula = /[a-z]/
         const regexNumero = /\d/
-        const regexCarEsp = /[!@#$%^&*(),.?":{}|<>_=+\-]/
+        const regexCarEsp = /[!@#$%^&*(),.?":{}|<>_+=-]/
     
         if (!regexMayuscula.test(password)){
           return "La contraseña debe tener al menos una mayúscula"
@@ -101,7 +96,7 @@ function Recover() {
                         <form onSubmit={handleSubmit}>
                             <div className="campo mb-4">
                                 <label htmlFor="password">Contraseña Nueva</label>
-                                <TextField type={showPasswords ? "text" : "password"} min={8} name="password" id="password" onChange={handlePassword} sx={{
+                                <PasswordInput material min={8} name="password" id="password" onChange={handlePassword} sx={{
                                     '& .MuiOutlinedInput-root': {
                                         borderRadius: '10px',
                                     },
@@ -123,7 +118,7 @@ function Recover() {
 
                             <div className="campo mb-4">
                                 <label htmlFor="repeatPassword">Repetir Contraseña Nueva</label>
-                                <TextField type={showPasswords ? "text" : "password"} min={8} name="repeatPassword" id="repeatPassword" onChange={handleRepeatPassword} sx={{
+                                <PasswordInput material min={8} name="repeatPassword" id="repeatPassword" onChange={handleRepeatPassword} sx={{
                                     '& .MuiOutlinedInput-root': {
                                         borderRadius: '10px',
                                     },
@@ -141,11 +136,6 @@ function Recover() {
                                     }
                                 }}/>
                                 <span style={{color: "red", display: "block", minHeight: "15px"}} className="error">{errorRepeatPassword ? errorRepeatPassword : ""}</span>
-                            </div>
-
-                            <div className="showPasswordsContainer mb-4">
-                                <input type="checkbox" checked={showPasswords} name="showPasswords" id="showPasswords" onChange={() => setShowPasswords(sp => !sp)}/>
-                                <label htmlFor="showPasswords">Mostrar Contraseñas</label>
                             </div>
 
                             <button id="submitRecover" className="mb-3">Enviar</button>

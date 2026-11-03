@@ -6,6 +6,7 @@ import { toastContext } from "../context/ToastContext"
 import 'bootstrap/dist/css/bootstrap.min.css'
 import { isValidUsername, USERNAME_HELP } from "../utils/username"
 import axios from "axios"
+import PasswordInput from "../components/shared/PasswordInput"
 
 function Register() {
 
@@ -156,13 +157,13 @@ function Register() {
                             <div className="campos mb-3">
                                 <div className="campo">
                                     <label htmlFor="password">Contraseña</label>
-                                    <input type="password" min={8} name="password" id="password" onChange={handlePassword} required/>
+                                    <PasswordInput min={8} name="password" id="password" onChange={handlePassword} required/>
                                     <span style={{color: "red"}} className="error">{errorPassword ? errorPassword : ""}</span>
                                 </div>
 
                                 <div className="campo">
                                     <label htmlFor="repeatPassword">Repetir Contraseña</label>
-                                    <input type="password" min={8} name="repeatPassword" id="repeatPassword" onChange={handleRepeatPassword} required/>
+                                    <PasswordInput min={8} name="repeatPassword" id="repeatPassword" onChange={handleRepeatPassword} required/>
                                     <span style={{color: "red"}} className="error">{errorRepeatPassword ? errorRepeatPassword : ""}</span>
                                 </div>
                             </div>
