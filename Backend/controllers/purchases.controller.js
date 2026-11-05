@@ -51,7 +51,7 @@ exports.createPurchase = wrapAsync(async (req, res, next) => {
 exports.findPurchaseById = wrapAsync(async (req, res, next) => {
     const { id } = req.params
     const purchase = await purchasesModel.findById(id)
-    const currentUser = req.session?.userLogued?.data
+    const currentUser = req.userLogued?.data
     if(!purchase){
         next(new AppError("No se ha encontrado la compra", 404))
     } else if(!currentUser || (String(currentUser._id) !== String(purchase.idUser) && currentUser.profile !== "Administrador")){
@@ -64,7 +64,7 @@ exports.findPurchaseById = wrapAsync(async (req, res, next) => {
 // FIND BY ID USER
 exports.findPurchaseByIdUser = wrapAsync(async (req, res, next) => {
     const { idUser } = req.params
-    const currentUser = req.session?.userLogued?.data
+    const currentUser = req.userLogued?.data
     if(!currentUser || (String(currentUser._id) !== String(idUser) && currentUser.profile !== "Administrador")){
         next(new AppError("No tienes permiso para consultar estas compras", 403))
         return
@@ -88,7 +88,7 @@ exports.updateStateById = wrapAsync(async (req, res, next) => {
         return
     }
 
-    const currentUser = req.session?.userLogued?.data
+    const currentUser = req.userLogued?.data
     if(!currentUser || (String(currentUser._id) !== String(purchase.idUser) && currentUser.profile !== "Administrador")){
         next(new AppError("No tienes permiso para actualizar esta compra", 403))
         return
@@ -118,7 +118,7 @@ exports.updateStateById = wrapAsync(async (req, res, next) => {
             const datosUpdatedPurchase = await purchasesModel.updateStateById(id, state)
             const user = await usersModel.findById(datosUpdatedPurchase.idUser)
             if(String(currentUser._id) === String(user._id)){
-                req.session.userLogued.data = user
+                req.userLogued.data = user
             }
             res.status(200).json({purchaseData: datosUpdatedPurchase, userData: user})
         } catch (err) {

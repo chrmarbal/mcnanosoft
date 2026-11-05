@@ -5,11 +5,8 @@ const oAuthGitHubController = require("../controllers/oAuthGitHub.controller")
 // Abrimos Login de Google
 router.get("/", oAuthGitHubController.passportAuthenticate)
 
-// Respuesta Google
-router.get("/callback", oAuthGitHubController.passportCallback)
-
-// Cuando el Login de Google da OK
-router.get("/protected", oAuthGitHubController.passportSuccess)
+// Procesa el perfil recibido y establece la cookie de autenticación
+router.get("/callback", oAuthGitHubController.passportCallback, oAuthGitHubController.passportSuccess)
 
 // Cuando el Login de Google Fracasa
 router.get("/failure", oAuthGitHubController.passportFailure)

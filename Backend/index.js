@@ -58,14 +58,13 @@ app.use(cookieSessionMW({
     name: "mcnanosoft",
     secret: process.env.SESSION_SECRET,
     options: {
-        secure: https_server,
+        secure: https_server || process.env.NODE_ENV === "production",
         httpOnly: true,
         maxAge: 172800000, // 2 Días
         sameSite: "none"
     }
 }))
 app.use(passport.initialize())
-app.use(passport.session())
 
 // CONFIGURACIÓN SERVIDOR
 app.use(express.urlencoded({extended: true})) // Leer Datos req.body

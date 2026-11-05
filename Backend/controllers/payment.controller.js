@@ -9,7 +9,7 @@ const Cart = require("../models/cart.model")
 
 exports.createCheckoutSession = async (req, res, next) => {
     try {
-        const sessionUser = req.session?.userLogued?.data
+        const sessionUser = req.userLogued?.data
         if (!sessionUser?._id) return next(new AppError("Debes iniciar sesión para comprar", 401))
 
         const user = await usersModel.findById(sessionUser._id)
@@ -53,7 +53,7 @@ exports.createCheckoutSession = async (req, res, next) => {
         if(paidItems.length === 0){
             await purchasesModel.updateStateById(purchase._id, "Pagado")
             const updatedUser = await usersModel.findById(user._id)
-            req.session.userLogued.data = updatedUser
+            req.userLogued.data = updatedUser
             const emptyCart = new Cart({})
             emptyCart.clear()
             req.session.cart = emptyCart

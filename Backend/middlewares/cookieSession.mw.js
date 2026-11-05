@@ -86,14 +86,24 @@ function createCookieSession({ name, secret, options }) {
 
     return (req, res, next) => {
         const cookieValue = getCookieValue(req, name)
-        const initialSession = typeof cookieValue === "string" && cookieValue
+        const decodedCookie = typeof cookieValue === "string" && cookieValue
             ? decryptSession(cookieValue)
             : {}
-        const invalidCookie = cookieValue !== undefined && (!cookieValue || !initialSession)
-        const initialSerializedSession = JSON.stringify(initialSession || {})
+        const invalidCookie = cookieValue !== undefined && (!cookieValue || !decodedCookie)
+        const {
+            auth: initialUserLogued,
+            userLogued: legacyUserLogued,
+            passport: ignoredPassportData,
+            ...initialSession
+        } = decodedCookie || {}
+        const userLogued = initialUserLogued || legacyUserLogued || null
+        const initialCookieState = { ...initialSession }
+        if (userLogued) initialCookieState.auth = userLogued
+        const initialSerializedCookieState = JSON.stringify(initialCookieState)
         let destroyed = false
 
-        req.session = initialSession || {}
+        req.session = initialSession
+        req.userLogued = userLogued
 
         function addSessionMethods(session) {
             session.save = callback => {
@@ -117,16 +127,14 @@ function createCookieSession({ name, secret, options }) {
         const originalEnd = res.end
         res.end = function (...args) {
             const session = req.session
-            const hasSessionData = session && Object.keys(session).some(key =>
-                !["save", "regenerate", "destroy"].includes(key)
-            )
             let shouldClearCookie = destroyed || invalidCookie
 
-            if (!res.headersSent && session && hasSessionData) {
-                const serializedSession = JSON.stringify(session)
+            if (!res.headersSent && session) {
+                const nextCookieState = { ...session }
+                if (req.userLogued) nextCookieState.auth = req.userLogued
 
-                if (serializedSession !== initialSerializedSession) {
-                    const encryptedSession = encryptSession(session)
+                if (JSON.stringify(nextCookieState) !== initialSerializedCookieState) {
+                    const encryptedSession = encryptSession(nextCookieState)
                     if (Buffer.byteLength(`${name}=${encryptedSession}`) > MAX_COOKIE_BYTES) {
                         const callback = args.find(argument => typeof argument === "function")
                         const message = JSON.stringify("La cookie de sesión supera el tamaño máximo permitido.")

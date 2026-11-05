@@ -87,7 +87,7 @@ exports.createProject = wrapAsync(async (req, res, next) => {
     try {
         const datosProyectoCreado = await projectsModel.createProject(newProject)
         const adminUser = await usersModel.findOne({profile: "Administrador"})
-        req.session.userLogued.data = adminUser
+        req.userLogued.data = adminUser
         res.status(200).json({proyectData: datosProyectoCreado, adminData: adminUser})
     } catch (err) {
         next(new AppError(err.message || err, 400))

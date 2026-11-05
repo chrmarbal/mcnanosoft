@@ -5,19 +5,34 @@ const AppError = require("../utils/AppError")
 const jwtMW = require("../middlewares/jwt.mw")
 const usersModel = require("../models/users.model")
 const { normalizeOAuthUsername } = require("../utils/usernames")
+const frontendUrl = process.env.FRONTEND_URL || (
+    process.env.VERCEL ? "https://mcnanosoft.vercel.app" : "https://localhost:5173"
+)
 
 // Inicia la autenticación con GitHub
-exports.passportAuthenticate = passport.authenticate("github", { scope: ["user", "user:email"] })
+exports.passportAuthenticate = passport.authenticate("github", {
+    scope: ["user", "user:email"],
+    session: false
+})
 
 // Callback después de GitHub login
-exports.passportCallback = passport.authenticate("github", {
-    successRedirect: "/auth/github/protected",
-    failureRedirect: "/auth/github/failure"
-})
+exports.passportCallback = (req, res, next) => {
+    passport.authenticate("github", {session: false}, (err, profile) => {
+        if (err) return next(err)
+        if (!profile) return res.redirect(`${frontendUrl}/login`)
+
+        req.oauthProfile = profile
+        next()
+    })(req, res, next)
+}
 
 // Éxito en la autenticación
 exports.passportSuccess = async (req, res, next) => {
-    let userDataGitHub = req.session.passport.user
+    const userDataGitHub = req.oauthProfile
+    if (!userDataGitHub) {
+        return next(new AppError("No se pudo recuperar el perfil de GitHub", 401))
+    }
+
     const username = normalizeOAuthUsername(userDataGitHub.username)
 
     const users = await usersModel.find({profile: "Usuario"})
@@ -55,7 +70,7 @@ exports.passportSuccess = async (req, res, next) => {
                 token: jwtToken
             }
 
-            req.session.userLogued = userLogued
+            req.userLogued = userLogued
         } catch (err) {
             next(new AppError(err, 400))
             return
@@ -69,26 +84,27 @@ exports.passportSuccess = async (req, res, next) => {
                 token: jwtToken
             }
         
-            req.session.userLogued = userLogued
+            req.userLogued = userLogued
         }
     }
         
     // Una vez nos hemos logueado con GitHub, nos lleva al Inicio
-    res.redirect("https://localhost:5173")
+    res.redirect(frontendUrl)
 }
 
 // Falla el login con GitHub
 exports.passportFailure = (req, res, next) => {
     // next(new AppError("Fallo al loguear con GitHub", 500))
-    res.redirect("https://localhost:5173/login")
+    res.redirect(`${frontendUrl}/login`)
 }
 
 // Logout destroy
 exports.passportLogout = async (req, res, next) => {
     try {
         await promisify(req.session.destroy.bind(req.session))()
+        req.userLogued = null
     } catch (err) {
         return next(new AppError("Error al destruir la sesión", 500))
     }
-    res.redirect("https://localhost:5173")
+    res.redirect(frontendUrl)
 }

@@ -12,9 +12,9 @@ function extractToken(req){
     } else if (req.query && req.query.token){
         // En el caso de que venga por query el token
         return req.query.token
-    } else if (req.session && req.session.userLogued && req.session.userLogued.token){
-        // En el caso de que lo guardemos en el objeto session
-        return req.session.userLogued.token
+    } else if (req.userLogued && req.userLogued.token){
+        // Token autenticado almacenado en la cookie del usuario.
+        return req.userLogued.token
     } else{
         return null
     }
@@ -61,14 +61,12 @@ exports.createJWT = (req, res, next, userData) => {
 
 // DESTROY TOKEN
 exports.destroyJWT = (req) => {
-    if(!req.session || !req.session.userLogued || !req.session.userLogued.token){
+    if(!req.userLogued || !req.userLogued.token){
         return false
     }
 
     try {
-        jwt.sign({}, req.session.userLogued.token, {expiresIn: 1})
-
-        req.session.userLogued.token = null
+        req.userLogued.token = null
         return true
     } catch (error) {
         logger.error.error(error.message)

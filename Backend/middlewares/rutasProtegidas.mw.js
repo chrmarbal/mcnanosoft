@@ -1,7 +1,7 @@
 const AppError = require("../utils/AppError")
 
 const checkProfile = (req,profile) =>{
-    if(req.session && req.session.userLogued && req.session.userLogued.data && req.session.userLogued.data.profile && req.session.userLogued.data.profile == profile){
+    if(req.userLogued && req.userLogued.data && req.userLogued.data.profile && req.userLogued.data.profile == profile){
         return true
     }else{
         false

@@ -5,11 +5,8 @@ const oAuthGoogleController = require("../controllers/oAuthGoogle.controller")
 // Abrimos Login de Google
 router.get("/", oAuthGoogleController.passportAuthenticate)
 
-// Respuesta Google
-router.get("/callback", oAuthGoogleController.passportCallback)
-
-// Cuando el Login de Google da OK
-router.get("/protected", oAuthGoogleController.passportSuccess)
+// Procesa el perfil recibido y establece la cookie de autenticación
+router.get("/callback", oAuthGoogleController.passportCallback, oAuthGoogleController.passportSuccess)
 
 // Cuando el Login de Google Fracasa
 router.get("/failure", oAuthGoogleController.passportFailure)

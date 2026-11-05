@@ -13,12 +13,3 @@ passport.use(new GoogleStrategy(
         done(null, profile)
     }
 ))
-
-
-passport.serializeUser((user, done) => {
-    done(null, user)
-})
-
-passport.deserializeUser((user, done) => {
-    done(null, user)
-})

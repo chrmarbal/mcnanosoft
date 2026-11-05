@@ -1,4 +1,6 @@
 require("dotenv").config()
+const fs = require("fs/promises")
+const path = require("path")
 const usersModel = require("../models/users.model")
 const AppError = require("../utils/AppError")
 const bcrypt = require("../utils/bcrypt")
@@ -42,7 +44,7 @@ exports.register = wrapAsync(async (req, res, next) => {
         throw new AppError("El nombre de usuario debe tener entre 3 y 30 caracteres: letras, números, punto, guion o guion bajo; debe empezar y terminar con una letra o número", 400)
     }
 
-    if(req.session.userLogued && req.session.userLogued.data.profile != "Administrador"){
+    if(req.userLogued && req.userLogued.data.profile != "Administrador"){
         next(new AppError("No estás autorizado", 403))
     } else{
         if(password.length < 8){
@@ -103,14 +105,14 @@ exports.register = wrapAsync(async (req, res, next) => {
                 console.log(newUser)
                 try {
                     const datosUsuarioCreado = await usersModel.createUser(newUser)
-                    if(!req.session.userLogued){
+                    if(!req.userLogued){
                         const jwtToken = jwtMW.createJWT(req, res, next, datosUsuarioCreado)
                         const userLogued = {
                             data: datosUsuarioCreado,
                             token: jwtToken
                         }
 
-                        req.session.userLogued = userLogued
+                        req.userLogued = userLogued
                     }
 
                     res.status(200).json(datosUsuarioCreado)
@@ -147,7 +149,7 @@ exports.updateUserByID = wrapAsync(async (req, res, next) => {
         newPassword = ""
     } = JSON.parse(req.body.user)
     const profilePicture = req.file
-    const userLogued = req.session.userLogued?.data
+    const userLogued = req.userLogued?.data
 
     if (String(userLogued?._id) !== id) {
         throw new AppError("No estás autorizado", 403)
@@ -229,7 +231,7 @@ exports.updateUserByID = wrapAsync(async (req, res, next) => {
 
     try {
         const datosUsuarioActualizado = await usersModel.updateUserById(id, updatedUser)
-        req.session.userLogued.data = datosUsuarioActualizado
+        req.userLogued.data = datosUsuarioActualizado
         res.status(200).json(datosUsuarioActualizado)
     } catch (err) {
         next(new AppError(err.message || err, 400))
@@ -240,7 +242,7 @@ exports.updateUserByID = wrapAsync(async (req, res, next) => {
 exports.deleteUserByID = wrapAsync(async (req, res, next) => {
     const { id } = req.params
 
-    const userLogued = req.session.userLogued.data
+    const userLogued = req.userLogued.data
 
     if(userLogued._id != id && userLogued.profile != "Administrador"){
         next(new AppError("No estás autorizado", 403))
@@ -268,7 +270,7 @@ exports.login = wrapAsync(async (req, res, next) => {
         throw new AppError("El nombre de usuario debe tener entre 3 y 30 caracteres válidos", 400)
     }
 
-    if(req.session.userLogued){
+    if(req.userLogued){
         next(new AppError("Ya estás Logueado", 400))
     } else{
         try {
@@ -281,7 +283,7 @@ exports.login = wrapAsync(async (req, res, next) => {
                     token: jwtToken
                 }
 
-                req.session.userLogued = userLogued
+                req.userLogued = userLogued
 
                 res.status(200).json(userFounded)
             } else{
@@ -300,10 +302,10 @@ exports.logout = wrapAsync(async (req, res, next) => {
     if(jwtDestroyed){
         try {
             await promisify(req.session.destroy.bind(req.session))()
+            req.userLogued = null
         } catch (err) {
             return next(new AppError("Error al destruir la sesión", 500))
         }
-        res.clearCookie("mcnanosoft")
     } else{
         return next(new AppError("Error al Elimininar el Token o Sesión Inexistente", 500))
     }
@@ -313,10 +315,10 @@ exports.logout = wrapAsync(async (req, res, next) => {
 
 // OBTENER SESIÓN
 exports.getSession = (req, res) => {
-    if(!req.session.userLogued){
+    if(!req.userLogued){
         res.status(204).json("No Estás Logueado")
     } else{
-        res.status(200).json(req.session.userLogued)
+        res.status(200).json(req.userLogued)
     }
 }
 
@@ -325,7 +327,7 @@ exports.reviveUser = wrapAsync(async (req, res, next) => {
     const { id } = req.params
     const { active } = req.body
 
-    if(req.session.userLogued && req.session.userLogued.data.profile == "Administrador"){
+    if(req.userLogued && req.userLogued.data.profile == "Administrador"){
         const updatedUser = {
             active: active
         }
@@ -359,94 +361,6 @@ exports.recoverAccount = wrapAsync(async (req, res, next) => {
         const token = crypto.randomBytes(32).toString("hex")
         const expires = Date.now() + 1000 * 60 * 5
 
-        const html = `<!DOCTYPE html>
-        <html lang="es">
-        <head>
-            <meta charset="UTF-8" />
-            <title>Recuperación de Cuenta</title>
-            <style>
-            body {
-                background-color: #0a0a0a;
-                color: #ffffff;
-                font-family: Arial, sans-serif;
-                padding: 0;
-                margin: 0;
-            }
-
-            .container {
-                max-width: 600px;
-                margin: 40px auto;
-                background-color: #191860;
-                border-radius: 12px;
-                padding: 30px;
-                box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
-            }
-
-            .title {
-                font-size: 28px;
-                margin-bottom: 10px;
-                color: #ffffff;
-                text-align: center;
-            }
-
-            .subtitle {
-                font-size: 16px;
-                color: #dddddd;
-                text-align: center;
-                margin-bottom: 30px;
-            }
-
-            .button {
-                display: block;
-                width: fit-content;
-                margin: 0 auto;
-                padding: 12px 24px;
-                background-color: #cfcfcf;
-                color: #191860;
-                text-decoration: none;
-                font-weight: bold;
-                border-radius: 8px;
-                transition: background-color 0.3s ease;
-            }
-
-            .button:hover {
-                background-color: #cfcfcf;
-            }
-
-            .footer {
-                margin-top: 30px;
-                font-size: 12px;
-                color: #aaaaaa;
-                text-align: center;
-            }
-
-            .logo {
-                width: 80px;
-                margin: 0 auto 20px;
-                display: block;
-            }
-            </style>
-        </head>
-        <body>
-            <div class="container">
-            <img class="logo" src="https://localhost:3016/imgs/default/Logo MCNANO SOFT.png" alt="Logo" />
-
-            <h1 class="title">¿Olvidaste tu contraseña?</h1>
-            <p class="subtitle">
-                Tranquilo, todos pasamos por esto. Haz clic en el siguiente botón para restablecer tu contraseña:
-            </p>
-
-            <a href="https://localhost:5173/reset-password?token=${token}" class="button">Restablecer contraseña</a>
-
-            <p class="footer">
-                Si no has solicitado este cambio, puedes ignorar este mensaje.
-                <br />
-                Este enlace expirará en 5 minutos.
-            </p>
-            </div>
-        </body>
-        </html>`
-
         const transporter = nodemailer.createTransport({
             service: "gmail",
             auth: {
@@ -455,14 +369,32 @@ exports.recoverAccount = wrapAsync(async (req, res, next) => {
             }
         })
 
-        const mailOptions = {
-            from: process.env.EMAIL_USER,
-            to: email,
-            subject: "Recuperar Cuenta",
-            html: html
-        }
-
         try {
+            const isProduction = process.env.NODE_ENV === "production"
+
+            const templatePath = path.join(__dirname, "..", "public", "html", "recoverAccount.html")
+            const stylesPath = path.join(__dirname, "..", "public", "css", "recoverAccount.css")
+            const [template, styles] = await Promise.all([
+                fs.readFile(templatePath, "utf8"),
+                fs.readFile(stylesPath, "utf8")
+            ])
+            const html = template
+                .replace("{{STYLES}}", () => styles)
+                .replace("{{LOGO_URL}}", isProduction 
+                    ? "https://mcnanosoft-backend.vercel.app/imgs/default/Logo MCNANO SOFT.png" 
+                    : "http://localhost:3016/imgs/default/Logo MCNANO SOFT.png"
+                )
+                .replace("{{RECOVERY_URL}}", isProduction 
+                    ? `https://mcnanosoft-backend.vercel.app/reset-password?token=${encodeURIComponent(token)}` 
+                    : `http://localhost:5173/reset-password?token=${encodeURIComponent(token)}`
+                )
+            
+            const mailOptions = {
+               from: process.env.EMAIL_USER,
+                to: email,
+                subject: "Recuperar Cuenta",
+                html: html
+            }
             await transporter.sendMail(mailOptions)
             tokenCookie = { 
                 token: token, 
@@ -505,7 +437,7 @@ exports.resetAccount = wrapAsync(async (req, res, next) => {
                             data: resetUserData,
                             token: jwtToken
                         }
-                        req.session.userLogued = userLogued
+                        req.userLogued = userLogued
                         res.status(200).json(userLogued)
                     } catch (err) {
                         next(new AppError(err.message || err, 400))

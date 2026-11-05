@@ -6,17 +6,32 @@ const jwtMW = require("../middlewares/jwt.mw")
 const googleApis = require("googleapis").google
 const usersModel = require("../models/users.model")
 const { normalizeOAuthUsername } = require("../utils/usernames")
+const frontendUrl = process.env.FRONTEND_URL || (
+    process.env.VERCEL ? "https://mcnanosoft.vercel.app" : "https://localhost:5173"
+)
 
-exports.passportAuthenticate = passport.authenticate("google", {scope: ["email", "profile"]})
-
-exports.passportCallback = passport.authenticate("google", {
-    successRedirect: "/auth/google/protected",
-    failureRedirect: "/auth/google/failure"
+exports.passportAuthenticate = passport.authenticate("google", {
+    scope: ["email", "profile"],
+    session: false
 })
+
+exports.passportCallback = (req, res, next) => {
+    passport.authenticate("google", {session: false}, (err, profile) => {
+        if (err) return next(err)
+        if (!profile) return res.redirect(`${frontendUrl}/login`)
+
+        req.oauthProfile = profile
+        next()
+    })(req, res, next)
+}
 
 exports.passportSuccess = async (req, res, next) => {
     // Login OK con Google
-    let userDataGoogle = req.session.passport.user
+    const userDataGoogle = req.oauthProfile
+    if (!userDataGoogle) {
+        return next(new AppError("No se pudo recuperar el perfil de Google", 401))
+    }
+
     const username = normalizeOAuthUsername(userDataGoogle.displayName)
     
     const users = await usersModel.find({profile: "Usuario"})
@@ -50,7 +65,7 @@ exports.passportSuccess = async (req, res, next) => {
                 token: jwtToken
             }
 
-            req.session.userLogued = userLogued
+            req.userLogued = userLogued
         } catch (err) {
             next(new AppError(err, 400))
             return
@@ -64,23 +79,24 @@ exports.passportSuccess = async (req, res, next) => {
                 token: jwtToken
             }
         
-            req.session.userLogued = userLogued
+            req.userLogued = userLogued
         }
     }
     
     // Una vez nos hemos logueado con Google, nos lleva al Inicio
-    res.redirect("https://localhost:5173")
+    res.redirect(frontendUrl)
 }
 
 exports.passportFailure = (req, res, next) => {
-    res.redirect("https://localhost:5173/login")
+    res.redirect(`${frontendUrl}/login`)
 }
 
 exports.passportLogout = async (req, res, next) => {
     try {
         await promisify(req.session.destroy.bind(req.session))()
+        req.userLogued = null
     } catch (err) {
         return next(new AppError("Error al destruir la sesión", 500))
     }
-    res.redirect("https://localhost:5173")
+    res.redirect(frontendUrl)
 }
