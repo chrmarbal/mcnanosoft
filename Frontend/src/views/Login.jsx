@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useNavigate, useState } from 'react'
 import { useSendRequest } from '../components/api/SendRequest'
 import { userContext } from '../context/UserContext'
 import "../css/Login.css"
@@ -11,6 +11,8 @@ function Login() {
     const sendRequest = useSendRequest()
     const { setUserData } = useContext(userContext)
     const backendUrl = import.meta.env.VITE_BASE_URL_BACKEND
+
+    const go = useNavigate()
 
     const [userName, setUserName] = useState("")
     const [password, setPassword] = useState("")
@@ -39,7 +41,7 @@ function Login() {
         const response = await sendRequest("post", user, "/users/login")
         if(response.status == 200){
             setUserData(response.data)
-            window.location.href = "/"
+            go("/")
         }
     }
 
