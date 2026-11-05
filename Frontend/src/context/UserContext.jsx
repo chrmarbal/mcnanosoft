@@ -22,9 +22,10 @@ export const UserProvider = ({children}) => {
             if(response.status == 200){
                 setUserData(response.data)
             }
-            setLoading(false)
         } catch (error) {
             console.log(error)
+        } finally {
+            setLoading(false)
         }
     }
 

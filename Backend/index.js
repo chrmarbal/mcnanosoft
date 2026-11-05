@@ -1,7 +1,6 @@
 require("dotenv").config()
 const fs = require("fs")
 const https = require("https")
-const session = require("express-session") // npm i express-session
 const methodOverride = require("method-override") // npm i method-override
 const express = require("express") // npm i express
 const app = express()
@@ -21,6 +20,8 @@ const logger = require("./utils/logger")
 const AppError = require("./utils/AppError")
 const errorHandlerMW = require("./middlewares/errorHandler.mw")
 const morganMW = require("./middlewares/morgan.mw")
+const cookieSessionMW = require("./middlewares/cookieSession.mw")
+const passport = require("passport")
 
 // <============ CONFIGURACIÓN HTTPS ============>
 let certificate = null
@@ -53,18 +54,18 @@ const corsOptions = {
 app.use(cors(corsOptions))
 
 // COOKIE DE SESIÓN
-app.use(session({
+app.use(cookieSessionMW({
     name: "mcnanosoft",
     secret: process.env.SESSION_SECRET,
-    resave: false,
-    saveUninitialized: false,
-    cookie: {
+    options: {
         secure: https_server,
         httpOnly: true,
         maxAge: 172800000, // 2 Días
         sameSite: "none"
     }
 }))
+app.use(passport.initialize())
+app.use(passport.session())
 
 // CONFIGURACIÓN SERVIDOR
 app.use(express.urlencoded({extended: true})) // Leer Datos req.body
