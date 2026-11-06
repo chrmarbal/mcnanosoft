@@ -1,5 +1,4 @@
 import React, { useContext, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
 import { useSendRequest } from '../components/api/SendRequest'
 import { userContext } from '../context/UserContext'
 import "../css/Login.css"
@@ -11,9 +10,8 @@ import PasswordInput from '../components/shared/PasswordInput'
 function Login() {
     const sendRequest = useSendRequest()
     const { setUserData } = useContext(userContext)
-    const backendUrl = import.meta.env.VITE_BASE_URL_BACKEND
+    const backendUrl = import.meta.env.MODE === "production" ? "/api" : import.meta.env.VITE_BASE_URL_BACKEND
 
-    const go = useNavigate()
 
     const [userName, setUserName] = useState("")
     const [password, setPassword] = useState("")
@@ -42,7 +40,7 @@ function Login() {
         const response = await sendRequest("post", user, "/users/login")
         if(response.status == 200){
             setUserData(response.data)
-            go("/")
+            window.location.href = "/"
         }
     }
 
